@@ -24,7 +24,8 @@ const nextConfig: NextConfig = {
         pathname: '/**',
       },
       {
-        protocol: 'https',
+        protocol: 'https'
+        ,
         hostname: 'picsum.photos',
         port: '',
         pathname: '/**',
@@ -62,6 +63,12 @@ const nextConfig: NextConfig = {
       {
         protocol: 'https',
         hostname: '1.bp.blogspot.com',
+        port: '',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'clan.fastly.steamstatic.com',
         port: '',
         pathname: '/**',
       }

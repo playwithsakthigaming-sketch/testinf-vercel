@@ -1,6 +1,18 @@
 {
   "placeholderImages": [
     {
+      "id": "newsletter-1759063641546",
+      "description": "Image for Tamil Pasanaga VTC October 2025 Public convoy. ",
+      "imageUrl": "https://media.discordapp.net/attachments/812969396540145694/1420219258834518171/unwatermark_1000037663.gif?ex=68d9dfc1&is=68d88e41&hm=66b812dfa84c8728ba006c020bcf650adff9ebc427961ed5f97050126b9ba9cc&=",
+      "imageHint": "custom article"
+    },
+    {
+      "id": "newsletter-1759063501893",
+      "description": "Image for Euro Truck Simulator 2 1.56",
+      "imageUrl": "https://clan.fastly.steamstatic.com/images//4036972/26b4b5c1ae38ceb9c5c2fff95fb53a2f0ccd8f36.jpg",
+      "imageHint": "custom article"
+    },
+    {
       "id": "event-1758794026763",
       "description": "Image for test 1",
       "imageUrl": "https://media.discordapp.net/attachments/1281551151418048677/1418938708576571412/ets2_20250919_190640_00.PNG?ex=68d5dfe6&is=68d48e66&hm=b030d6e0948f890decddf0f8bede93ab878f2acf1dffa32fa472c810acb40b07&=&format=webp&quality=lossless&width=1283&height=722",
@@ -35,18 +47,6 @@
       "description": "Avatar for the person giving the testimonial.",
       "imageUrl": "https://media.discordapp.net/attachments/1116720480544636999/1274425873201631304/TP_NEW_WB_PNGxxxhdpi.png?ex=68d38755&is=68d235d5&hm=c2ace7346f05bc6680af0a4a06df8a147ea5651f247d03b6d5ba1fca4ff8e4d1&=&format=webp&quality=lossless&width=826&height=826",
       "imageHint": "person portrait"
-    },
-    {
-      "id": "newsletter-1",
-      "description": "Image for the first newsletter issue.",
-      "imageUrl": "https://images.unsplash.com/photo-1590658866361-2d6891772c55?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxsb2dpc3RpY3MlMjBhYnN0cmFjdHxlbnwwfHx8fDE3NTg2MjQ0NTh8MA&ixlib=rb-4.1.0&q=80&w=1080",
-      "imageHint": "logistics abstract"
-    },
-    {
-      "id": "newsletter-3",
-      "description": "Image for Community Spotlight: April",
-      "imageUrl": "https://cdn.discordapp.com/attachments/1281551151418048677/1414862372199202927/ets2_20250907_201945_00.PNG?ex=68d43a84&is=68d2e904&hm=c6a185bd254316fdb29cdd8e8f8255b85a60a3760da66ed8f10813dc2d90e01b&",
-      "imageHint": "warehouse interior"
     },
     {
       "id": "create-news-banner",

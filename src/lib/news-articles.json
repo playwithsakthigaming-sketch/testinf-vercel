@@ -1,28 +1,28 @@
 {
   "newsletters": [
     {
+      "id": "newsletter-1759063641546",
+      "title": "Tamil Pasanaga VTC October 2025 Public convoy. ",
+      "description": "Tamil Pasanaga VTC October 2025 Public convoy. 🚛\nWe are pleased to announce that our community will be hosting a convoy this October, and we warmly invite fellow VTC members to join us for this exciting event. Your participation will not only enhance the experience but also help us create lasting memories together.\nLet’s ride united and make this convoy a truly unforgettable one.\nEvent Overview:\n📅Date: 25th October 2025\n🕘Meetup Time: 07:30 PM IST | 02:00 PM UTC\n🕤Departure Time: 08:30 PM IST | 03:00 PM UTC\n📍Route: Calais to Mannheim\n🚛Departure Location: Calais (Slots)\n🚛Destination: Mannheim (Stein Bruch)\n🗺Distance: 908 KM\n🚘DLC Required: None\n📡Server: Event Server\n🗒Rules: TMP Guidelines apply.\nIf you plan to participate, kindly mark your VTC’s presence on the official event page to help us coordinate effectively and ensure a smooth experience for all attendees.\nFor Slot Booking: Click Here\nFor our Smooth Operation of our convoy this Event is Supervised by Drive Along",
+      "date": "September 28, 2025",
+      "author": "Event Team",
+      "imageId": "newsletter-1759063641546"
+    },
+    {
+      "id": "newsletter-1759063501893",
+      "title": "Euro Truck Simulator 2 1.56",
+      "description": "Changelog:\n\nGameplay\n\nCamera Zoom - Hold/Toggle\n\nVehicles\n\nHS-Schoch Tuning Pack DLC Update\n\nSpecial Transport DLC Update - CZ LOKO\n\nSchmitz Cargobull Trailer Pack DLC Update \n\nVisual\n\nHeight Blend\n\nUI\n\nNew Career Creation and Start-up Flow\n\nManagement UI/UX Improvements\n\nOther\n\nDLC Browser",
+      "date": "September 28, 2025",
+      "author": "sakthi",
+      "imageId": "newsletter-1759063501893"
+    },
+    {
       "id": "newsletter-1758671620485",
       "title": "Promods 2.76",
       "description": "- Bulgaria: Благоевград (Blagoevgrad) (returned) - France: Free-flow tolls on A13 - Germany: BAB100 bridge removed, BAB9 improved - Gibraltar: Gibraltar - Latvia: Balvi (expanded) - Moldova: M5 & R30 Chișinău - Palanca added - Romania: DN10 Buzău - Brașov added - Serbia: Belgrade bypass - Turkey: Keşan (rebuilt) - Ukraine: Ізмаїл (Izmail), Одеса (Odesa), M15 added - Fuel stations updated in Estonia and Latvia - Added various ferries across the Black Sea - Special Transport routes fixes\n\nRequires DLC :\n\nEAST, NORTH, FRANCE, ITALY, BALTIC, BL_SEA, IBERIA, BALKAN, GREECE",
       "date": "September 23, 2025",
       "author": "Sakthi",
       "imageId": "newsletter-1758671620485"
-    },
-    {
-      "id": "newsletter-1",
-      "title": "Q2 2024 Logistics Report",
-      "description": "An overview of our logistics performance in the second quarter of 2024.",
-      "date": "June 15, 2024",
-      "author": "Jane Doe",
-      "imageId": "newsletter-1"
-    },
-    {
-      "id": "newsletter-3",
-      "title": "Community Spotlight: April",
-      "description": "Highlighting the amazing contributions from our community members in April.",
-      "date": "April 30, 2024",
-      "author": "Admin",
-      "imageId": "newsletter-3"
     }
   ]
 }
