@@ -51,6 +51,12 @@ const nextConfig: NextConfig = {
         hostname: 'images-ext-1.discordapp.net',
         port: '',
         pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'promods.net',
+        port: '',
+        pathname: '/**',
       }
     ],
   },
