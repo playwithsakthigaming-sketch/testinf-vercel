@@ -42,14 +42,22 @@ const formSchema = z.object({
   url: z.string().url('Must be a valid URL'),
   routeMapUrl: z.string().url('Must be a valid URL').optional().or(z.literal('')),
   type: z.enum(['internal', 'partner']),
-  departure: z.string().min(1, 'Departure location is required'),
-  arrival: z.string().min(1, 'Arrival location is required'),
-  server: z.string().min(1, 'Server is required'),
+  departure: z.string().optional(),
+  arrival: z.string().optional(),
+  server: z.string().optional(),
   meetupTime: timeSchema,
   departureTime: timeSchema,
-  description: z.string().min(1, 'Description is required'),
-  rules: z.string().min(1, 'Rules are required'),
+  description: z.string().optional(),
+  rules: z.string().optional(),
   slots: z.array(slotAreaSchema).optional(),
+}).superRefine((data, ctx) => {
+    if (data.type === 'internal') {
+        if (!data.departure) ctx.addIssue({ code: 'custom', message: 'Departure is required', path: ['departure'] });
+        if (!data.arrival) ctx.addIssue({ code: 'custom', message: 'Arrival is required', path: ['arrival'] });
+        if (!data.server) ctx.addIssue({ code: 'custom', message: 'Server is required', path: ['server'] });
+        if (!data.description) ctx.addIssue({ code: 'custom', message: 'Description is required', path: ['description'] });
+        if (!data.rules) ctx.addIssue({ code: 'custom', message: 'Rules are required', path: ['rules'] });
+    }
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -116,17 +124,19 @@ export async function updateEvent(id: string, values: FormValues) {
     }
 
     const { eventDate, meetupTime, departureTime, imageUrl, ...restOfData } = validation.data;
+    
+    const currentEvent = eventsData.events[eventIndex];
 
     eventsData.events[eventIndex] = {
-        ...eventsData.events[eventIndex],
+        ...currentEvent,
         ...restOfData,
         date: formatDateTime(eventDate, meetupTime),
         meetupTime: formatDateTime(eventDate, meetupTime),
         departureTime: formatDateTime(eventDate, departureTime),
-        slots: validation.data.slots || [],
+        slots: restOfData.type === 'internal' ? restOfData.slots || [] : [],
     };
     
-    const imageIndex = imagesData.placeholderImages.findIndex(img => img.id === eventsData.events[eventIndex].imageId);
+    const imageIndex = imagesData.placeholderImages.findIndex(img => img.id === currentEvent.imageId);
     if (imageIndex !== -1) {
         imagesData.placeholderImages[imageIndex].imageUrl = imageUrl;
         imagesData.placeholderImages[imageIndex].description = `Image for ${validation.data.title}`;

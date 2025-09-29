@@ -249,32 +249,34 @@ export function CreateEventForm() {
           </>
         )}
         
-        <Card>
-            <CardHeader>
-                <CardTitle>Event Slots</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-                {fields.map((field, index) => (
-                    <Card key={field.id} className="p-4 relative">
-                        <div className="space-y-4">
-                            <FormField control={form.control} name={`slots.${index}.areaName`} render={({ field }) => ( <FormItem> <FormLabel>Area Name</FormLabel> <FormControl><Input placeholder="e.g., Main Parking" {...field} /></FormControl> <FormMessage /> </FormItem> )}/>
-                            <div className="grid grid-cols-2 gap-4">
-                                <FormField control={form.control} name={`slots.${index}.startSlot`} render={({ field }) => ( <FormItem> <FormLabel>Start Slot</FormLabel> <FormControl><Input type="number" placeholder="e.g., 1" {...field} /></FormControl> <FormMessage /> </FormItem> )}/>
-                                <FormField control={form.control} name={`slots.${index}.endSlot`} render={({ field }) => ( <FormItem> <FormLabel>End Slot</FormLabel> <FormControl><Input type="number" placeholder="e.g., 10" {...field} /></FormControl> <FormMessage /> </FormItem> )}/>
+        {eventType === 'internal' && (
+            <Card>
+                <CardHeader>
+                    <CardTitle>Event Slots</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                    {fields.map((field, index) => (
+                        <Card key={field.id} className="p-4 relative">
+                            <div className="space-y-4">
+                                <FormField control={form.control} name={`slots.${index}.areaName`} render={({ field }) => ( <FormItem> <FormLabel>Area Name</FormLabel> <FormControl><Input placeholder="e.g., Main Parking" {...field} /></FormControl> <FormMessage /> </FormItem> )}/>
+                                <div className="grid grid-cols-2 gap-4">
+                                    <FormField control={form.control} name={`slots.${index}.startSlot`} render={({ field }) => ( <FormItem> <FormLabel>Start Slot</FormLabel> <FormControl><Input type="number" placeholder="e.g., 1" {...field} /></FormControl> <FormMessage /> </FormItem> )}/>
+                                    <FormField control={form.control} name={`slots.${index}.endSlot`} render={({ field }) => ( <FormItem> <FormLabel>End Slot</FormLabel> <FormControl><Input type="number" placeholder="e.g., 10" {...field} /></FormControl> <FormMessage /> </FormItem> )}/>
+                                </div>
+                                <FormField control={form.control} name={`slots.${index}.imageUrl`} render={({ field }) => ( <FormItem> <FormLabel>Image URL</FormLabel> <FormControl><Input placeholder="https://example.com/slot-map.png" {...field} /></FormControl> <FormMessage /> </FormItem> )}/>
                             </div>
-                            <FormField control={form.control} name={`slots.${index}.imageUrl`} render={({ field }) => ( <FormItem> <FormLabel>Image URL</FormLabel> <FormControl><Input placeholder="https://example.com/slot-map.png" {...field} /></FormControl> <FormMessage /> </FormItem> )}/>
-                        </div>
-                        <Button type="button" variant="destructive" size="icon" className="absolute top-2 right-2" onClick={() => remove(index)}>
-                            <Trash2 className="h-4 w-4" />
-                        </Button>
-                    </Card>
-                ))}
-                <Button type="button" variant="outline" onClick={() => append({ id: `slot-area-${Date.now()}`, areaName: '', imageUrl: '', startSlot: 1, endSlot: 10, bookings: [] })}>
-                    <PlusCircle className="mr-2 h-4 w-4" />
-                    Add Slot Area
-                </Button>
-            </CardContent>
-        </Card>
+                            <Button type="button" variant="destructive" size="icon" className="absolute top-2 right-2" onClick={() => remove(index)}>
+                                <Trash2 className="h-4 w-4" />
+                            </Button>
+                        </Card>
+                    ))}
+                    <Button type="button" variant="outline" onClick={() => append({ id: `slot-area-${Date.now()}`, areaName: '', imageUrl: '', startSlot: 1, endSlot: 10, bookings: [] })}>
+                        <PlusCircle className="mr-2 h-4 w-4" />
+                        Add Slot Area
+                    </Button>
+                </CardContent>
+            </Card>
+        )}
 
         <div className="flex justify-end gap-4">
             <Button variant="outline" asChild><Link href="/admin/events">Cancel</Link></Button>
