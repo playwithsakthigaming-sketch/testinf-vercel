@@ -8,7 +8,7 @@ import Image from 'next/image';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
-import { Calendar, Image as ImageIcon } from 'lucide-react';
+import { Calendar } from 'lucide-react';
 import type { Event } from '@/lib/events';
 import eventsData from '@/lib/events.json';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
