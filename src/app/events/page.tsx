@@ -41,17 +41,9 @@ const EventCard = ({ event }: { event: Event }) => {
                 <div className="flex flex-col sm:flex-row gap-2">
                     <Button asChild className="w-full">
                         <Link href={linkHref} target={event.type === 'partner' ? '_blank' : '_self'}>
-                            {event.type === 'internal' ? 'Slot Booking' : 'View Event'}
+                            {event.type === 'internal' ? 'View Details' : 'View Event'}
                         </Link>
                     </Button>
-                     {event.type === 'internal' && (
-                        <Button asChild variant="secondary" className="w-full">
-                            <Link href={`/events/${event.id}#event-slots`}>
-                                <ImageIcon className="mr-2 h-4 w-4" />
-                                Book Slot Image
-                            </Link>
-                        </Button>
-                    )}
                 </div>
             </CardContent>
         </Card>
