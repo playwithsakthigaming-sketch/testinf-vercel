@@ -71,7 +71,13 @@ const nextConfig: NextConfig = {
         hostname: 'clan.fastly.steamstatic.com',
         port: '',
         pathname: '/**',
-      }
+      },
+      {
+        protocol: 'https',
+        hostname: 'i.imgur.com',
+        port: '',
+        pathname: '/**',
+      },
     ],
   },
 };

@@ -1,6 +1,25 @@
 {
   "events": [
     {
+      "id": "event-1759145518758",
+      "imageId": "event-1759145518758",
+      "title": "Birthday Miles for Dude 🚚🎉",
+      "url": "https://truckersmp.com/events/30528",
+      "type": "partner",
+      "description": "",
+      "rules": "Follow all TruckersMP rules. No reckless driving. Keep a safe distance.",
+      "attendees": 0,
+      "vtcs": 0,
+      "date": "05.10.2025 | 19:30 IST",
+      "meetupTime": "05.10.2025 | 19:30 IST",
+      "departureTime": "05.10.2025 | 20:30 IST",
+      "slots": [],
+      "departure": "",
+      "arrival": "",
+      "server": "",
+      "routeMapUrl": ""
+    },
+    {
       "id": "event-1758794026763",
       "imageId": "event-1758794026763",
       "title": "test 1",
