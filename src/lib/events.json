@@ -72,7 +72,8 @@
       "vtcs": 0,
       "date": "24.09.2025 | 13:00 IST",
       "meetupTime": "24.09.2025 | 13:00 IST",
-      "departureTime": "24.09.2025 | 13:30 IST"
+      "departureTime": "24.09.2025 | 13:30 IST",
+      "routeMapUrl": ""
     },
     {
       "id": "event-1758792559379",
@@ -90,25 +91,8 @@
       "departureTime": "13:00 UTC",
       "description": "jhgjgj",
       "rules": "Follow all TruckersMP rules. No reckless driving. Keep a safe distance.",
-      "routeMapUrl": ""
-    },
-    {
-      "id": "event-7",
-      "title": "INDIAN CARRIERS SEPTEMBER PUBLIC CONVOY",
-      "date": "26.09.2025 | 15:00 UTC",
-      "imageId": "event-indian-carriers",
-      "url": "https://truckersmp.com/events/23013-tamil-pasanga-vtc-october-private-convoy",
-      "type": "partner",
-      "attendees": 0,
-      "vtcs": 0,
-      "departure": "Lyon",
-      "arrival": "Milan",
-      "server": "Simulation 1",
-      "meetupTime": "26-Sep-2025 14:30",
-      "departureTime": "26-Sep-2025 15:00",
-      "description": "We are excited to join Indian Carriers for their public convoy.",
-      "rules": "Follow all TruckersMP rules. No reckless driving. Keep a safe distance.",
-      "routeMapUrl": ""
+      "routeMapUrl": "",
+      "slots": []
     }
   ]
 }
