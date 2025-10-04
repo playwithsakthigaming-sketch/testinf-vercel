@@ -22,6 +22,9 @@ import {
   Heart,
   Store,
   UserCheck,
+  Map,
+  Calendar,
+  TrendingUp,
 } from 'lucide-react';
 import {
   Tooltip,
