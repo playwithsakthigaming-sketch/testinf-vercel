@@ -108,56 +108,58 @@ const NavSection = ({ title, items }: { title: string; items: typeof gameplayNav
     return (
         <div className="px-2">
             <h3 className="px-4 text-xs font-semibold text-muted-foreground/60 uppercase tracking-wider mb-2">{title}</h3>
-            {items.map((item) => (
-                item.subItems ? (
-                    <Collapsible key={item.name} open={openCollapsibles[item.name]} onOpenChange={() => toggleCollapsible(item.name)}>
-                        <CollapsibleTrigger asChild>
-                            <Button
-                                variant={pathname.startsWith(item.href) ? 'secondary' : 'ghost'}
-                                className="w-full justify-start gap-2"
-                            >
-                                <item.icon className="h-4 w-4" />
-                                <span className="truncate flex-grow text-left">{item.name}</span>
-                                <ChevronDown className={cn("h-4 w-4 transition-transform", openCollapsibles[item.name] && "rotate-180")} />
-                            </Button>
-                        </CollapsibleTrigger>
-                        <CollapsibleContent className="pl-6 pt-1 space-y-1">
-                            {item.subItems.map(subItem => (
-                                 <Button
-                                    key={subItem.name}
-                                    variant={pathname === subItem.href ? 'secondary' : 'ghost'}
-                                    className="w-full justify-start gap-2 text-muted-foreground hover:text-foreground"
-                                    size="sm"
+            <nav className="grid items-start text-sm font-medium">
+                {items.map((item) => (
+                    item.subItems ? (
+                        <Collapsible key={item.name} open={openCollapsibles[item.name]} onOpenChange={() => toggleCollapsible(item.name)}>
+                            <CollapsibleTrigger asChild>
+                                <Button
+                                    variant={pathname.startsWith(item.href) ? 'secondary' : 'ghost'}
+                                    className="w-full justify-start gap-2"
+                                >
+                                    <item.icon className="h-4 w-4" />
+                                    <span className="truncate flex-grow text-left">{item.name}</span>
+                                    <ChevronDown className={cn("h-4 w-4 transition-transform", openCollapsibles[item.name] && "rotate-180")} />
+                                </Button>
+                            </CollapsibleTrigger>
+                            <CollapsibleContent className="pl-6 pt-1 space-y-1">
+                                {item.subItems.map(subItem => (
+                                    <Button
+                                        key={subItem.name}
+                                        variant={pathname === subItem.href ? 'secondary' : 'ghost'}
+                                        className="w-full justify-start gap-2 text-muted-foreground hover:text-foreground"
+                                        size="sm"
+                                        asChild
+                                    >
+                                        <Link href={subItem.href}>
+                                            <Dot className="h-4 w-4" />
+                                            <span className="truncate">{subItem.name}</span>
+                                        </Link>
+                                    </Button>
+                                ))}
+                            </CollapsibleContent>
+                        </Collapsible>
+                    ) : (
+                        <TooltipProvider key={item.name}>
+                            <Tooltip>
+                                <TooltipTrigger asChild>
+                                <Button
+                                    variant={pathname === item.href ? 'secondary' : 'ghost'}
+                                    className="w-full justify-start gap-2"
                                     asChild
                                 >
-                                    <Link href={subItem.href}>
-                                        <Dot className="h-4 w-4" />
-                                        <span className="truncate">{subItem.name}</span>
+                                    <Link href={item.href}>
+                                    <item.icon className="h-4 w-4" />
+                                    <span className="truncate">{item.name}</span>
                                     </Link>
                                 </Button>
-                            ))}
-                        </CollapsibleContent>
-                    </Collapsible>
-                ) : (
-                    <TooltipProvider key={item.name}>
-                        <Tooltip>
-                            <TooltipTrigger asChild>
-                            <Button
-                                variant={pathname === item.href ? 'secondary' : 'ghost'}
-                                className="w-full justify-start gap-2"
-                                asChild
-                            >
-                                <Link href={item.href}>
-                                <item.icon className="h-4 w-4" />
-                                <span className="truncate">{item.name}</span>
-                                </Link>
-                            </Button>
-                            </TooltipTrigger>
-                            <TooltipContent side="right">{item.name}</TooltipContent>
-                        </Tooltip>
-                    </TooltipProvider>
-                )
-            ))}
+                                </TooltipTrigger>
+                                <TooltipContent side="right">{item.name}</TooltipContent>
+                            </Tooltip>
+                        </TooltipProvider>
+                    )
+                ))}
+            </nav>
         </div>
     );
 };
@@ -176,13 +178,13 @@ export function DriverHubSidebar() {
         </Link>
       </nav>
       <div className="flex-1 overflow-y-auto">
-        <nav className="grid items-start text-sm font-medium space-y-4">
+        <div className="space-y-4">
             <NavSection title="Main" items={mainNav} />
             <NavSection title="Gameplay" items={gameplayNav} />
             <NavSection title="Company Operations" items={companyNav} />
             <NavSection title="Knowledge Hub" items={knowledgeNav} />
             <NavSection title="Support" items={supportNav} />
-        </nav>
+        </div>
       </div>
       <nav className="mt-auto flex flex-col items-center gap-4 px-2 sm:py-5">
         <TooltipProvider>
@@ -203,4 +205,3 @@ export function DriverHubSidebar() {
     </aside>
   );
 }
-
