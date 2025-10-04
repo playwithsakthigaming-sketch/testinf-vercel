@@ -8,7 +8,6 @@ import {
   LineChart,
   Truck,
   Settings,
-  ChevronRight,
   Star,
   FileText,
   ShipWheel,
@@ -25,6 +24,8 @@ import {
   Map,
   Calendar,
   TrendingUp,
+  ChevronDown,
+  Dot,
 } from 'lucide-react';
 import {
   Tooltip,
@@ -32,10 +33,16 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from '@/components/ui/collapsible';
 import { Button } from '../ui/button';
 import { Logo } from './logo';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
+import React, { useState } from 'react';
 
 const mainNav = [
     { name: 'Dashboard', icon: Home, href: '/driver-hub' },
@@ -47,7 +54,16 @@ const mainNav = [
 
 const gameplayNav = [
     { name: 'Events', icon: Calendar, href: '/driver-hub/events' },
-    { name: 'Jobs', icon: FileText, href: '/driver-hub/jobs' },
+    {
+        name: 'Jobs',
+        icon: FileText,
+        href: '/driver-hub/jobs',
+        subItems: [
+            { name: 'All Jobs', href: '/driver-hub/jobs/all' },
+            { name: 'My Jobs', href: '/driver-hub/jobs/my' },
+            { name: 'Submit Job', href: '/driver-hub/jobs/submit' },
+        ],
+    },
     { name: 'Tours', icon: ShipWheel, href: '/driver-hub/tours' },
     { name: 'Division', icon: Landmark, href: '/driver-hub/division' },
 ];
@@ -73,29 +89,74 @@ const supportNav = [
 ];
 
 
-const NavSection = ({ title, items }: { title: string; items: typeof mainNav }) => {
+const NavSection = ({ title, items }: { title: string; items: typeof gameplayNav }) => {
     const pathname = usePathname();
+    const [openCollapsibles, setOpenCollapsibles] = useState<Record<string, boolean>>(() => {
+        const initialState: Record<string, boolean> = {};
+        items.forEach(item => {
+            if (item.subItems) {
+                initialState[item.name] = item.subItems.some(sub => pathname.startsWith(sub.href)) || pathname === item.href;
+            }
+        });
+        return initialState;
+    });
+
+    const toggleCollapsible = (name: string) => {
+        setOpenCollapsibles(prev => ({...prev, [name]: !prev[name]}));
+    }
+
     return (
         <div className="px-2">
             <h3 className="px-4 text-xs font-semibold text-muted-foreground/60 uppercase tracking-wider mb-2">{title}</h3>
             {items.map((item) => (
-                <TooltipProvider key={item.name}>
-                    <Tooltip>
-                        <TooltipTrigger asChild>
-                        <Button
-                            variant={pathname === item.href ? 'secondary' : 'ghost'}
-                            className="w-full justify-start gap-2"
-                            asChild
-                        >
-                            <Link href={item.href}>
-                            <item.icon className="h-4 w-4" />
-                            <span className="truncate">{item.name}</span>
-                            </Link>
-                        </Button>
-                        </TooltipTrigger>
-                        <TooltipContent side="right">{item.name}</TooltipContent>
-                    </Tooltip>
-                </TooltipProvider>
+                item.subItems ? (
+                    <Collapsible key={item.name} open={openCollapsibles[item.name]} onOpenChange={() => toggleCollapsible(item.name)}>
+                        <CollapsibleTrigger asChild>
+                            <Button
+                                variant={pathname.startsWith(item.href) ? 'secondary' : 'ghost'}
+                                className="w-full justify-start gap-2"
+                            >
+                                <item.icon className="h-4 w-4" />
+                                <span className="truncate flex-grow text-left">{item.name}</span>
+                                <ChevronDown className={cn("h-4 w-4 transition-transform", openCollapsibles[item.name] && "rotate-180")} />
+                            </Button>
+                        </CollapsibleTrigger>
+                        <CollapsibleContent className="pl-6 pt-1 space-y-1">
+                            {item.subItems.map(subItem => (
+                                 <Button
+                                    key={subItem.name}
+                                    variant={pathname === subItem.href ? 'secondary' : 'ghost'}
+                                    className="w-full justify-start gap-2 text-muted-foreground hover:text-foreground"
+                                    size="sm"
+                                    asChild
+                                >
+                                    <Link href={subItem.href}>
+                                        <Dot className="h-4 w-4" />
+                                        <span className="truncate">{subItem.name}</span>
+                                    </Link>
+                                </Button>
+                            ))}
+                        </CollapsibleContent>
+                    </Collapsible>
+                ) : (
+                    <TooltipProvider key={item.name}>
+                        <Tooltip>
+                            <TooltipTrigger asChild>
+                            <Button
+                                variant={pathname === item.href ? 'secondary' : 'ghost'}
+                                className="w-full justify-start gap-2"
+                                asChild
+                            >
+                                <Link href={item.href}>
+                                <item.icon className="h-4 w-4" />
+                                <span className="truncate">{item.name}</span>
+                                </Link>
+                            </Button>
+                            </TooltipTrigger>
+                            <TooltipContent side="right">{item.name}</TooltipContent>
+                        </Tooltip>
+                    </TooltipProvider>
+                )
             ))}
         </div>
     );
@@ -142,3 +203,4 @@ export function DriverHubSidebar() {
     </aside>
   );
 }
+
