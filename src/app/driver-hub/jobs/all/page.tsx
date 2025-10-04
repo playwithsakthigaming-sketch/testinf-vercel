@@ -15,18 +15,9 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { ListFilter, Search } from 'lucide-react';
 import Link from 'next/link';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
-import {
-    DropdownMenu,
-    DropdownMenuCheckboxItem,
-    DropdownMenuContent,
-    DropdownMenuLabel,
-    DropdownMenuSeparator,
-    DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
 import {
   Select,
   SelectContent,
@@ -35,118 +26,73 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Pagination, PaginationContent, PaginationEllipsis, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from '@/components/ui/pagination';
+import { Search } from 'lucide-react';
+import { format, parseISO } from 'date-fns';
+
+type Job = {
+    job_id: number;
+    created_at: string;
+    driver: {
+        username: string;
+    };
+    start_city: string;
+    destination_city: string;
+    cargo: string;
+    cargo_weight: number;
+    distance: number;
+    ets2_nxp_total: number;
+    ats_nxp_total: number;
+    game: string;
+    speed: string;
+    damage: number;
+};
+
+type ApiResponse = {
+    status: boolean;
+    response: Job[];
+};
+
+async function getJobs(): Promise<Job[]> {
+    const apiKey = process.env.TRUCKERSHUB_API_KEY;
+    if (!apiKey) {
+        console.error("TruckersHub API key is not set.");
+        return [];
+    }
+
+    try {
+        const res = await fetch('https://api.truckershub.in/v1/jobs', {
+            headers: {
+                'Authorization': apiKey,
+            },
+            next: { revalidate: 300 } // Revalidate every 5 minutes
+        });
+
+        if (!res.ok) {
+            console.error(`Failed to fetch jobs: ${res.status} ${res.statusText}`);
+            const errorBody = await res.text();
+            console.error("Error body:", errorBody);
+            return [];
+        }
+
+        const data: ApiResponse = await res.json();
+        
+        if (data.status && Array.isArray(data.response)) {
+            return data.response;
+        } else {
+            console.error("Invalid API response structure:", data);
+            return [];
+        }
+
+    } catch (error) {
+        console.error("Error fetching jobs from TruckersHub:", error);
+        return [];
+    }
+}
 
 
-const jobs = [
-  {
-    jobId: 1064147,
-    date: '10/4/2025',
-    time: '4:48:20 AM',
-    user: 'SK Setia',
-    from: 'Košice',
-    to: 'Pécs',
-    cargo: 'Almond',
-    cargoWeight: 171,
-    distance: '557 km',
-    nxp: 460,
-    game: 'ETS2',
-    speed: 'Real',
-    damage: '0%',
-  },
-  {
-    jobId: 1063888,
-    date: '10/4/2025',
-    time: '2:08:27 AM',
-    user: 'Boofi_Softie',
-    from: 'Milano',
-    to: 'Zürich',
-    cargo: 'Mercuric Chloride',
-    cargoWeight: 111,
-    distance: '611 km',
-    nxp: 484,
-    game: 'ETS2',
-    speed: 'Real',
-    damage: '1%',
-  },
-  {
-    jobId: 1063794,
-    date: '10/4/2025',
-    time: '1:33:01 AM',
-    user: 'nabeelthakur8',
-    from: 'Calais',
-    to: 'Duisburg',
-    cargo: 'Fireworks',
-    cargoWeight: 161,
-    distance: '424 km',
-    nxp: 305,
-    game: 'ETS2',
-    speed: 'Real',
-    damage: '10%',
-  },
-  {
-    jobId: 1063767,
-    date: '10/4/2025',
-    time: '1:22:06 AM',
-    user: 'Suraj_11',
-    from: 'Călărași',
-    to: 'Pamplona',
-    cargo: 'Mercuric Chloride',
-    cargoWeight: 221,
-    distance: '1,805 km',
-    nxp: 1430,
-    game: 'ETS2',
-    speed: 'Real',
-    damage: '1%',
-  },
-  {
-    jobId: 1063630,
-    date: '10/4/2025',
-    time: '12:26:17 AM',
-    user: 'nabeelthakur8',
-    from: 'Bilbao',
-    to: 'Barcelona',
-    cargo: 'Motor Oil',
-    cargoWeight: 201,
-    distance: '570 km',
-    nxp: 456,
-    game: 'ETS2',
-    speed: 'Real',
-    damage: '0%',
-  },
-  {
-    jobId: 1063480,
-    date: '10/3/2025',
-    time: '11:03:34 PM',
-    user: 'DEV ALONE',
-    from: 'Oslo',
-    to: 'Kristiansund',
-    cargo: 'Goat Cheese',
-    cargoWeight: 161,
-    distance: '680 km',
-    nxp: 561,
-    game: 'ETS2',
-    speed: 'Real',
-    damage: '0%',
-  },
-   {
-    jobId: 1063443,
-    date: '10/3/2025',
-    time: '10:41:02 PM',
-    user: 'Swamfire Gaming',
-    from: 'Klagenfurt am Wörthersee',
-    to: 'Duisburg',
-    cargo: 'Chocolate',
-    cargoWeight: 241,
-    distance: '1,029 km',
-    nxp: 815,
-    game: 'ETS2',
-    speed: 'Real',
-    damage: '0%',
-  },
-];
+export default async function AllJobsPage() {
+    const jobs = await getJobs();
 
-
-export default function AllJobsPage() {
   return (
     <div className="p-4 md:p-8">
         <Card>
@@ -197,26 +143,26 @@ export default function AllJobsPage() {
                     </TableHeader>
                     <TableBody>
                         {jobs.map(job => (
-                            <TableRow key={job.jobId}>
-                                <TableCell>{job.jobId}</TableCell>
+                            <TableRow key={job.job_id}>
+                                <TableCell>{job.job_id}</TableCell>
                                 <TableCell>
-                                    <div>{job.date}</div>
-                                    <div className="text-muted-foreground text-xs">{job.time}</div>
+                                    <div>{format(parseISO(job.created_at), 'dd/MM/yyyy')}</div>
+                                    <div className="text-muted-foreground text-xs">{format(parseISO(job.created_at), 'h:mm:ss a')}</div>
                                 </TableCell>
-                                <TableCell>{job.user}</TableCell>
+                                <TableCell>{job.driver.username}</TableCell>
                                 <TableCell>
-                                    <div>{job.from}</div>
-                                    <div>→ {job.to}</div>
+                                    <div>{job.start_city}</div>
+                                    <div>→ {job.destination_city}</div>
                                 </TableCell>
                                 <TableCell>
                                     <div>{job.cargo}</div>
-                                    <div className="text-muted-foreground text-xs">({job.cargoWeight})</div>
+                                    <div className="text-muted-foreground text-xs">({job.cargo_weight}t)</div>
                                 </TableCell>
-                                <TableCell>{job.distance}</TableCell>
-                                <TableCell>{job.nxp} NXP</TableCell>
+                                <TableCell>{job.distance} km</TableCell>
+                                <TableCell>{job.game === 'ETS2' ? job.ets2_nxp_total : job.ats_nxp_total} NXP</TableCell>
                                 <TableCell><Badge variant={job.game === 'ETS2' ? 'default' : 'secondary'}>{job.game}</Badge></TableCell>
                                 <TableCell>{job.speed}</TableCell>
-                                <TableCell>{job.damage}</TableCell>
+                                <TableCell>{job.damage}%</TableCell>
                                 <TableCell className='text-right'>
                                     <Button size="sm" asChild>
                                         <Link href="#">Details</Link>
@@ -224,12 +170,17 @@ export default function AllJobsPage() {
                                 </TableCell>
                             </TableRow>
                         ))}
+                         {jobs.length === 0 && (
+                            <TableRow>
+                                <TableCell colSpan={11} className="text-center">No jobs found.</TableCell>
+                            </TableRow>
+                        )}
                     </TableBody>
                 </Table>
             </CardContent>
              <div className="flex items-center justify-between p-4">
                 <div className="text-sm text-muted-foreground">
-                    Showing 1 to 10 of 61 entries
+                    Showing 1 to {jobs.length > 10 ? 10 : jobs.length} of {jobs.length} entries
                 </div>
                  <Pagination>
                     <PaginationContent>
@@ -238,15 +189,6 @@ export default function AllJobsPage() {
                         </PaginationItem>
                         <PaginationItem>
                         <PaginationLink href="#" isActive>1</PaginationLink>
-                        </PaginationItem>
-                        <PaginationItem>
-                        <PaginationLink href="#">2</PaginationLink>
-                        </PaginationItem>
-                        <PaginationItem>
-                        <PaginationLink href="#">3</PaginationLink>
-                        </PaginationItem>
-                        <PaginationItem>
-                            <PaginationEllipsis />
                         </PaginationItem>
                         <PaginationItem>
                         <PaginationNext href="#" />
