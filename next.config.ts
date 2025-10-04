@@ -78,6 +78,18 @@ const nextConfig: NextConfig = {
         port: '',
         pathname: '/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'www.vectorlogo.zone',
+        port: '',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'static-00.iconduck.com',
+        port: '',
+        pathname: '/**',
+      }
     ],
   },
 };
