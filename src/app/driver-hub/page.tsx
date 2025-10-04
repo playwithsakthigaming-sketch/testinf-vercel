@@ -20,7 +20,58 @@ import { DriverHubLineChart } from '@/components/app/driver-hub-line-chart';
 const upcomingEventImage =
   'https://media.discordapp.net/attachments/1281551151418048677/1417739857123475538/1758085736934.jpg?ex=68d37da2&is=68d22c22&hm=8704f60b91d953c3e9b83e28d406e362c20affcf91876b7d903227bb10d8bb9d&=&format=webp&width=1389&height=684';
 
-export default function DriverHubPage() {
+type CompanyStats = {
+  total_distance: number;
+  fuel_used: number;
+  jobs_month: number;
+  jobs_last_month: number;
+};
+
+type ApiResponse = {
+    status: boolean;
+    response: {
+        company: CompanyStats;
+    }
+};
+
+async function getCompanyStats(): Promise<CompanyStats> {
+    const apiKey = process.env.TRUCKERSHUB_API_KEY;
+    if (!apiKey) {
+        console.error("TruckersHub API key is not set.");
+        return { total_distance: 0, fuel_used: 0, jobs_month: 0, jobs_last_month: 0 };
+    }
+
+    try {
+        const res = await fetch('https://api.truckershub.in/v1/company', {
+            headers: {
+                'Authorization': apiKey,
+            },
+            next: { revalidate: 300 } // Revalidate every 5 minutes
+        });
+
+        if (!res.ok) {
+            console.error(`Failed to fetch company stats: ${res.status} ${res.statusText}`);
+            return { total_distance: 0, fuel_used: 0, jobs_month: 0, jobs_last_month: 0 };
+        }
+
+        const data: ApiResponse = await res.json();
+        
+        if (data.status && data.response.company) {
+            return data.response.company;
+        } else {
+            console.error("Invalid API response structure for company stats:", data);
+            return { total_distance: 0, fuel_used: 0, jobs_month: 0, jobs_last_month: 0 };
+        }
+
+    } catch (error) {
+        console.error("Error fetching company stats from TruckersHub:", error);
+        return { total_distance: 0, fuel_used: 0, jobs_month: 0, jobs_last_month: 0 };
+    }
+}
+
+export default async function DriverHubPage() {
+  const stats = await getCompanyStats();
+  
   return (
     <div className="flex-1 space-y-4 p-4 md:p-8 pt-6">
       <div className="flex items-center justify-between space-y-2">
@@ -34,7 +85,7 @@ export default function DriverHubPage() {
             <Map className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">37,905,800 kms</div>
+            <div className="text-2xl font-bold">{stats.total_distance.toLocaleString()} kms</div>
             <p className="text-xs text-muted-foreground">Total distance driven</p>
           </CardContent>
         </Card>
@@ -44,7 +95,7 @@ export default function DriverHubPage() {
             <Fuel className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">68,082,098 l</div>
+            <div className="text-2xl font-bold">{stats.fuel_used.toLocaleString()} l</div>
             <p className="text-xs text-muted-foreground">Total fuel consumed</p>
           </CardContent>
         </Card>
@@ -54,7 +105,7 @@ export default function DriverHubPage() {
             <Calendar className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">61</div>
+            <div className="text-2xl font-bold">{stats.jobs_month}</div>
             <p className="text-xs text-muted-foreground">Jobs this month</p>
           </CardContent>
         </Card>
@@ -64,7 +115,7 @@ export default function DriverHubPage() {
             <Calendar className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">1138</div>
+            <div className="text-2xl font-bold">{stats.jobs_last_month}</div>
             <p className="text-xs text-muted-foreground">Jobs last month</p>
           </CardContent>
         </Card>
