@@ -15,9 +15,8 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { FilePlus2, ListFilter, Search } from 'lucide-react';
+import { ListFilter, Search } from 'lucide-react';
 import Link from 'next/link';
-import Image from 'next/image';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import {
@@ -28,44 +27,124 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { Pagination, PaginationContent, PaginationEllipsis, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from '@/components/ui/pagination';
+
 
 const jobs = [
   {
-    id: 1,
+    jobId: 1064147,
+    date: '10/4/2025',
+    time: '4:48:20 AM',
+    user: 'SK Setia',
+    from: 'Košice',
+    to: 'Pécs',
+    cargo: 'Almond',
+    cargoWeight: 171,
+    distance: '557 km',
+    nxp: 460,
     game: 'ETS2',
-    from: 'Prague',
-    to: 'Duisburg',
-    cargo: 'Medical Equipment',
-    distance: '910 km',
-    submitted: 'THIVEL',
-    submittedAt: '2025-10-03',
+    speed: 'Real',
+    damage: '0%',
   },
   {
-    id: 2,
-    game: 'ATS',
-    from: 'Los Angeles',
-    to: 'San Francisco',
-    cargo: 'Electronics',
-    distance: '615 km',
-    submitted: 'Vasanth',
-    submittedAt: '2025-10-02',
+    jobId: 1063888,
+    date: '10/4/2025',
+    time: '2:08:27 AM',
+    user: 'Boofi_Softie',
+    from: 'Milano',
+    to: 'Zürich',
+    cargo: 'Mercuric Chloride',
+    cargoWeight: 111,
+    distance: '611 km',
+    nxp: 484,
+    game: 'ETS2',
+    speed: 'Real',
+    damage: '1%',
+  },
+  {
+    jobId: 1063794,
+    date: '10/4/2025',
+    time: '1:33:01 AM',
+    user: 'nabeelthakur8',
+    from: 'Calais',
+    to: 'Duisburg',
+    cargo: 'Fireworks',
+    cargoWeight: 161,
+    distance: '424 km',
+    nxp: 305,
+    game: 'ETS2',
+    speed: 'Real',
+    damage: '10%',
+  },
+  {
+    jobId: 1063767,
+    date: '10/4/2025',
+    time: '1:22:06 AM',
+    user: 'Suraj_11',
+    from: 'Călărași',
+    to: 'Pamplona',
+    cargo: 'Mercuric Chloride',
+    cargoWeight: 221,
+    distance: '1,805 km',
+    nxp: 1430,
+    game: 'ETS2',
+    speed: 'Real',
+    damage: '1%',
+  },
+  {
+    jobId: 1063630,
+    date: '10/4/2025',
+    time: '12:26:17 AM',
+    user: 'nabeelthakur8',
+    from: 'Bilbao',
+    to: 'Barcelona',
+    cargo: 'Motor Oil',
+    cargoWeight: 201,
+    distance: '570 km',
+    nxp: 456,
+    game: 'ETS2',
+    speed: 'Real',
+    damage: '0%',
+  },
+  {
+    jobId: 1063480,
+    date: '10/3/2025',
+    time: '11:03:34 PM',
+    user: 'DEV ALONE',
+    from: 'Oslo',
+    to: 'Kristiansund',
+    cargo: 'Goat Cheese',
+    cargoWeight: 161,
+    distance: '680 km',
+    nxp: 561,
+    game: 'ETS2',
+    speed: 'Real',
+    damage: '0%',
   },
    {
-    id: 3,
+    jobId: 1063443,
+    date: '10/3/2025',
+    time: '10:41:02 PM',
+    user: 'Swamfire Gaming',
+    from: 'Klagenfurt am Wörthersee',
+    to: 'Duisburg',
+    cargo: 'Chocolate',
+    cargoWeight: 241,
+    distance: '1,029 km',
+    nxp: 815,
     game: 'ETS2',
-    from: 'Berlin',
-    to: 'Warsaw',
-    cargo: 'Car Parts',
-    distance: '575 km',
-    submitted: 'Rider46',
-    submittedAt: '2025-10-01',
+    speed: 'Real',
+    damage: '0%',
   },
 ];
 
-const gameIcons = {
-    ETS2: 'https://www.vectorlogo.zone/logos/eurotrucksimulator2/eurotrucksimulator2-icon.svg',
-    ATS: 'https://static-00.iconduck.com/assets.00/american-truck-simulator-icon-2048x2048-22a4ig9k.png'
-}
 
 export default function AllJobsPage() {
   return (
@@ -74,38 +153,28 @@ export default function AllJobsPage() {
             <CardHeader>
                 <div className="flex items-center justify-between">
                     <div>
-                        <CardTitle>Jobs</CardTitle>
-                        <CardDescription>
-                        Overview of all jobs submitted by drivers.
-                        </CardDescription>
+                        <CardTitle>This Month Jobs</CardTitle>
                     </div>
                     <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-2">
+                            <span className='text-sm'>Show</span>
+                            <Select defaultValue='10'>
+                                <SelectTrigger className='w-20'>
+                                    <SelectValue />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="10">10</SelectItem>
+                                    <SelectItem value="25">25</SelectItem>
+                                    <SelectItem value="50">50</SelectItem>
+                                    <SelectItem value="100">100</SelectItem>
+                                </SelectContent>
+                            </Select>
+                            <span className='text-sm'>entries</span>
+                        </div>
                         <div className="relative">
                             <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-                            <Input placeholder="Search jobs..." className="pl-8 sm:w-[300px]" />
+                            <Input placeholder="Search..." className="pl-8 sm:w-[200px]" />
                         </div>
-                         <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                                <Button variant="outline" size="sm" className="h-9 gap-1">
-                                    <ListFilter className="h-3.5 w-3.5" />
-                                    <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">Filter</span>
-                                </Button>
-                            </DropdownMenuTrigger>
-                             <DropdownMenuContent align="end">
-                                <DropdownMenuLabel>Filter by</DropdownMenuLabel>
-                                <DropdownMenuSeparator />
-                                <DropdownMenuCheckboxItem checked>
-                                ETS2
-                                </DropdownMenuCheckboxItem>
-                                <DropdownMenuCheckboxItem>ATS</DropdownMenuCheckboxItem>
-                            </DropdownMenuContent>
-                        </DropdownMenu>
-                        <Button asChild size="sm" className="h-9 gap-1">
-                            <Link href="/driver-hub/jobs/submit">
-                                <FilePlus2 className="h-3.5 w-3.5" />
-                                <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">Submit Job</span>
-                            </Link>
-                        </Button>
                     </div>
                 </div>
             </CardHeader>
@@ -113,35 +182,78 @@ export default function AllJobsPage() {
                  <Table>
                     <TableHeader>
                         <TableRow>
-                        <TableHead>Game</TableHead>
-                        <TableHead>From → To</TableHead>
-                        <TableHead>Cargo</TableHead>
-                        <TableHead>Distance</TableHead>
-                        <TableHead>Submitted by</TableHead>
-                        <TableHead>Submitted At</TableHead>
+                            <TableHead>JOB ID</TableHead>
+                            <TableHead>DATE</TableHead>
+                            <TableHead>USER</TableHead>
+                            <TableHead>FROM-TO</TableHead>
+                            <TableHead>CARGO</TableHead>
+                            <TableHead>DISTANCE</TableHead>
+                            <TableHead>NXP</TableHead>
+                            <TableHead>GAME</TableHead>
+                            <TableHead>SPEED</TableHead>
+                            <TableHead>DAMAGE</TableHead>
+                            <TableHead className='text-right'>DETAILS</TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody>
                         {jobs.map(job => (
-                            <TableRow key={job.id}>
+                            <TableRow key={job.jobId}>
+                                <TableCell>{job.jobId}</TableCell>
                                 <TableCell>
-                                    <div className="flex items-center gap-2">
-                                        <Image src={gameIcons[job.game as keyof typeof gameIcons]} alt={`${job.game} logo`} width={20} height={20} />
-                                        <Badge variant={job.game === 'ETS2' ? 'default' : 'secondary'}>{job.game}</Badge>
-                                    </div>
+                                    <div>{job.date}</div>
+                                    <div className="text-muted-foreground text-xs">{job.time}</div>
+                                </TableCell>
+                                <TableCell>{job.user}</TableCell>
+                                <TableCell>
+                                    <div>{job.from}</div>
+                                    <div>→ {job.to}</div>
                                 </TableCell>
                                 <TableCell>
-                                    <div className="font-medium">{job.from} → {job.to}</div>
+                                    <div>{job.cargo}</div>
+                                    <div className="text-muted-foreground text-xs">({job.cargoWeight})</div>
                                 </TableCell>
-                                <TableCell>{job.cargo}</TableCell>
                                 <TableCell>{job.distance}</TableCell>
-                                <TableCell>{job.submitted}</TableCell>
-                                <TableCell>{job.submittedAt}</TableCell>
+                                <TableCell>{job.nxp} NXP</TableCell>
+                                <TableCell><Badge variant={job.game === 'ETS2' ? 'default' : 'secondary'}>{job.game}</Badge></TableCell>
+                                <TableCell>{job.speed}</TableCell>
+                                <TableCell>{job.damage}</TableCell>
+                                <TableCell className='text-right'>
+                                    <Button size="sm" asChild>
+                                        <Link href="#">Details</Link>
+                                    </Button>
+                                </TableCell>
                             </TableRow>
                         ))}
                     </TableBody>
                 </Table>
             </CardContent>
+             <div className="flex items-center justify-between p-4">
+                <div className="text-sm text-muted-foreground">
+                    Showing 1 to 10 of 61 entries
+                </div>
+                 <Pagination>
+                    <PaginationContent>
+                        <PaginationItem>
+                        <PaginationPrevious href="#" />
+                        </PaginationItem>
+                        <PaginationItem>
+                        <PaginationLink href="#" isActive>1</PaginationLink>
+                        </PaginationItem>
+                        <PaginationItem>
+                        <PaginationLink href="#">2</PaginationLink>
+                        </PaginationItem>
+                        <PaginationItem>
+                        <PaginationLink href="#">3</PaginationLink>
+                        </PaginationItem>
+                        <PaginationItem>
+                            <PaginationEllipsis />
+                        </PaginationItem>
+                        <PaginationItem>
+                        <PaginationNext href="#" />
+                        </PaginationItem>
+                    </PaginationContent>
+                </Pagination>
+            </div>
         </Card>
     </div>
   );
