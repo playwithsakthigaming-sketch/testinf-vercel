@@ -10,11 +10,15 @@ import { useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 
 type CalendarEvent = {
+  id: string;
   title: string;
   start: string;
   url?: string;
   backgroundColor: string;
   borderColor: string;
+  extendedProps: {
+    isInternal: boolean;
+  }
 };
 
 const parseDate = (dateStr: string): Date | null => {
@@ -43,11 +47,15 @@ export function DriverHubCalendar({ events }: { events: Event[] }) {
     const calendarEvents: CalendarEvent[] = events.map(event => {
         const startDate = parseDate(event.meetupTime);
         return {
+            id: event.id,
             title: event.title,
             start: startDate ? startDate.toISOString() : new Date().toISOString(),
-            url: event.type === 'internal' ? `/events/${event.id}` : event.url,
+            url: event.type === 'internal' ? `/driver-hub/events/${event.id}` : event.url,
             backgroundColor: event.type === 'internal' ? 'hsl(var(--primary))' : 'hsl(var(--secondary))',
             borderColor: event.type === 'internal' ? 'hsl(var(--accent))' : 'hsl(var(--border))',
+            extendedProps: {
+                isInternal: event.type === 'internal'
+            }
         };
     }).filter(e => e.start);
 
@@ -61,7 +69,7 @@ export function DriverHubCalendar({ events }: { events: Event[] }) {
     const handleEventClick = (info: any) => {
         info.jsEvent.preventDefault(); // Prevent the default link behavior
         if (info.event.url) {
-            if(info.event.url.startsWith('/')) {
+            if(info.event.extendedProps.isInternal) {
                 router.push(info.event.url);
             } else {
                 window.open(info.event.url, '_blank');
