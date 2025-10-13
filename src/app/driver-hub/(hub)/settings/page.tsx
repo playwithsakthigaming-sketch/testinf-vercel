@@ -147,7 +147,6 @@ export default function SettingsPage() {
                                          <h1 className="text-3xl font-bold font-headline">{userProfile.username}</h1>
                                          <p className="text-muted-foreground">{userProfile.role}</p>
                                     </div>
-                                    <Button variant="outline"><Edit className="mr-2 h-4 w-4"/>Edit Profile</Button>
                                 </div>
 
                                 <Separator className="my-6"/>
@@ -286,5 +285,7 @@ export default function SettingsPage() {
         </div>
     );
 }
+
+    
 
     
