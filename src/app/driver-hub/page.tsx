@@ -57,7 +57,7 @@ const fetchCompanyStats = async () => {
 
         const data = await res.json();
         
-        if (data.status && data.response) {
+        if (data && data.status && data.response) {
             return data.response.company;
         } else {
             console.error("Invalid API response structure for company stats:", data);
