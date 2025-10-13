@@ -1,5 +1,4 @@
 
-
 'use client';
 
 import React from 'react';
@@ -123,6 +122,7 @@ const getNearestPartnerEvent = (): (Event & { image: any }) | null => {
 export default function DashboardPage() {
     const [date, setDate] = React.useState<string | null>(null);
     const [vtcStats, setVtcStats] = React.useState<VtcStats | null>(null);
+    const [username, setUsername] = React.useState<string>("Driver");
     const [allTimeLeaderboard, setAllTimeLeaderboard] = React.useState<LeaderboardUser[]>([]);
     const [monthlyLeaderboard, setMonthlyLeaderboard] = React.useState<LeaderboardUser[]>([]);
     const [recentJobs, setRecentJobs] = React.useState<Job[]>([]);
@@ -143,33 +143,42 @@ export default function DashboardPage() {
         };
 
         const fetchAllData = async () => {
-            const [stats, allTime, monthly, jobs] = await Promise.all([
+            const [stats, allTime, monthly, jobs, user] = await Promise.all([
                 fetchData('vtc'),
                 fetchData('leaderboard/nxp'),
                 fetchData('leaderboard/monthly_nxp'),
-                fetchData('jobs/all?limit=5')
+                fetchData('jobs/all?limit=5'),
+                 fetchData('user'),
             ]);
             
             if (stats) setVtcStats(stats.vtc);
             if (allTime) setAllTimeLeaderboard(allTime);
             if (monthly) setMonthlyLeaderboard(monthly);
             if (jobs) setRecentJobs(jobs);
+            if (user) setUsername(user.username);
         };
         
         fetchAllData();
 
-        setDate(new Date().toLocaleString('en-GB', {
-            day: '2-digit', month: 'short', year: 'numeric',
-            hour: '2-digit', minute: '2-digit', second: '2-digit',
-            timeZoneName: 'short'
-        }).replace(',', ''));
+        const updateDate = () => {
+            setDate(new Date().toLocaleString('en-GB', {
+                day: '2-digit', month: 'short', year: 'numeric',
+                hour: '2-digit', minute: '2-digit', second: '2-digit',
+                timeZoneName: 'short'
+            }).replace(',', ''));
+        };
+
+        updateDate();
+        const intervalId = setInterval(updateDate, 1000);
+
+        return () => clearInterval(intervalId);
     }, []);
 
     return (
         <div className="p-4 md:p-8 space-y-6 bg-background text-white">
             {/* Header */}
             <div className="flex justify-between items-center">
-                <h1 className="text-2xl font-semibold text-primary">Good Evening SAKTHIVEL</h1>
+                <h1 className="text-2xl font-semibold text-primary">Good Evening {username}</h1>
                 <div className="flex items-center gap-4">
                     {date && <span className="text-muted-foreground text-sm">{date}</span>}
                     <Badge variant="destructive"><Dot className="-ml-1" />Offline</Badge>
@@ -177,7 +186,7 @@ export default function DashboardPage() {
                     <Button variant="ghost" size="icon"><HelpCircle size={18} /></Button>
                     <Avatar className="h-8 w-8">
                         <AvatarImage src="/placeholder.svg" alt="User avatar" />
-                        <AvatarFallback>S</AvatarFallback>
+                        <AvatarFallback>{username.charAt(0)}</AvatarFallback>
                     </Avatar>
                 </div>
             </div>
