@@ -4,8 +4,8 @@ import { z } from 'zod';
 export const applicationSchema = z.object({
     username: z.string().min(1, 'Username is required'),
     email: z.string().email('Invalid email address'),
-    truckersmp: z.string().url('Invalid TruckersMP profile URL.').optional().or(z.literal('')),
-    truckershub: z.string().url('Invalid TruckersHub profile URL.').optional().or(z.literal('')),
+    truckersmp: z.string().url('Invalid TruckersMP profile URL.'),
+    truckershub: z.string().url('Invalid TruckersHub profile URL.'),
     password: z.string().min(8, 'Password must be at least 8 characters long'),
     terms: z.literal<boolean>(true, {
         errorMap: () => ({ message: 'You must accept the terms and conditions' }),
@@ -20,3 +20,4 @@ export const loginSchema = z.object({
 });
 
 export type LoginFormData = z.infer<typeof loginSchema>;
+
