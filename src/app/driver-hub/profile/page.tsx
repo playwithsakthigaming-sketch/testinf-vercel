@@ -1,4 +1,6 @@
 
+'use client';
+
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -7,6 +9,7 @@ import { Separator } from "@/components/ui/separator";
 import { PlaceHolderImages } from "@/lib/placeholder-images";
 import { Briefcase, Edit, Globe, Mail, MapPin, Milestone, Route, Star, Truck } from "lucide-react";
 import Image from 'next/image';
+import Link from "next/link";
 
 const user = {
     name: "POWERFUL GAMING",
@@ -54,7 +57,11 @@ export default function ProfilePage() {
                              <h1 className="text-3xl font-bold font-headline">{user.name}</h1>
                              <p className="text-muted-foreground">{user.role}</p>
                         </div>
-                        <Button variant="outline"><Edit className="mr-2 h-4 w-4"/>Edit Profile</Button>
+                        <Button variant="outline" asChild>
+                            <Link href="/driver-hub/settings">
+                                <Edit className="mr-2 h-4 w-4"/>Edit Profile
+                            </Link>
+                        </Button>
                     </div>
 
                     <Separator className="my-6"/>
@@ -116,5 +123,3 @@ export default function ProfilePage() {
         </div>
     );
 }
-
-    

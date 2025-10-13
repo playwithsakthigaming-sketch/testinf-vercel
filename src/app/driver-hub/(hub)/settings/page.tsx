@@ -155,12 +155,95 @@ export default function SettingsPage() {
 
     return (
         <div className="p-4 md:p-8 space-y-8">
-            <h1 className="text-3xl font-bold flex items-center gap-2"><Settings /> User Settings</h1>
-            <Tabs defaultValue="security" className="w-full">
+            <h1 className="text-3xl font-bold flex items-center gap-2"><Settings /> Profile Settings</h1>
+            <Tabs defaultValue="profile" className="w-full">
                 <TabsList>
+                    <TabsTrigger value="profile">Profile</TabsTrigger>
                     <TabsTrigger value="security">Security</TabsTrigger>
                     <TabsTrigger value="connections">Connections</TabsTrigger>
                 </TabsList>
+                <TabsContent value="profile">
+                    <Card>
+                        <CardHeader>
+                            <CardTitle>Public Profile</CardTitle>
+                            <CardDescription>This is how others will see you on the site.</CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                             <Form {...profileForm}>
+                                <form onSubmit={profileForm.handleSubmit(onProfileSubmit)} className="space-y-6">
+                                    <div className="space-y-2">
+                                        <Label>Avatar</Label>
+                                        <div className="flex items-center gap-4">
+                                            <Avatar className="h-20 w-20">
+                                                <AvatarImage src={userProfile?.avatar} />
+                                                <AvatarFallback>{userProfile?.username?.charAt(0)}</AvatarFallback>
+                                            </Avatar>
+                                            <div className="flex gap-2">
+                                                <Button type="button" variant="outline">Upload</Button>
+                                                <Button type="button" variant="ghost">Reset</Button>
+                                            </div>
+                                        </div>
+                                        <p className="text-sm text-muted-foreground">Allowed JPG, GIF or PNG. Max size of 2MB</p>
+                                    </div>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        <FormField
+                                            control={profileForm.control}
+                                            name="username"
+                                            render={({ field }) => (
+                                                <FormItem>
+                                                    <FormLabel>USERNAME</FormLabel>
+                                                    <FormControl>
+                                                        <Input placeholder="Your username" {...field} />
+                                                    </FormControl>
+                                                    <FormMessage />
+                                                </FormItem>
+                                            )}
+                                        />
+                                        <FormField
+                                            control={profileForm.control}
+                                            name="email"
+                                            render={({ field }) => (
+                                                <FormItem>
+                                                    <FormLabel>EMAIL</FormLabel>
+                                                    <FormControl>
+                                                        <Input type="email" placeholder="Your email" {...field} />
+                                                    </FormControl>
+                                                    <FormMessage />
+                                                </FormItem>
+                                            )}
+                                        />
+                                    </div>
+                                     <FormField
+                                        control={profileForm.control}
+                                        name="country"
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>COUNTRY</FormLabel>
+                                                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                                    <FormControl>
+                                                        <SelectTrigger>
+                                                            <SelectValue placeholder="Select your country" />
+                                                        </SelectTrigger>
+                                                    </FormControl>
+                                                    <SelectContent>
+                                                        {countries.map(country => (
+                                                            <SelectItem key={country} value={country}>{country}</SelectItem>
+                                                        ))}
+                                                    </SelectContent>
+                                                </Select>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
+                                    />
+                                    <Button type="submit" disabled={isSubmitting}>
+                                        {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                                        Save changes
+                                    </Button>
+                                </form>
+                            </Form>
+                        </CardContent>
+                    </Card>
+                </TabsContent>
                 <TabsContent value="security">
                      <Card>
                         <CardHeader>
