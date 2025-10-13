@@ -7,13 +7,22 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Table, TableBody, TableCell, TableHeader, TableHead, TableRow } from '@/components/ui/table';
-import { Bell, HelpCircle, User, Truck, Calendar, Flame, Dot, Users } from 'lucide-react';
+import { Bell, HelpCircle, User, Truck, Calendar, Flame, Dot, Users, Settings, LogOut } from 'lucide-react';
 import Image from 'next/image';
 import { Badge } from '@/components/ui/badge';
 import eventsData from '@/lib/events.json';
 import type { Event } from '@/lib/events';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import Link from 'next/link';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+
 
 type VtcStats = {
     total_drivers: number;
@@ -184,10 +193,35 @@ export default function DashboardPage() {
                     <Badge variant="destructive"><Dot className="-ml-1" />Offline</Badge>
                     <Button variant="ghost" size="icon"><Bell size={18} /></Button>
                     <Button variant="ghost" size="icon"><HelpCircle size={18} /></Button>
-                    <Avatar className="h-8 w-8">
-                        <AvatarImage src="/placeholder.svg" alt="User avatar" />
-                        <AvatarFallback>{username.charAt(0)}</AvatarFallback>
-                    </Avatar>
+                    <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                            <Avatar className="h-9 w-9 cursor-pointer">
+                                <AvatarImage src="/placeholder.svg" alt="User avatar" />
+                                <AvatarFallback>{username.charAt(0)}</AvatarFallback>
+                            </Avatar>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                            <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem asChild>
+                                <Link href="/driver-hub/profile">
+                                    <User className="mr-2 h-4 w-4" />
+                                    <span>Profile</span>
+                                </Link>
+                            </DropdownMenuItem>
+                            <DropdownMenuItem>
+                                <Settings className="mr-2 h-4 w-4" />
+                                <span>Settings</span>
+                            </DropdownMenuItem>
+                            <DropdownMenuSeparator />
+                             <DropdownMenuItem asChild>
+                                <Link href="/">
+                                    <LogOut className="mr-2 h-4 w-4" />
+                                    <span>Logout</span>
+                                </Link>
+                            </DropdownMenuItem>
+                        </DropdownMenuContent>
+                    </DropdownMenu>
                 </div>
             </div>
 
@@ -378,4 +412,3 @@ export default function DashboardPage() {
 
         </div>
     );
-}
