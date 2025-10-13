@@ -76,7 +76,6 @@ const CompanyOpsNav = [
 ];
 
 const AccountNav = [
-    { label: 'Profile', href: '/driver-hub/profile', icon: User },
 ];
 
 const KnowledgeNav = [
@@ -95,13 +94,21 @@ export function DriverHubSidebar() {
         return items.some(item => pathname.startsWith(item.href));
     }
     
-    const navSections = useMemo(() => [
-        { title: "MAIN", items: MainNav },
-        { title: "GAMEPLAY", items: GameplayNav },
-        { title: "COMPANY OPERATIONS", items: CompanyOpsNav },
-        { title: "ACCOUNT", items: AccountNav },
-        { title: "KNOWLEDGE HUB", items: KnowledgeNav },
-    ], []);
+    const navSections = useMemo(() => {
+        const sections = [
+            { title: "MAIN", items: MainNav },
+            { title: "GAMEPLAY", items: GameplayNav },
+            { title: "COMPANY OPERATIONS", items: CompanyOpsNav },
+        ];
+
+        if (AccountNav.length > 0) {
+            sections.push({ title: "ACCOUNT", items: AccountNav });
+        }
+        
+        sections.push({ title: "KNOWLEDGE HUB", items: KnowledgeNav });
+        
+        return sections;
+    }, []);
 
     return (
         <Sidebar>
