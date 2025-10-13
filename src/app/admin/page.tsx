@@ -2,7 +2,7 @@
 import { Footer } from '@/components/app/footer';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Newspaper, Shield, Image as ImageIcon, Users, FileText, Calendar, Ticket } from 'lucide-react';
+import { Newspaper, Shield, Image as ImageIcon, Users, FileText, Calendar, Ticket, Home } from 'lucide-react';
 import Link from 'next/link';
 
 export default function AdminPage() {
@@ -103,6 +103,11 @@ export default function AdminPage() {
                 </Button>
               </CardContent>
             </Card>
+          </div>
+           <div className="mt-8 text-center">
+            <Button variant="outline" asChild>
+                <Link href="/"><Home className="mr-2 h-4 w-4"/>Go to Home</Link>
+            </Button>
           </div>
         </div>
       </main>
