@@ -40,6 +40,7 @@ import {
     GanttChartSquare,
     Wallet,
     Clapperboard,
+    User,
 } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -74,6 +75,10 @@ const CompanyOpsNav = [
     { label: 'Economy', href: '/driver-hub/economy', icon: Wallet },
 ];
 
+const AccountNav = [
+    { label: 'Profile', href: '/driver-hub/profile', icon: User },
+];
+
 const KnowledgeNav = [
     { label: 'Examination', href: '/driver-hub/examination', icon: BookOpen },
     { label: 'Resources', href: '/driver-hub/resources', icon: LifeBuoy },
@@ -94,6 +99,7 @@ export function DriverHubSidebar() {
         { title: "MAIN", items: MainNav },
         { title: "GAMEPLAY", items: GameplayNav },
         { title: "COMPANY OPERATIONS", items: CompanyOpsNav },
+        { title: "ACCOUNT", items: AccountNav },
         { title: "KNOWLEDGE HUB", items: KnowledgeNav },
     ], []);
 
