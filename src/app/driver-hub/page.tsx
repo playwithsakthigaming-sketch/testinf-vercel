@@ -187,7 +187,7 @@ export default async function DriverHubPage() {
                         <CardTitle>Jobs This Month vs. Last Month</CardTitle>
                     </CardHeader>
                     <CardContent>
-                        <MonthlyJobChart thisMonth={Number(jobsThisMonth)} lastMonth={Number(jobsLastMonth)} />
+                        <MonthlyJobChart thisMonth={Number(jobsThisMonth) || 0} lastMonth={Number(jobsLastMonth) || 0} />
                     </CardContent>
                 </Card>
                  <Card>

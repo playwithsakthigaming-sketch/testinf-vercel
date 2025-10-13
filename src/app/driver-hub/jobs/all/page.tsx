@@ -54,10 +54,12 @@ async function getAllJobs(): Promise<Job[]> {
 
         const data: ApiResponse = await res.json();
         
-        if (data.status && Array.isArray(data.response)) {
+        if (data && data.status && Array.isArray(data.response)) {
             return data.response;
         } else {
-            console.error("Invalid API response structure for jobs:", data);
+            if (Object.keys(data).length > 0) {
+                console.error("Invalid API response structure for jobs:", data);
+            }
             return [];
         }
     } catch (error) {
@@ -102,8 +104,12 @@ export default async function AllJobsPage() {
                                 <TableRow key={job.id}>
                                     <TableCell>
                                         <div className="flex items-center gap-2">
-                                            <Image src={job.driver.avatar} alt={job.driver.username} width={32} height={32} className="rounded-full" />
-                                            <span>{job.driver.username}</span>
+                                            {job.driver && (
+                                                <>
+                                                    <Image src={job.driver.avatar} alt={job.driver.username} width={32} height={32} className="rounded-full" />
+                                                    <span>{job.driver.username}</span>
+                                                </>
+                                            )}
                                         </div>
                                     </TableCell>
                                     <TableCell>
