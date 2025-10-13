@@ -166,7 +166,7 @@ export function DriverHubLayout({ children }: { children: React.ReactNode }) {
     return (
         <SidebarProvider>
             <DriverHubSidebar />
-            <main className="flex-1">
+            <main className="flex-1 peer-[[data-state=collapsed]]:[data-variant=sidebar]:ml-[--sidebar-width-icon] peer-[[data-state=expanded]]:[data-variant=sidebar]:ml-[--sidebar-width] transition-[margin-left] duration-200 ease-linear">
                  <header className="p-4 border-b flex items-center gap-4 md:hidden sticky top-0 bg-background z-10">
                     <SidebarTrigger />
                     <h1 className="text-lg font-semibold">Driver Hub</h1>
