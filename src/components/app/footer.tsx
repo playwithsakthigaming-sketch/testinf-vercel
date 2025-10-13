@@ -37,8 +37,8 @@ export function Footer() {
           </div>
           <div className="md:col-span-1 space-y-4">
             
-            <Button className="w-full rounded-full" data-apply-btn>
-                Register
+            <Button asChild className="w-full rounded-full">
+                <Link href="https://truckersmp.com/vtc/73933/recruitment-form/3515-driver-recruitment-form" target="_blank">Register</Link>
             </Button>
           </div>
         </div>
@@ -49,5 +49,3 @@ export function Footer() {
     </footer>
   );
 }
-
-    

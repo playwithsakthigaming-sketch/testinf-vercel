@@ -32,9 +32,8 @@ const heroSlides = [
     title: 'Great Experience',
     subtitle: 'We Believe In Quality Not Quantity',
     buttonText: 'Apply',
-    buttonLink: '#',
+    buttonLink: 'https://truckersmp.com/vtc/73933/recruitment-form/3515-driver-recruitment-form',
     imageId: 'hero-truck',
-    'data-apply-btn': true,
   },
   {
     id: 'hero-2',
@@ -71,7 +70,6 @@ export function Hero() {
       <CarouselContent>
         {heroSlides.map((slide) => {
           const image = PlaceHolderImages.find((img) => img.id === slide.imageId);
-          const buttonProps = { ...(slide['data-apply-btn'] ? { 'data-apply-btn': true } : {})};
           return (
             <CarouselItem key={slide.id}>
               <section className="relative h-[80vh] w-full flex items-center justify-center text-white">
@@ -97,7 +95,7 @@ export function Hero() {
                     {slide.subtitle}
                   </p>
                   {slide.buttonText && slide.buttonLink && (
-                    <Button asChild size="lg" className="mt-8 rounded-full" {...buttonProps}>
+                    <Button asChild size="lg" className="mt-8 rounded-full">
                         <Link href={slide.buttonLink} target={slide.buttonLink.startsWith('http') ? '_blank' : '_self'}>
                         {slide.icon}
                         {slide.buttonText}

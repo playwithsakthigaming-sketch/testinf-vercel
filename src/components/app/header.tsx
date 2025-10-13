@@ -55,7 +55,9 @@ export function Header() {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent>
-              <DropdownMenuItem data-apply-btn>Apply Now</DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Link href="https://truckersmp.com/vtc/73933/recruitment-form/3515-driver-recruitment-form" target="_blank">Apply Now</Link>
+              </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem asChild>
                 <Link href="/application-status">Check Status</Link>
@@ -111,7 +113,9 @@ export function Header() {
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent>
-                      <DropdownMenuItem data-apply-btn>Apply Now</DropdownMenuItem>
+                      <DropdownMenuItem asChild>
+                        <Link href="https://truckersmp.com/vtc/73933/recruitment-form/3515-driver-recruitment-form" target="_blank">Apply Now</Link>
+                      </DropdownMenuItem>
                       <DropdownMenuSeparator />
                       <DropdownMenuItem asChild>
                         <Link href="/application-status">Check Status</Link>

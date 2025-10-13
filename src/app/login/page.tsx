@@ -81,8 +81,8 @@ export default function DriverHubLoginPage() {
 
                     <div className="mt-4 text-center text-sm">
                         New Here?{" "}
-                        <Button variant="link" className="text-primary p-0 h-auto" data-apply-btn>
-                            Apply Now!
+                        <Button variant="link" asChild className="text-primary p-0 h-auto">
+                            <Link href="https://truckersmp.com/vtc/73933/recruitment-form/3515-driver-recruitment-form" target="_blank">Register</Link>
                         </Button>
                     </div>
                 </CardContent>
