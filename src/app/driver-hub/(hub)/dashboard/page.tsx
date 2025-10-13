@@ -1,4 +1,5 @@
 
+
 'use client';
 
 import React from 'react';
@@ -10,6 +11,10 @@ import { Table, TableBody, TableCell, TableHeader, TableHead, TableRow } from '@
 import { Bell, HelpCircle, User, Truck, Calendar, Flame, Dot } from 'lucide-react';
 import Image from 'next/image';
 import { Badge } from '@/components/ui/badge';
+import eventsData from '@/lib/events.json';
+import type { Event } from '@/lib/events';
+import { PlaceHolderImages } from '@/lib/placeholder-images';
+import Link from 'next/link';
 
 type VtcStats = {
     total_drivers: number;
@@ -74,6 +79,46 @@ const MilestoneIcon = ({ icon, color }: { icon: string, color: string }) => (
     </div>
 );
 
+// Helper to parse the date/time string from events.json
+const parseDateTime = (dateTimeStr: string): Date | null => {
+    try {
+        const parts = dateTimeStr.split(' | ');
+        if (parts.length < 2) return null; // Invalid format
+
+        const datePart = parts[0];
+        const timePart = parts[1];
+
+        const [day, month, year] = datePart.split('.').map(Number);
+        const [time, ] = timePart.split(' ');
+        const [hour, minute] = time.split(':').map(Number);
+        
+        // Month is 0-indexed in JS Date
+        return new Date(Date.UTC(year, month - 1, day, hour, minute));
+    } catch {
+        return null;
+    }
+};
+
+const getNearestPartnerEvent = (): (Event & { image: any }) | null => {
+    const partnerEvents = eventsData.events.filter(e => e.type === 'partner');
+    const now = new Date();
+
+    const upcomingEvents = partnerEvents
+        .map(event => ({
+            ...event,
+            parsedDate: parseDateTime(event.meetupTime)
+        }))
+        .filter(event => event.parsedDate && event.parsedDate > now)
+        .sort((a, b) => a.parsedDate!.getTime() - b.parsedDate!.getTime());
+
+    if (upcomingEvents.length === 0) return null;
+    
+    const nearestEvent = upcomingEvents[0];
+    const image = PlaceHolderImages.find(p => p.id === nearestEvent.imageId);
+
+    return { ...nearestEvent, image };
+}
+
 
 export default function DashboardPage() {
     const [date, setDate] = React.useState('');
@@ -81,6 +126,8 @@ export default function DashboardPage() {
     const [allTimeLeaderboard, setAllTimeLeaderboard] = React.useState<LeaderboardUser[]>([]);
     const [monthlyLeaderboard, setMonthlyLeaderboard] = React.useState<LeaderboardUser[]>([]);
     const [recentJobs, setRecentJobs] = React.useState<Job[]>([]);
+    
+    const nearestPartnerEvent = React.useMemo(() => getNearestPartnerEvent(), []);
 
     React.useEffect(() => {
         const fetchData = async (endpoint: string) => {
@@ -142,18 +189,22 @@ export default function DashboardPage() {
             </div>
 
             {/* Upcoming Event */}
-            <Card className="relative overflow-hidden bg-transparent border-0">
-                <Image src="https://i.imgur.com/8gwAD3r.png" alt="Pink Ribbon Event" layout="fill" objectFit="cover" className="z-0" />
-                <div className="absolute inset-0 bg-black/50"/>
-                <CardContent className="relative z-10 p-6 flex items-center justify-between">
-                    <div>
-                        <p className="text-sm text-pink-300">Upcoming Event</p>
-                        <h2 className="text-xl font-bold mt-1">A Cozy Drive in October with Pink Ribbon VTC</h2>
-                        <p className="text-sm text-muted-foreground mt-1">Mon, 13 Oct 2025 18:00:00 GMT</p>
-                    </div>
-                    <Button>Details</Button>
-                </CardContent>
-            </Card>
+            {nearestPartnerEvent && nearestPartnerEvent.image && (
+                <Card className="relative overflow-hidden bg-transparent border-0">
+                    <Image src={nearestPartnerEvent.image.imageUrl} alt={nearestPartnerEvent.title} layout="fill" objectFit="cover" className="z-0" />
+                    <div className="absolute inset-0 bg-black/50"/>
+                    <CardContent className="relative z-10 p-6 flex items-center justify-between">
+                        <div>
+                            <p className="text-sm text-pink-300">Upcoming Partner Event</p>
+                            <h2 className="text-xl font-bold mt-1">{nearestPartnerEvent.title}</h2>
+                            <p className="text-sm text-muted-foreground mt-1">{nearestPartnerEvent.meetupTime}</p>
+                        </div>
+                         <Button asChild>
+                            <Link href={nearestPartnerEvent.url} target="_blank">Details</Link>
+                        </Button>
+                    </CardContent>
+                </Card>
+            )}
 
             {/* Celestial Milestone Tracker */}
             <Card className="bg-card/80">
