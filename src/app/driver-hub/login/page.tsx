@@ -29,7 +29,7 @@ export default function DriverHubLoginPage() {
     return (
         <div className="relative flex min-h-screen flex-col items-center justify-center bg-background">
             <Image 
-                src="https://i.imgur.com/gcsZ2Jr.jpeg"
+                src="https://media.discordapp.net/attachments/1281551151418048677/1417735782223056929/IMG_20250917_102508.jpg?ex=68edd7d6&is=68ec8656&hm=80a11804ded1c00d78e714972cbd6223a670437744541bfe3e49986c0175175b&=&format=webp&width=1194&height=722"
                 alt="Background of green trucks"
                 fill
                 className="object-cover"
@@ -90,3 +90,5 @@ export default function DriverHubLoginPage() {
         </div>
     );
 }
+
+    
