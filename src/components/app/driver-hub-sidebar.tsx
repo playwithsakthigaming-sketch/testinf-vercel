@@ -49,10 +49,8 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '../ui/colla
 
 const MainNav = [
     { label: 'Dashboard', href: '/driver-hub', icon: LayoutDashboard },
-    { label: 'Banner', href: '/driver-hub/banner', icon: Newspaper },
     { label: 'Leaderboard', href: '/driver-hub/leaderboard', icon: Award },
     { label: 'Live Map', href: '/driver-hub/live-map', icon: Map },
-    { label: 'Members', href: '/driver-hub/members', icon: Users },
 ];
 
 const GameplayNav = [
@@ -74,12 +72,10 @@ const CompanyOpsNav = [
     { label: 'Marketplace', href: '/driver-hub/marketplace', icon: Briefcase },
     { label: 'Garage HQ', href: '/driver-hub/garage-hq', icon: Warehouse },
     { label: 'Economy', href: '/driver-hub/economy', icon: Wallet },
-    { label: 'Media Center', href: '/driver-hub/media-center', icon: Clapperboard },
 ];
 
 const KnowledgeNav = [
     { label: 'Examination', href: '/driver-hub/examination', icon: BookOpen },
-    { label: 'FAQs', href: '/driver-hub/faqs', icon: FileQuestion },
     { label: 'Resources', href: '/driver-hub/resources', icon: LifeBuoy },
 ];
 
