@@ -32,7 +32,7 @@ export async function loginAction(data: LoginFormData): Promise<LoginResult> {
         return { success: false, message: 'Invalid data provided.' };
     }
 
-    const { email } = validation.data;
+    const { email, password } = validation.data;
 
     try {
         const applicationsData = await readApplications();
@@ -40,6 +40,10 @@ export async function loginAction(data: LoginFormData): Promise<LoginResult> {
 
         if (!application) {
             return { success: false, message: 'No application found for this email.' };
+        }
+        
+        if (application.password !== password) {
+            return { success: false, message: 'Incorrect password.' };
         }
 
         if (application.status === 'Accepted') {

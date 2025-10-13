@@ -49,12 +49,13 @@ export async function submitApplication(data: ApplicationData): Promise<SubmitRe
     }
 
     const applicationId = generateApplicationId();
-    const { username, email, truckersmp, truckershub } = validation.data;
+    const { username, email, truckersmp, truckershub, password } = validation.data;
 
     const newApplication: Application = {
         id: applicationId,
         name: username,
         email: email,
+        password: password,
         truckersmpUrl: truckersmp,
         truckershubUrl: truckershub,
         status: 'Pending',

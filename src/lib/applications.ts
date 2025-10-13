@@ -6,6 +6,7 @@ export type Application = {
   name: string;
   discordTag?: string; // Made optional
   email: string;
+  password?: string;
   steamUrl?: string; // Made optional
   truckersmpUrl?: string;
   truckershubUrl?: string;
