@@ -1,5 +1,4 @@
 
-
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -210,20 +209,22 @@ export function ApplicationForm({ onFormSubmit }: { onFormSubmit?: () => void })
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Terms and Conditions</AlertDialogTitle>
-            <AlertDialogDescription className="text-left max-h-[60vh] overflow-y-auto pr-2">
-                <p className="mb-4">Welcome to Tamil Pasanga VTC. By submitting this application, you agree to the following terms and conditions:</p>
-                <ol className="list-decimal list-inside space-y-2">
-                    <li>You must be at least 15 years of age to apply.</li>
-                    <li>You must own a legal copy of Euro Truck Simulator 2 or American Truck Simulator on Steam.</li>
-                    <li>You must have a registered TruckersMP account in good standing.</li>
-                    <li>Respect all members of the community, including staff and fellow drivers. Harassment, discrimination, or any form of abuse will not be tolerated.</li>
-                    <li>Follow all TruckersMP rules and regulations during convoys and on public servers.</li>
-                    <li>Maintain a professional and realistic driving standard. Reckless driving is not permitted.</li>
-                    <li>You are required to log a minimum number of jobs/miles per month as specified in our driver handbook to remain an active driver.</li>
-                    <li>Communication is key. You must join our Discord server and be responsive to official announcements.</li>
-                    <li>Dual VTCing (being a member of another VTC) is permitted, but your commitment to Tamil Pasanga must be maintained.</li>
-                    <li>Failure to comply with these rules may result in disciplinary action, including suspension or removal from the VTC.</li>
-                </ol>
+            <AlertDialogDescription asChild>
+              <div className="text-left max-h-[60vh] overflow-y-auto pr-2">
+                  <p className="mb-4">Welcome to Tamil Pasanga VTC. By submitting this application, you agree to the following terms and conditions:</p>
+                  <ol className="list-decimal list-inside space-y-2">
+                      <li>You must be at least 15 years of age to apply.</li>
+                      <li>You must own a legal copy of Euro Truck Simulator 2 or American Truck Simulator on Steam.</li>
+                      <li>You must have a registered TruckersMP account in good standing.</li>
+                      <li>Respect all members of the community, including staff and fellow drivers. Harassment, discrimination, or any form of abuse will not be tolerated.</li>
+                      <li>Follow all TruckersMP rules and regulations during convoys and on public servers.</li>
+                      <li>Maintain a professional and realistic driving standard. Reckless driving is not permitted.</li>
+                      <li>You are required to log a minimum number of jobs/miles per month as specified in our driver handbook to remain an active driver.</li>
+                      <li>Communication is key. You must join our Discord server and be responsive to official announcements.</li>
+                      <li>Dual VTCing (being a member of another VTC) is permitted, but your commitment to Tamil Pasanga must be maintained.</li>
+                      <li>Failure to comply with these rules may result in disciplinary action, including suspension or removal from the VTC.</li>
+                  </ol>
+              </div>
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
