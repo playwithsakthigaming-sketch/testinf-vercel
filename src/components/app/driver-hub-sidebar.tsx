@@ -52,6 +52,7 @@ const MainNav = [
     { label: 'Dashboard', href: '/driver-hub/dashboard', icon: LayoutDashboard },
     { label: 'Leaderboard', href: '/driver-hub/leaderboard', icon: Award },
     { label: 'Live Map', href: '/driver-hub/live-map', icon: Map },
+    { label: 'Profile', href: '/driver-hub/profile', icon: User },
 ];
 
 const GameplayNav = [
@@ -188,5 +189,7 @@ export function DriverHubLayout({ children }: { children: React.ReactNode }) {
         </SidebarProvider>
     );
 }
+
+    
 
     
