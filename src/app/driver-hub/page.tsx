@@ -29,7 +29,7 @@ type CompanyStats = {
 
 type ApiResponse = {
     status: boolean;
-    response: {
+    response?: {
         company: CompanyStats;
     }
 };
@@ -56,7 +56,7 @@ async function getCompanyStats(): Promise<CompanyStats> {
 
         const data: ApiResponse = await res.json();
         
-        if (data.status && data.response.company) {
+        if (data.status && data.response && data.response.company) {
             return data.response.company;
         } else {
             console.error("Invalid API response structure for company stats:", data);
