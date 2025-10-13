@@ -93,9 +93,9 @@ export default function DriverHubLoginPage() {
                                 name="email"
                                 render={({ field }) => (
                                     <FormItem>
-                                    <FormLabel>Email</FormLabel>
+                                    <FormLabel>Email or Profile URL</FormLabel>
                                     <FormControl>
-                                        <Input placeholder="Enter your email" {...field} />
+                                        <Input placeholder="Enter your email or profile URL" {...field} />
                                     </FormControl>
                                     <FormMessage />
                                     </FormItem>

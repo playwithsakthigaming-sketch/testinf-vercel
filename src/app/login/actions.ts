@@ -5,7 +5,7 @@ import type { LoginFormData } from '@/lib/schemas';
 import { loginSchema } from '@/lib/schemas';
 import fs from 'fs/promises';
 import path from 'path';
-import type { ApplicationsData } from '@/lib/applications';
+import type { ApplicationsData, Application } from '@/lib/applications';
 
 const applicationsFilePath = path.join(process.cwd(), 'src', 'lib', 'applications.json');
 
@@ -32,14 +32,26 @@ export async function loginAction(data: LoginFormData): Promise<LoginResult> {
         return { success: false, message: 'Invalid data provided.' };
     }
 
-    const { email, password } = validation.data;
+    const { email: identifier, password } = validation.data;
 
     try {
         const applicationsData = await readApplications();
-        const application = applicationsData.applications.find(app => app.email.toLowerCase() === email.toLowerCase());
+        let application: Application | undefined;
+
+        const isUrl = identifier.startsWith('http');
+        
+        if (isUrl) {
+            application = applicationsData.applications.find(app => 
+                app.truckersmpUrl?.toLowerCase() === identifier.toLowerCase() ||
+                app.truckershubUrl?.toLowerCase() === identifier.toLowerCase()
+            );
+        } else {
+             application = applicationsData.applications.find(app => app.email.toLowerCase() === identifier.toLowerCase());
+        }
+
 
         if (!application) {
-            return { success: false, message: 'No application found for this email.' };
+            return { success: false, message: 'No application found for this identifier.' };
         }
         
         if (application.password !== password) {

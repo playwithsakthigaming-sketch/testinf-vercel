@@ -94,9 +94,9 @@ export default function DriverHubLoginPage() {
                                 name="email"
                                 render={({ field }) => (
                                     <FormItem>
-                                    <FormLabel>Email</FormLabel>
+                                    <FormLabel>Email or Profile URL</FormLabel>
                                     <FormControl>
-                                        <Input placeholder="Enter your email" {...field} />
+                                        <Input placeholder="Enter your email or profile URL" {...field} />
                                     </FormControl>
                                     <FormMessage />
                                     </FormItem>
@@ -153,7 +153,7 @@ export default function DriverHubLoginPage() {
 
                     <div className="mt-4 text-center text-sm">
                         New Here?{" "}
-                        <Button variant="link" asChild className="text-primary p-0 h-auto" data-apply-btn>
+                         <Button variant="link" asChild className="text-primary p-0 h-auto" data-apply-btn>
                             <Link href="#">Register</Link>
                         </Button>
                     </div>
@@ -166,4 +166,5 @@ export default function DriverHubLoginPage() {
     
 
     
+
 
