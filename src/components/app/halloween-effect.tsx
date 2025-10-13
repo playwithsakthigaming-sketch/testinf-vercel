@@ -16,7 +16,7 @@ export function HalloweenEffect() {
                     animationDelay: `${Math.random() * 5}s`,
                     fontSize: `${Math.random() * 20 + 10}px`,
                 };
-                return <div key={index} className="bat" style={style}>🦇</div>;
+                return <div key={index} className="pumpkin" style={style}>🎃</div>;
             });
             setElements(newElements);
         };
