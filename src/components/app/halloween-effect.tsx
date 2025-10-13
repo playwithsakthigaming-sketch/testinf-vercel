@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 
-const HALLOWEEN_ELEMENT_COUNT = 20;
+const HALLOWEEN_ELEMENT_COUNT = 5;
 
 export function HalloweenEffect() {
     const [elements, setElements] = useState<JSX.Element[]>([]);
