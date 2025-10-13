@@ -1,42 +1,25 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Badge } from '@/components/ui/badge';
-import { Truck, Fuel, BarChart, Calendar, Milestone, Users, Star, Trophy, Clock } from 'lucide-react';
-import { MonthlyJobChart } from '@/components/app/monthly-job-chart';
-import { TotalJobsChart } from '@/components/app/total-jobs-chart';
-import { Button } from '@/components/ui/button';
-import Link from 'next/link';
-import events from '@/lib/events.json';
-import { PlaceHolderImages } from '@/lib/placeholder-images';
-import Image from 'next/image';
+import { Activity, Users, MapPin, Milestone, Route, CircleDollarSign, Star, Truck } from 'lucide-react';
+import StatCard from '@/components/app/stat-card';
 
-type StatCardProps = {
-    icon: React.ReactNode;
-    title: string;
-    value: string | number;
-    change?: string;
-    changeType?: 'increase' | 'decrease';
+const chartData = [
+    { value: 10 }, { value: 20 }, { value: 15 }, { value: 30 },
+    { value: 25 }, { value: 40 }, { value: 35 },
+];
+
+type CompanyStats = {
+    total_drivers: number;
+    online_drivers: number;
+    total_distance: number;
+    avg_delivery: number;
+    longest_delivery: number;
+    money_earned: number;
+    total_jobs: number;
+    company_thp: number;
 };
 
-const StatCard = ({ icon, title, value, change, changeType }: StatCardProps) => (
-    <Card className="shadow-lg hover:shadow-primary/20 transition-shadow duration-300">
-        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">{title}</CardTitle>
-            <div className="text-primary">{icon}</div>
-        </CardHeader>
-        <CardContent>
-            <div className="text-2xl font-bold">{value}</div>
-            {change && (
-                 <p className="text-xs text-muted-foreground">
-                    <span className={changeType === 'increase' ? 'text-green-500' : 'text-red-500'}>{change}</span> from last month
-                </p>
-            )}
-        </CardContent>
-    </Card>
-);
-
-const fetchCompanyStats = async () => {
+async function fetchCompanyStats(): Promise<CompanyStats | null> {
     const apiKey = process.env.TRUCKERSHUB_API_KEY;
     if (!apiKey) {
         console.error("TRUCKERSHUB_API_KEY is not set.");
@@ -47,7 +30,7 @@ const fetchCompanyStats = async () => {
         const url = `https://api.truckershub.in/v1/company/stats`;
         const res = await fetch(url, {
             headers: { Authorization: apiKey },
-            next: { revalidate: 3600 } // Revalidate every hour
+            next: { revalidate: 300 } // Revalidate every 5 minutes
         });
         
         if (!res.ok) {
@@ -60,9 +43,8 @@ const fetchCompanyStats = async () => {
         if (data && data.status && data.response && data.response.company) {
             return data.response.company;
         } else {
-            // Check if the response is an empty object, which is a valid but empty state.
-            if (Object.keys(data).length > 0) {
-              console.error("Invalid API response structure for company stats:", data);
+             if (data && Object.keys(data).length > 0 && JSON.stringify(data) !== '{}') {
+                console.error("Invalid API response structure for company stats:", data);
             }
             return null;
         }
@@ -70,22 +52,79 @@ const fetchCompanyStats = async () => {
         console.error("Error fetching company stats:", error);
         return null;
     }
-};
+}
 
+// Helper to format large numbers
+const formatNumber = (num: number): string => {
+    if (num >= 1000000) return `${(num / 1000000).toFixed(1)}M`;
+    if (num >= 1000) return `${(num / 1000).toFixed(1)}K`;
+    return String(num);
+};
 
 export default async function DriverHubPage() {
     const stats = await fetchCompanyStats();
-    
-    const upcomingEvent = events.events[0];
-    const eventImage = PlaceHolderImages.find(p => p.id === upcomingEvent.imageId);
 
-    const totalDistance = stats ? (stats.total_distance / 1000).toFixed(2) : 'N/A';
-    const fuelConsumed = stats ? (stats.fuel_consumed).toLocaleString() : 'N/A';
-    const jobsThisMonth = stats ? stats.jobs_this_month : 'N/A';
-    const jobsLastMonth = stats ? stats.jobs_last_month : 'N/A';
-    const changePercentage = (stats && stats.jobs_last_month > 0) 
-        ? (((stats.jobs_this_month - stats.jobs_last_month) / stats.jobs_last_month) * 100).toFixed(1)
-        : '0';
+    const statsCards = [
+        {
+            icon: <Activity className="h-5 w-5 text-white" />,
+            title: "Online Drivers",
+            value: stats ? stats.online_drivers : 0,
+            iconBgColor: "bg-blue-500",
+        },
+        {
+            icon: <Users className="h-5 w-5 text-white" />,
+            title: "Total Drivers",
+            value: stats ? stats.total_drivers : 0,
+            iconBgColor: "bg-red-500",
+        },
+        {
+            icon: <MapPin className="h-5 w-5 text-white" />,
+            title: "Average Distance",
+            value: stats ? `${stats.avg_delivery} km` : '0 km',
+            iconBgColor: "bg-green-500",
+        },
+        {
+            icon: <Milestone className="h-5 w-5 text-white" />,
+            title: "Longest Distance",
+            value: stats ? `${formatNumber(stats.longest_delivery)} km` : '0 km',
+            iconBgColor: "bg-teal-500",
+        }
+    ];
+
+    const chartStatCards = [
+         {
+            icon: <Route className="h-6 w-6 text-white" />,
+            title: "Distance",
+            value: stats ? `${formatNumber(stats.total_distance)} km` : '0 km',
+            chartData: chartData,
+            chartColor: "#34D399",
+            iconBgColor: "bg-green-500",
+        },
+        {
+            icon: <CircleDollarSign className="h-6 w-6 text-white" />,
+            title: "Revenue",
+            value: stats ? `₹${formatNumber(stats.money_earned)}` : '₹0',
+            chartData: chartData.slice().reverse(),
+            chartColor: "#60A5FA",
+            iconBgColor: "bg-blue-500",
+        },
+        {
+            icon: <Star className="h-6 w-6 text-white" />,
+            title: "TruckersHub Points",
+            value: stats ? `${formatNumber(stats.company_thp)} THP` : '0 THP',
+            chartData: chartData,
+            chartColor: "#3B82F6",
+            iconBgColor: "bg-sky-500",
+        },
+        {
+            icon: <Truck className="h-6 w-6 text-white" />,
+            title: "Jobs Delivered",
+            value: stats ? formatNumber(stats.total_jobs) : 0,
+            chartData: chartData.slice().reverse(),
+            chartColor: "#F87171",
+            iconBgColor: "bg-red-500",
+        },
+    ];
 
     return (
         <div className="p-4 md:p-8 space-y-8">
@@ -94,108 +133,45 @@ export default async function DriverHubPage() {
                     <h1 className="text-3xl font-bold font-headline">Welcome, Driver!</h1>
                     <p className="text-muted-foreground">Here is your overview for today.</p>
                 </div>
-                <div className="flex items-center gap-4">
-                    <Avatar className="h-12 w-12 border-2 border-primary">
-                        <AvatarImage src="https://github.com/shadcn.png" alt="Driver Avatar" />
-                        <AvatarFallback>TP</AvatarFallback>
-                    </Avatar>
-                    <div>
-                        <p className="font-semibold">John Doe</p>
-                        <Badge variant="outline" className="border-primary text-primary">Pro Driver</Badge>
-                    </div>
-                </div>
             </div>
 
+            {/* Top Row Stats */}
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-                <StatCard icon={<Truck />} title="Total Distance" value={`${totalDistance} km`} />
-                <StatCard icon={<Fuel />} title="Fuel Consumed" value={`${fuelConsumed} L`} />
-                <StatCard 
-                    icon={<BarChart />} 
-                    title="Jobs This Month" 
-                    value={jobsThisMonth} 
-                    change={`${changePercentage}%`} 
-                    changeType={parseFloat(changePercentage) >= 0 ? 'increase' : 'decrease'} 
-                />
-                <StatCard icon={<Calendar />} title="Jobs Last Month" value={jobsLastMonth} />
+                {statsCards.map((card) => (
+                    <StatCard
+                        key={card.title}
+                        icon={card.icon}
+                        title={card.title}
+                        value={card.value}
+                        iconBgColor={card.iconBgColor}
+                        chartColor="" // Not used here
+                    />
+                ))}
+            </div>
+
+            {/* Bottom Row Stats with Charts */}
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+                {chartStatCards.map((card) => (
+                    <StatCard
+                        key={card.title}
+                        icon={card.icon}
+                        title={card.title}
+                        value={card.value}
+                        chartData={card.chartData}
+                        chartColor={card.chartColor}
+                        iconBgColor={card.iconBgColor}
+                        hasChart
+                    />
+                ))}
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                <Card className="lg:col-span-1">
+                <Card className="lg:col-span-3">
                     <CardHeader>
-                        <CardTitle>Upcoming Event</CardTitle>
+                        <CardTitle>Recent Activity</CardTitle>
                     </CardHeader>
                     <CardContent>
-                       {upcomingEvent && (
-                            <div className="space-y-4">
-                                {eventImage && (
-                                    <div className="relative h-40 w-full rounded-lg overflow-hidden">
-                                        <Image src={eventImage.imageUrl} alt={eventImage.description} fill className="object-cover" />
-                                    </div>
-                                )}
-                                <h3 className="font-semibold">{upcomingEvent.title}</h3>
-                                <p className="text-sm text-muted-foreground flex items-center gap-2">
-                                    <Clock size={16} /> {upcomingEvent.date}
-                                </p>
-                                <Button className="w-full" asChild>
-                                    <Link href={`/events/${upcomingEvent.id}`}>View Details</Link>
-                                </Button>
-                            </div>
-                       )}
-                    </CardContent>
-                </Card>
-                <Card className="lg:col-span-2">
-                    <CardHeader>
-                        <CardTitle>Celestial Milestone Tracker</CardTitle>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
-                        <div className="flex items-center gap-4 p-4 rounded-lg bg-card-foreground/5">
-                            <Milestone size={40} className="text-primary" />
-                            <div>
-                                <p className="font-bold text-lg">You've driven 150,000 KM!</p>
-                                <p className="text-sm text-muted-foreground">Only 50,000 KM to the next milestone: "Cosmic Voyager".</p>
-                            </div>
-                        </div>
-                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
-                            <div className="p-2 rounded-lg bg-card-foreground/5">
-                                <Users size={24} className="mx-auto mb-2 text-primary" />
-                                <p className="font-semibold">Top 10%</p>
-                                <p className="text-xs text-muted-foreground">Community Rank</p>
-                            </div>
-                             <div className="p-2 rounded-lg bg-card-foreground/5">
-                                <Star size={24} className="mx-auto mb-2 text-primary" />
-                                <p className="font-semibold">3</p>
-                                <p className="text-xs text-muted-foreground">Awards Won</p>
-                            </div>
-                             <div className="p-2 rounded-lg bg-card-foreground/5">
-                                <Trophy size={24} className="mx-auto mb-2 text-primary" />
-                                <p className="font-semibold">5th</p>
-                                <p className="text-xs text-muted-foreground">Monthly Rank</p>
-                            </div>
-                             <div className="p-2 rounded-lg bg-card-foreground/5">
-                                <Calendar size={24} className="mx-auto mb-2 text-primary" />
-                                <p className="font-semibold">12</p>
-                                <p className="text-xs text-muted-foreground">Events Attended</p>
-                            </div>
-                        </div>
-                    </CardContent>
-                </Card>
-            </div>
-            
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                 <Card>
-                    <CardHeader>
-                        <CardTitle>Jobs This Month vs. Last Month</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                        <MonthlyJobChart thisMonth={Number(jobsThisMonth) || 0} lastMonth={Number(jobsLastMonth) || 0} />
-                    </CardContent>
-                </Card>
-                 <Card>
-                    <CardHeader>
-                        <CardTitle>Jobs by Type (This Month)</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                        <TotalJobsChart />
+                        <p className="text-muted-foreground">Recent jobs and events will be displayed here.</p>
                     </CardContent>
                 </Card>
             </div>
