@@ -158,9 +158,11 @@ export default function DashboardPage() {
         
         fetchAllData();
 
-        setDate(new Date().toLocaleDateString('en-GB', {
-            day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit'
-        }) + ' GMT');
+        setDate(new Date().toLocaleString('en-GB', {
+            day: '2-digit', month: 'short', year: 'numeric',
+            hour: '2-digit', minute: '2-digit', second: '2-digit',
+            timeZoneName: 'short'
+        }).replace(',', ''));
     }, []);
 
     return (
