@@ -57,10 +57,13 @@ const fetchCompanyStats = async () => {
 
         const data = await res.json();
         
-        if (data && data.status && data.response) {
+        if (data && data.status && data.response && data.response.company) {
             return data.response.company;
         } else {
-            console.error("Invalid API response structure for company stats:", data);
+            // Check if the response is an empty object, which is a valid but empty state.
+            if (JSON.stringify(data) !== '{}') {
+              console.error("Invalid API response structure for company stats:", data);
+            }
             return null;
         }
     } catch (error) {
