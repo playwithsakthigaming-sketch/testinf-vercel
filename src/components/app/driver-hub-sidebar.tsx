@@ -49,7 +49,7 @@ import { Button } from '../ui/button';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '../ui/collapsible';
 
 const MainNav = [
-    { label: 'Dashboard', href: '/driver-hub', icon: LayoutDashboard },
+    { label: 'Dashboard', href: '/driver-hub/dashboard', icon: LayoutDashboard },
     { label: 'Leaderboard', href: '/driver-hub/leaderboard', icon: Award },
     { label: 'Live Map', href: '/driver-hub/live-map', icon: Map },
 ];
@@ -87,6 +87,9 @@ export function DriverHubSidebar() {
     const pathname = usePathname();
 
     const isActive = (href: string) => {
+        if (href === '/driver-hub') {
+            return pathname === href || pathname === '/driver-hub/page';
+        }
         return pathname === href;
     };
     
@@ -185,3 +188,5 @@ export function DriverHubLayout({ children }: { children: React.ReactNode }) {
         </SidebarProvider>
     );
 }
+
+    

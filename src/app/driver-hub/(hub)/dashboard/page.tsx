@@ -1,0 +1,281 @@
+
+'use client';
+
+import React from 'react';
+import { AreaChart, Area, PieChart, Pie, Cell, Legend, ResponsiveContainer } from 'recharts';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Table, TableBody, TableCell, TableHeader, TableHead, TableRow } from '@/components/ui/table';
+import { Bell, HelpCircle, User, Truck, Calendar, Flame, Dot } from 'lucide-react';
+import Image from 'next/image';
+
+const StatCard = ({ title, value, icon, className = '' }: { title: string, value: string, icon: React.ReactNode, className?: string }) => (
+    <Card className={`bg-card/80 backdrop-blur-sm ${className}`}>
+        <CardContent className="p-4">
+            <div className="flex items-center gap-4">
+                {icon}
+                <div>
+                    <p className="text-sm text-muted-foreground">{title}</p>
+                    <p className="text-2xl font-bold">{value}</p>
+                </div>
+            </div>
+        </CardContent>
+    </Card>
+);
+
+const monthlyJobsData = [
+  { name: 'Jun', jobs: 2500 },
+  { name: 'Jul', jobs: 2000 },
+  { name: 'Aug', jobs: 1800 },
+  { name: 'Sep', jobs: 1500 },
+  { name: 'Oct', jobs: 500 },
+];
+
+const etsVsAtsData = [
+  { name: 'ETS2', value: 44657 },
+  { name: 'ATS', value: 7891 },
+];
+const goalData = [
+  { name: 'Completed', value: 80 },
+  { name: 'Left', value: 20 },
+];
+const COLORS = ['#3CB371', '#0d342f'];
+
+const allTimeLeaderboard = [
+    { name: 'GamingWithSandip', nxp: '2,936,309 NXP' },
+    { name: 'Lucifer Bhai', nxp: '2,291,135 NXP' },
+    { name: 'Faizur Rahman', nxp: '1,557,623 NXP' },
+    { name: 'Uncle-Jatala', nxp: '1,215,599 NXP' },
+    { name: 'YOGESH KUMAR', nxp: '1,184,241 NXP' },
+];
+
+const thisMonthLeaderboard = [
+    { name: '1DIRECTION GAMING', nxp: '39,927 NXP' },
+    { name: 'GamingWithSandip', nxp: '15,119 NXP' },
+    { name: 'Akash-Akki', nxp: '12,155 NXP' },
+    { name: 'Abhijeet kuanr', nxp: '11,682 NXP' },
+    { name: 'Suraj_0711', nxp: '11,308 NXP' },
+];
+
+const recentJobs = [
+    { id: '1082874', driver: 'wtf.prasun', from: 'Bern', to: 'Pumpkin Farm', cargo: 'Spider Candle', mass: '2 t', distance: '99 km' },
+];
+
+const MilestoneIcon = ({ icon, color }: { icon: string, color: string }) => (
+    <div className={`w-8 h-8 rounded-full flex items-center justify-center bg-${color}-500/20 text-${color}-400`}>
+        <Dot/>
+    </div>
+);
+
+
+export default function DashboardPage() {
+    const [date, setDate] = React.useState('');
+    React.useEffect(() => {
+        setDate(new Date().toLocaleDateString('en-GB', {
+            day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit'
+        }) + ' GMT');
+    }, []);
+
+    return (
+        <div className="p-4 md:p-8 space-y-6 bg-background text-white">
+            {/* Header */}
+            <div className="flex justify-between items-center">
+                <h1 className="text-2xl font-semibold text-primary">Good Evening SAKTHIVEL</h1>
+                <div className="flex items-center gap-4">
+                    <span className="text-muted-foreground text-sm">{date}</span>
+                    <Badge variant="destructive"><Dot className="-ml-1" />Offline</Badge>
+                    <Button variant="ghost" size="icon"><Bell size={18} /></Button>
+                    <Button variant="ghost" size="icon"><HelpCircle size={18} /></Button>
+                    <Avatar className="h-8 w-8">
+                        <AvatarImage src="/placeholder.svg" alt="User avatar" />
+                        <AvatarFallback>S</AvatarFallback>
+                    </Avatar>
+                </div>
+            </div>
+
+            {/* Stats Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <StatCard title="Live" value="3" icon={<Truck size={24} />} />
+                <StatCard title="Distance" value="38,082,641 kms" icon={<Calendar size={24} />} />
+                <StatCard title="Jobs" value="52,548" icon={<Truck size={24} />} />
+                <StatCard title="Fuel Burned" value="68,142,606 l" icon={<Flame size={24} />} />
+            </div>
+
+            {/* Upcoming Event */}
+            <Card className="relative overflow-hidden bg-transparent border-0">
+                <Image src="https://i.imgur.com/8gwAD3r.png" alt="Pink Ribbon Event" layout="fill" objectFit="cover" className="z-0" />
+                <div className="absolute inset-0 bg-black/50"/>
+                <CardContent className="relative z-10 p-6 flex items-center justify-between">
+                    <div>
+                        <p className="text-sm text-pink-300">Upcoming Event</p>
+                        <h2 className="text-xl font-bold mt-1">A Cozy Drive in October with Pink Ribbon VTC</h2>
+                        <p className="text-sm text-muted-foreground mt-1">Mon, 13 Oct 2025 18:00:00 GMT</p>
+                    </div>
+                    <Button>Details</Button>
+                </CardContent>
+            </Card>
+
+            {/* Celestial Milestone Tracker */}
+            <Card className="bg-card/80">
+                <CardHeader>
+                    <CardTitle className="text-center text-lg">Celestial Milestone Tracker</CardTitle>
+                </CardHeader>
+                <CardContent>
+                    <p className="text-center text-muted-foreground text-sm mb-4">
+                        Together, Nexon Drivers and Pilots have journeyed incredible distances pushing boundaries, breaking limits, and truly proving our slogan: "Gateway to New Horizons."
+                    </p>
+                    <div className="flex justify-around items-center">
+                        <MilestoneIcon icon="earth" color="green" />
+                        <div className="flex-grow h-1 bg-green-500/30 rounded-full mx-2 relative">
+                            <div className="absolute top-0 left-0 h-1 bg-green-500 rounded-full" style={{width: '30%'}}></div>
+                        </div>
+                        <MilestoneIcon icon="meteor" color="orange" />
+                        <div className="flex-grow h-1 bg-gray-700 rounded-full mx-2" />
+                        <MilestoneIcon icon="rocket" color="purple" />
+                         <div className="flex-grow h-1 bg-gray-700 rounded-full mx-2" />
+                        <MilestoneIcon icon="comet" color="red" />
+                         <div className="flex-grow h-1 bg-gray-700 rounded-full mx-2" />
+                        <MilestoneIcon icon="ufo" color="teal" />
+                         <div className="flex-grow h-1 bg-gray-700 rounded-full mx-2" />
+                        <MilestoneIcon icon="galaxy" color="indigo" />
+                         <div className="flex-grow h-1 bg-gray-700 rounded-full mx-2" />
+                        <MilestoneIcon icon="sun" color="yellow" />
+                         <div className="flex-grow h-1 bg-gray-700 rounded-full mx-2" />
+                        <MilestoneIcon icon="blackhole" color="gray" />
+                    </div>
+                </CardContent>
+            </Card>
+            
+            {/* Charts and Goals */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <Card className="lg:col-span-2 bg-card/80">
+                    <CardHeader>
+                        <CardTitle>Monthly Jobs</CardTitle>
+                    </CardHeader>
+                    <CardContent className="h-[250px]">
+                        <ResponsiveContainer width="100%" height="100%">
+                            <AreaChart data={monthlyJobsData}>
+                                <defs>
+                                    <linearGradient id="colorJobs" x1="0" y1="0" x2="0" y2="1">
+                                        <stop offset="5%" stopColor="#3CB371" stopOpacity={0.8}/>
+                                        <stop offset="95%" stopColor="#3CB371" stopOpacity={0}/>
+                                    </linearGradient>
+                                </defs>
+                                <Area type="monotone" dataKey="jobs" stroke="#3CB371" fillOpacity={1} fill="url(#colorJobs)" />
+                            </AreaChart>
+                        </ResponsiveContainer>
+                    </CardContent>
+                </Card>
+                 <div className="grid grid-cols-1 gap-6">
+                     <Card className="bg-card/80">
+                        <CardHeader><CardTitle>Jobs This Month</CardTitle></CardHeader>
+                        <CardContent>
+                            <p className="text-4xl font-bold">289</p>
+                            <p className="text-sm text-muted-foreground">Previous Month: 1138</p>
+                        </CardContent>
+                    </Card>
+                    <Card className="bg-card/80">
+                        <CardHeader><CardTitle>ETS2 V/S ATS Jobs</CardTitle></CardHeader>
+                         <CardContent className="h-[150px]">
+                             <ResponsiveContainer width="100%" height="100%">
+                                <PieChart>
+                                    <Pie data={etsVsAtsData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={60} fill="#8884d8">
+                                        {etsVsAtsData.map((entry, index) => <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />)}
+                                    </Pie>
+                                    <Legend />
+                                </PieChart>
+                            </ResponsiveContainer>
+                         </CardContent>
+                    </Card>
+                </div>
+            </div>
+
+            <Card className="bg-card/80">
+                <CardHeader><CardTitle>Monthly Goals</CardTitle></CardHeader>
+                <CardContent className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    {['Distance Goal', 'Jobs Goal', 'Income Goal'].map(goal => (
+                        <div key={goal}>
+                            <h3 className="text-center font-semibold mb-2">{goal}</h3>
+                            <div className="h-[150px]">
+                                <ResponsiveContainer width="100%" height="100%">
+                                    <PieChart>
+                                        <Pie data={goalData} dataKey="value" cx="50%" cy="50%" innerRadius={40} outerRadius={60} startAngle={90} endAngle={450}>
+                                            {goalData.map((entry, index) => <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} stroke={COLORS[index % COLORS.length]} />)}
+                                        </Pie>
+                                    </PieChart>
+                                </ResponsiveContainer>
+                            </div>
+                        </div>
+                    ))}
+                </CardContent>
+            </Card>
+
+            {/* Leaderboards */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <Card className="bg-card/80">
+                    <CardHeader><CardTitle>All Time</CardTitle></CardHeader>
+                    <CardContent>
+                        <ul className="space-y-3">
+                            {allTimeLeaderboard.map((user, index) => (
+                                <li key={user.name} className="flex justify-between items-center text-sm">
+                                    <span>{index + 1}) {user.name}</span>
+                                    <span className="font-semibold">{user.nxp}</span>
+                                </li>
+                            ))}
+                        </ul>
+                    </CardContent>
+                </Card>
+                 <Card className="bg-card/80">
+                    <CardHeader><CardTitle>This Month</CardTitle></CardHeader>
+                    <CardContent>
+                         <ul className="space-y-3">
+                            {thisMonthLeaderboard.map((user, index) => (
+                                <li key={user.name} className="flex justify-between items-center text-sm">
+                                    <span>{index + 1}) {user.name}</span>
+                                    <span className="font-semibold">{user.nxp}</span>
+                                </li>
+                            ))}
+                        </ul>
+                    </CardContent>
+                </Card>
+            </div>
+
+            {/* Recent Jobs */}
+            <Card className="bg-card/80">
+                <CardHeader><CardTitle>Recent Jobs</CardTitle></CardHeader>
+                <CardContent>
+                    <Table>
+                        <TableHeader>
+                            <TableRow>
+                                <TableHead>#</TableHead>
+                                <TableHead>Driver</TableHead>
+                                <TableHead>From-To</TableHead>
+                                <TableHead>Cargo</TableHead>
+                                <TableHead>Cargo Mass</TableHead>
+                                <TableHead>Distance</TableHead>
+                                <TableHead></TableHead>
+                            </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                            {recentJobs.map(job => (
+                                <TableRow key={job.id}>
+                                    <TableCell>{job.id}</TableCell>
+                                    <TableCell>{job.driver}</TableCell>
+                                    <TableCell>{job.from} - {job.to}</TableCell>
+                                    <TableCell>{job.cargo}</TableCell>
+                                    <TableCell>{job.mass}</TableCell>
+                                    <TableCell>{job.distance}</TableCell>
+                                    <TableCell><Button variant="outline" size="sm">Details</Button></TableCell>
+                                </TableRow>
+                            ))}
+                        </TableBody>
+                    </Table>
+                </CardContent>
+            </Card>
+
+        </div>
+    );
+}
+
+    
