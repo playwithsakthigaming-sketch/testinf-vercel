@@ -69,6 +69,7 @@ const userStats = [
 
 export default function SettingsPage() {
     const { toast } = useToast();
+    const [isSubmitting, setIsSubmitting] = useState(false);
     const [isSubmittingPassword, setIsSubmittingPassword] = useState(false);
     const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
     const bannerImage = PlaceHolderImages.find(p => p.id === 'hero-truck-2');
@@ -96,6 +97,27 @@ export default function SettingsPage() {
         fetchUserData();
     }, []);
 
+    const profileForm = useForm<ProfileFormData>({
+        resolver: zodResolver(profileFormSchema),
+        defaultValues: async () => {
+            try {
+                const res = await fetch(`/api/truckershub?endpoint=user`);
+                if (!res.ok) throw new Error(`Failed to fetch user data`);
+                const data = await res.json();
+                if(data.response) {
+                    return {
+                        username: data.response.username,
+                        email: data.response.email,
+                        country: data.response.country || 'India',
+                    }
+                }
+            } catch (error) {
+                console.error(error);
+            }
+            return { username: '', email: '', country: ''}
+        }
+    });
+
     const passwordForm = useForm<PasswordFormData>({
         resolver: zodResolver(passwordFormSchema),
         defaultValues: {
@@ -104,6 +126,17 @@ export default function SettingsPage() {
             confirmPassword: '',
         },
     });
+
+    async function onProfileSubmit(values: ProfileFormData) {
+        setIsSubmitting(true);
+        // Simulate API call to save data
+        await new Promise(resolve => setTimeout(resolve, 1500));
+        setIsSubmitting(false);
+        toast({
+            title: "Profile Updated",
+            description: "Your profile information has been saved.",
+        });
+    }
 
     async function onPasswordSubmit(values: PasswordFormData) {
         setIsSubmittingPassword(true);
@@ -123,99 +156,11 @@ export default function SettingsPage() {
     return (
         <div className="p-4 md:p-8 space-y-8">
             <h1 className="text-3xl font-bold flex items-center gap-2"><Settings /> User Settings</h1>
-            <Tabs defaultValue="profile" className="w-full">
+            <Tabs defaultValue="security" className="w-full">
                 <TabsList>
-                    <TabsTrigger value="profile">Profile</TabsTrigger>
                     <TabsTrigger value="security">Security</TabsTrigger>
                     <TabsTrigger value="connections">Connections</TabsTrigger>
                 </TabsList>
-                <TabsContent value="profile">
-                    {userProfile ? (
-                    <div className="space-y-8">
-                        <Card className="overflow-hidden">
-                            <div className="relative h-48 bg-card">
-                               {bannerImage && <Image src={bannerImage.imageUrl} alt="Profile Banner" fill className="object-cover"/>}
-                               <div className="absolute inset-0 bg-black/50"/>
-                            </div>
-                            <CardContent className="p-6 pt-0">
-                                <div className="flex items-end -mt-16">
-                                    <Avatar className="h-32 w-32 border-4 border-card">
-                                        <AvatarImage src={userProfile.avatar} alt={userProfile.username}/>
-                                        <AvatarFallback>{userProfile.username.charAt(0)}</AvatarFallback>
-                                    </Avatar>
-                                    <div className="ml-4 flex-grow">
-                                         <h1 className="text-3xl font-bold font-headline">{userProfile.username}</h1>
-                                         <p className="text-muted-foreground">{userProfile.role}</p>
-                                    </div>
-                                </div>
-
-                                <Separator className="my-6"/>
-
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                    <div className="space-y-4">
-                                        <h3 className="font-semibold text-lg">Contact Information</h3>
-                                         <div className="flex items-center gap-3 text-sm">
-                                            <Mail className="text-muted-foreground"/>
-                                            <span>{userProfile.email}</span>
-                                        </div>
-                                        <div className="flex items-center gap-3 text-sm">
-                                            <MapPin className="text-muted-foreground"/>
-                                            <span>{userProfile.country}</span>
-                                        </div>
-                                    </div>
-                                    <div className="space-y-4">
-                                        <h3 className="font-semibold text-lg">Online Profiles</h3>
-                                        {userProfile.steamProfile && (
-                                            <div className="flex items-center gap-3 text-sm">
-                                                <SteamIcon />
-                                                <a href={userProfile.steamProfile} target="_blank" rel="noreferrer" className="text-primary hover:underline">
-                                                    Steam Profile
-                                                </a>
-                                            </div>
-                                        )}
-                                        {userProfile.truckersMPProfile && (
-                                            <div className="flex items-center gap-3 text-sm">
-                                                <Globe className="text-muted-foreground"/>
-                                                 <a href={userProfile.truckersMPProfile} target="_blank" rel="noreferrer" className="text-primary hover:underline">
-                                                    TruckersMP Profile
-                                                </a>
-                                            </div>
-                                        )}
-                                    </div>
-                                </div>
-                            </CardContent>
-                        </Card>
-
-                        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-                            {userStats.map(stat => (
-                                <Card key={stat.label}>
-                                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                                        <CardTitle className="text-sm font-medium">{stat.label}</CardTitle>
-                                        {stat.icon}
-                                    </CardHeader>
-                                    <CardContent>
-                                        <div className="text-2xl font-bold">{stat.value}</div>
-                                    </CardContent>
-                                </Card>
-                            ))}
-                        </div>
-
-                        <Card>
-                            <CardHeader>
-                                <CardTitle>Recent Activity</CardTitle>
-                                <CardDescription>A log of your recent jobs and company activity.</CardDescription>
-                            </CardHeader>
-                            <CardContent>
-                                <p className="text-muted-foreground">No recent activity to display.</p>
-                            </CardContent>
-                        </Card>
-                    </div>
-                    ) : (
-                        <div className="flex items-center justify-center p-16">
-                            <Loader2 className="h-8 w-8 animate-spin text-primary"/>
-                        </div>
-                    )}
-                </TabsContent>
                 <TabsContent value="security">
                      <Card>
                         <CardHeader>
@@ -285,7 +230,3 @@ export default function SettingsPage() {
         </div>
     );
 }
-
-    
-
-    
