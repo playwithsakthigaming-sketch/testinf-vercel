@@ -3,16 +3,63 @@
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { User } from "lucide-react";
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { useToast } from "@/hooks/use-toast";
+import { useState } from "react";
+import { Loader2 } from "lucide-react";
+
 
 const countries = ["India", "USA", "Canada", "UK", "Australia", "Germany"];
 
+const passwordFormSchema = z.object({
+  currentPassword: z.string().min(1, 'Current password is required'),
+  newPassword: z.string().min(8, 'New password must be at least 8 characters long'),
+  confirmPassword: z.string(),
+}).refine((data) => data.newPassword === data.confirmPassword, {
+  message: "Passwords don't match",
+  path: ["confirmPassword"],
+});
+
+type PasswordFormData = z.infer<typeof passwordFormSchema>;
+
+
 export default function SettingsPage() {
+    const { toast } = useToast();
+    const [isSubmittingPassword, setIsSubmittingPassword] = useState(false);
+
+    const passwordForm = useForm<PasswordFormData>({
+        resolver: zodResolver(passwordFormSchema),
+        defaultValues: {
+            currentPassword: '',
+            newPassword: '',
+            confirmPassword: '',
+        },
+    });
+
+    async function onPasswordSubmit(values: PasswordFormData) {
+        setIsSubmittingPassword(true);
+        // Simulate API call
+        await new Promise(resolve => setTimeout(resolve, 1500));
+        setIsSubmittingPassword(false);
+        
+        toast({
+            title: "Password Updated",
+            description: "Your password has been changed successfully.",
+        });
+
+        passwordForm.reset();
+    }
+
+
     return (
         <div className="p-4 md:p-8 space-y-8">
             <h1 className="text-3xl font-bold flex items-center gap-2"><User /> User Settings</h1>
@@ -76,8 +123,61 @@ export default function SettingsPage() {
                 </TabsContent>
                 <TabsContent value="security">
                      <Card>
-                        <CardHeader><CardTitle>Security</CardTitle></CardHeader>
-                        <CardContent><p className="text-muted-foreground">Security settings will be available here.</p></CardContent>
+                        <CardHeader>
+                            <CardTitle>Change Password</CardTitle>
+                            <CardDescription>Update your password here.</CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                            <Form {...passwordForm}>
+                                <form onSubmit={passwordForm.handleSubmit(onPasswordSubmit)} className="space-y-6">
+                                    <FormField
+                                        control={passwordForm.control}
+                                        name="currentPassword"
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>CURRENT PASSWORD</FormLabel>
+                                                <FormControl>
+                                                    <Input type="password" placeholder="Enter current password" {...field} />
+                                                </FormControl>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
+                                    />
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                         <FormField
+                                            control={passwordForm.control}
+                                            name="newPassword"
+                                            render={({ field }) => (
+                                                <FormItem>
+                                                    <FormLabel>NEW PASSWORD</FormLabel>
+                                                    <FormControl>
+                                                        <Input type="password" placeholder="Enter new password" {...field} />
+                                                    </FormControl>
+                                                    <FormMessage />
+                                                </FormItem>
+                                            )}
+                                        />
+                                         <FormField
+                                            control={passwordForm.control}
+                                            name="confirmPassword"
+                                            render={({ field }) => (
+                                                <FormItem>
+                                                    <FormLabel>RETYPE NEW PASSWORD</FormLabel>
+                                                    <FormControl>
+                                                        <Input type="password" placeholder="Confirm your new password" {...field} />
+                                                    </FormControl>
+                                                    <FormMessage />
+                                                </FormItem>
+                                            )}
+                                        />
+                                    </div>
+                                    <Button type="submit" disabled={isSubmittingPassword}>
+                                        {isSubmittingPassword && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                                        Save changes
+                                    </Button>
+                                </form>
+                            </Form>
+                        </CardContent>
                     </Card>
                 </TabsContent>
                  <TabsContent value="connections">
