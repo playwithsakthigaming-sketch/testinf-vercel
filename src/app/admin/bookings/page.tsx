@@ -9,11 +9,12 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { MoreHorizontal, CheckCircle, XCircle, PauseCircle, Clock, Ticket } from "lucide-react";
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Skeleton } from '@/components/ui/skeleton';
 import { getEventsWithBookings } from '../applications/server-actions';
 import { UpdateBookingStatus } from '../applications/actions';
 import type { Event, Booking } from '@/lib/events';
+import { DeleteBookingDialog } from './delete-booking-dialog';
 
 type BookingWithEventInfo = {
     booking: Booking;
@@ -49,6 +50,8 @@ function BookingRow({ item }: { item: BookingWithEventInfo }) {
                        <UpdateBookingStatus eventId={event.id} areaId={area.id} bookingId={booking.id} newStatus="approved" />
                        <UpdateBookingStatus eventId={event.id} areaId={area.id} bookingId={booking.id} newStatus="rejected" />
                        <UpdateBookingStatus eventId={event.id} areaId={area.id} bookingId={booking.id} newStatus="hold" />
+                       <DropdownMenuSeparator />
+                       <DeleteBookingDialog eventId={event.id} areaId={area.id} bookingId={booking.id} />
                     </DropdownMenuContent>
                 </DropdownMenu>
             </TableCell>

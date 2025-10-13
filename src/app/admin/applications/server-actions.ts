@@ -102,7 +102,7 @@ export async function getApplications(): Promise<Application[]> {
 export async function updateApplicationStatus(
   applicationId: string,
   newStatus: ApplicationStatus,
-  role?: string
+  role: string = 'Trainee'
 ): Promise<{ success: boolean; message: string }> {
     try {
         const applicationsData = await readJsonFile<ApplicationsData>(applicationsFilePath);
@@ -127,7 +127,7 @@ export async function updateApplicationStatus(
                 const newMember: StaffMember = {
                     id: `staff-${Date.now()}`,
                     name: application.name,
-                    role: role || 'Trainee',
+                    role: role,
                     imageId: 'testimonial-avatar',
                     imageUrl: "https://media.discordapp.net/attachments/1116720480544636999/1274425873201631304/TP_NEW_WB_PNGxxxhdpi.png?ex=68d4d8d5&is=68d38755&hm=b6d4e0e4ef2c3215a4de4fb2f592189a60ddd94c651f96fe04deac2e7f96ddc6&=&format=webp&quality=lossless&width=826&height=826",
                     steamUrl: application.steamUrl,
@@ -243,13 +243,44 @@ export async function updateBookingStatus(
         
         await sendBookingWebhookNotification(booking, event, newStatus, areaId);
         
-        revalidatePath('/admin/applications');
+        revalidatePath('/admin/bookings');
         revalidatePath(`/events/${eventId}`);
         
         return { success: true, message: `Booking status updated to ${newStatus}.` };
 
     } catch (error) {
         console.error('Error updating booking status:', error);
+        return { success: false, message: 'An unexpected error occurred.' };
+    }
+}
+
+export async function deleteBooking(
+    eventId: string,
+    areaId: string,
+    bookingId: string
+): Promise<{ success: boolean; message: string }> {
+    try {
+        const eventsData = await readJsonFile<EventsData>(eventsFilePath);
+        const event = eventsData.events.find(e => e.id === eventId);
+        if (!event || !event.slots) return { success: false, message: 'Event not found.' };
+
+        const area = event.slots.find(a => a.id === areaId);
+        if (!area || !area.bookings) return { success: false, message: 'Slot area not found.' };
+        
+        const bookingIndex = area.bookings.findIndex(b => b.id === bookingId);
+        if (bookingIndex === -1) return { success: false, message: 'Booking not found.' };
+
+        area.bookings.splice(bookingIndex, 1);
+        
+        await writeJsonFile(eventsFilePath, eventsData);
+        
+        revalidatePath('/admin/bookings');
+        revalidatePath(`/events/${eventId}`);
+        
+        return { success: true, message: `Booking has been deleted.` };
+
+    } catch (error) {
+        console.error('Error deleting booking:', error);
         return { success: false, message: 'An unexpected error occurred.' };
     }
 }
