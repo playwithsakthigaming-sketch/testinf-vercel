@@ -23,7 +23,7 @@ export function ApplicationDialog() {
       </DialogTrigger>
       <DialogContent className="sm:max-w-[800px]">
         <DialogHeader>
-          <DialogTitle>Apply Now</DialogTitle>
+          <DialogTitle>Register for Driver Hub</DialogTitle>
         </DialogHeader>
         <ApplicationForm onFormSubmit={() => setOpen(false)} />
       </DialogContent>

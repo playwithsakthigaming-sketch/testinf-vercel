@@ -46,7 +46,7 @@ function ApplicationRow({ app }: { app: Application }) {
                 </TableCell>
                 <TableCell className="font-medium">{app.id}</TableCell>
                 <TableCell>{app.name}</TableCell>
-                <TableCell>{app.discordTag}</TableCell>
+                <TableCell>{app.discordTag || 'N/A'}</TableCell>
                 <TableCell>{format(new Date(app.submittedAt), 'PPp')}</TableCell>
                 <TableCell>{statusInfo[app.status]?.badge || app.status}</TableCell>
                 <TableCell className="text-right">
@@ -70,11 +70,25 @@ function ApplicationRow({ app }: { app: Application }) {
                     <TableCell colSpan={7} className="p-4">
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                             <div><strong>Email:</strong> {app.email}</div>
+                            {app.steamUrl && (
+                                <div>
+                                    <strong>Steam Profile:</strong>
+                                    <Link href={app.steamUrl} target="_blank" className="text-primary hover:underline ml-2">View Profile</Link>
+                                </div>
+                            )}
+                             {app.truckersmpUrl && (
+                                <div>
+                                    <strong>TruckersMP:</strong>
+                                    <Link href={app.truckersmpUrl} target="_blank" className="text-primary hover:underline ml-2">View Profile</Link>
+                                </div>
+                            )}
+                             {app.truckershubUrl && (
+                                <div>
+                                    <strong>TruckersHub:</strong>
+                                    <Link href={app.truckershubUrl} target="_blank" className="text-primary hover:underline ml-2">View Profile</Link>
+                                </div>
+                            )}
                             <div><strong>Experience:</strong> <span className="capitalize">{app.experience}</span></div>
-                            <div>
-                                <strong>Steam Profile:</strong>
-                                <Link href={app.steamUrl} target="_blank" className="text-primary hover:underline ml-2">View Profile</Link>
-                            </div>
                             <div className="col-span-full">
                                 <strong>How they found us:</strong> <span className="capitalize">{app.howYouFound}</span>
                                 {app.howYouFound === 'friends' && app.friendsMention && ` - ${app.friendsMention}`}

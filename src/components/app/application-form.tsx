@@ -1,8 +1,9 @@
 
+
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useForm, useWatch } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
   Form,
@@ -28,9 +29,6 @@ import { useToast } from '@/hooks/use-toast';
 import { submitApplication, type SubmitResult } from '@/app/actions';
 import { type ApplicationData, applicationSchema } from '@/lib/schemas';
 import { Loader2 } from 'lucide-react';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Textarea } from '../ui/textarea';
-
 
 export function ApplicationForm({ onFormSubmit }: { onFormSubmit?: () => void }) {
   const [isTermsRead, setIsTermsRead] = useState(false);
@@ -54,21 +52,14 @@ export function ApplicationForm({ onFormSubmit }: { onFormSubmit?: () => void })
   const form = useForm<ApplicationData>({
     resolver: zodResolver(applicationSchema),
     defaultValues: {
-      name: '',
-      discordTag: '',
+      username: '',
       email: '',
-      steamUrl: '',
+      truckersmp: '',
+      truckershub: '',
+      password: '',
       terms: false,
-      friendsMention: '',
-      othersMention: '',
     },
   });
-
-  const howYouFoundValue = useWatch({
-    control: form.control,
-    name: 'howYouFound',
-  });
-
 
   async function onSubmit(data: ApplicationData) {
     setIsSubmitting(true);
@@ -91,11 +82,11 @@ export function ApplicationForm({ onFormSubmit }: { onFormSubmit?: () => void })
   if (submissionResult?.success) {
     return (
       <div className="text-center py-12">
-        <h2 className="text-2xl font-bold text-primary">Application Submitted!</h2>
-        <p className="text-muted-foreground mt-2">Thank you for applying.</p>
+        <h2 className="text-2xl font-bold text-primary">Registration Complete!</h2>
+        <p className="text-muted-foreground mt-2">Thank you for registering.</p>
         <p className="mt-4">Your Application ID is:</p>
         <p className="text-3xl font-bold text-primary mt-2">{submissionResult.applicationId}</p>
-        <p className="text-sm text-muted-foreground mt-4">You can close this window. It will close automatically in 30 seconds.</p>
+        <p className="text-sm text-muted-foreground mt-4">Your application is under review. You can close this window.</p>
       </div>
     );
   }
@@ -107,25 +98,12 @@ export function ApplicationForm({ onFormSubmit }: { onFormSubmit?: () => void })
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <FormField
               control={form.control}
-              name="name"
+              name="username"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Full Name</FormLabel>
+                  <FormLabel>Username</FormLabel>
                   <FormControl>
-                    <Input placeholder="Enter your full name" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="discordTag"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Discord Tag</FormLabel>
-                  <FormControl>
-                    <Input placeholder="e.g., username#1234" {...field} />
+                    <Input placeholder="Enter your username" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -150,101 +128,48 @@ export function ApplicationForm({ onFormSubmit }: { onFormSubmit?: () => void })
             />
             <FormField
               control={form.control}
-              name="steamUrl"
+              name="truckersmp"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Steam Profile URL</FormLabel>
+                  <FormLabel>TruckersMP Profile URL</FormLabel>
                   <FormControl>
-                    <Input placeholder="https://steamcommunity.com/id/yourprofile" {...field} />
+                    <Input placeholder="https://truckersmp.com/user/..." {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="truckershub"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>TruckersHub Profile URL</FormLabel>
+                  <FormControl>
+                    <Input placeholder="https://truckershub.in/..." {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+             <FormField
+              control={form.control}
+              name="password"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Password</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="password"
+                      placeholder="••••••••"
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <FormField
-              control={form.control}
-              name="experience"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Your Experience</FormLabel>
-                  <Select onValueChange={field.onChange} defaultValue={field.value}>
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select your experience level" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      <SelectItem value="fresher">Fresher</SelectItem>
-                      <SelectItem value="experienced">Experienced</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="howYouFound"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>How did you find our VTC?</FormLabel>
-                  <Select onValueChange={field.onChange} defaultValue={field.value}>
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select an option" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      <SelectItem value="truckersmp">TruckersMP</SelectItem>
-                      <SelectItem value="friends">Friends</SelectItem>
-                      <SelectItem value="others">Others</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-
-          {howYouFoundValue === 'friends' && (
-             <FormField
-                control={form.control}
-                name="friendsMention"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Friend's Name(s)</FormLabel>
-                    <FormControl>
-                      <Textarea
-                        placeholder="Please mention the friend(s) who referred you."
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-          )}
-
-          {howYouFoundValue === 'others' && (
-             <FormField
-                control={form.control}
-                name="othersMention"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Please Specify</FormLabel>
-                    <FormControl>
-                      <Textarea
-                        placeholder="e.g., Discord, TruckersMP forums, etc."
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-          )}
 
           <FormField
             control={form.control}
@@ -276,7 +201,7 @@ export function ApplicationForm({ onFormSubmit }: { onFormSubmit?: () => void })
             )}
           />
           <Button type="submit" className="w-full rounded-full" size="lg" disabled={isSubmitting}>
-            {isSubmitting ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Submitting...</> : 'Submit Application'}
+            {isSubmitting ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Registering...</> : 'Register'}
           </Button>
         </form>
       </Form>

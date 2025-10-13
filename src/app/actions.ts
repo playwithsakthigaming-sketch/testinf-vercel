@@ -49,10 +49,18 @@ export async function submitApplication(data: ApplicationData): Promise<SubmitRe
     }
 
     const applicationId = generateApplicationId();
+    const { username, email, truckersmp, truckershub } = validation.data;
 
     const newApplication: Application = {
         id: applicationId,
-        ...validation.data,
+        name: username,
+        discordTag: '', // Not in the new form
+        email: email,
+        steamUrl: '', // Not in the new form
+        truckersmpUrl: truckersmp,
+        truckershubUrl: truckershub,
+        experience: 'fresher', // Default value
+        howYouFound: 'others', // Default value
         status: 'Pending',
         submittedAt: new Date().toISOString(),
     };
@@ -67,7 +75,6 @@ export async function submitApplication(data: ApplicationData): Promise<SubmitRe
         return { success: false, message: 'Server error: Could not save application.' };
     }
 
-    const { name, discordTag, email, steamUrl, experience, howYouFound, friendsMention, othersMention } = validation.data;
     const webhookUrl = process.env.DISCORD_WEBHOOK_URL;
     
 
@@ -76,34 +83,26 @@ export async function submitApplication(data: ApplicationData): Promise<SubmitRe
         return { success: false, message: 'Server configuration error.' };
     }
 
-    let howFoundValue = howYouFound;
-    if (howYouFound === 'friends' && friendsMention) {
-        howFoundValue = `Friends: ${friendsMention}`;
-    } else if (howYouFound === 'others' && othersMention) {
-        howFoundValue = `Others: ${othersMention}`;
-    }
 
     const fields = [
-        { name: 'Name', value: name, inline: true },
-        { name: 'Discord Tag', value: discordTag, inline: true },
+        { name: 'Username', value: username, inline: true },
         { name: 'Email', value: email, inline: true },
-        { name: 'Steam Profile', value: steamUrl, inline: false },
-        { name: 'Experience', value: experience },
-        { name: 'How they found us', value: howFoundValue }
+        { name: 'TruckersMP', value: truckersmp || 'Not Provided', inline: false },
+        { name: 'TruckersHub', value: truckershub || 'Not Provided', inline: false },
     ];
 
     const embed = {
-        title: `New VTC Application - ${applicationId}`,
+        title: `New VTC Registration - ${applicationId}`,
         color: 3977201, // Medium Sea Green
         fields: fields,
         timestamp: new Date().toISOString(),
         footer: {
-            text: 'Tamil Pasanga VTC Application',
+            text: 'Tamil Pasanga VTC Registration',
         },
     };
     
     const payload = {
-        content: `New application from ${name}`,
+        content: `New registration from ${username}`,
         embeds: [embed],
         components: [
           {
