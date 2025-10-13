@@ -1,9 +1,10 @@
+
 'use client';
 
 import Link from 'next/link';
 import { Logo } from '@/components/app/logo';
 import { Button } from '@/components/ui/button';
-import { ChevronDown, Menu } from 'lucide-react';
+import { ChevronDown, Menu, Truck } from 'lucide-react';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import {
   DropdownMenu,
@@ -70,6 +71,12 @@ export function Header() {
               {link.label}
             </Link>
           ))}
+            <Button asChild size="sm" className="rounded-full">
+                <Link href="/driver-hub">
+                    <Truck className="mr-2 h-4 w-4" />
+                    Driver Hub
+                </Link>
+            </Button>
         </nav>
         <div className="md:hidden">
           <Sheet>
@@ -120,6 +127,12 @@ export function Header() {
                       {link.label}
                     </Link>
                   ))}
+                   <Button asChild size="sm" className="rounded-full mt-4">
+                        <Link href="/driver-hub">
+                            <Truck className="mr-2 h-4 w-4" />
+                            Driver Hub
+                        </Link>
+                    </Button>
                 </nav>
               </div>
             </SheetContent>
