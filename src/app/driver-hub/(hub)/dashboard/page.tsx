@@ -121,7 +121,7 @@ const getNearestPartnerEvent = (): (Event & { image: any }) | null => {
 
 
 export default function DashboardPage() {
-    const [date, setDate] = React.useState('');
+    const [date, setDate] = React.useState<string | null>(null);
     const [vtcStats, setVtcStats] = React.useState<VtcStats | null>(null);
     const [allTimeLeaderboard, setAllTimeLeaderboard] = React.useState<LeaderboardUser[]>([]);
     const [monthlyLeaderboard, setMonthlyLeaderboard] = React.useState<LeaderboardUser[]>([]);
@@ -171,7 +171,7 @@ export default function DashboardPage() {
             <div className="flex justify-between items-center">
                 <h1 className="text-2xl font-semibold text-primary">Good Evening SAKTHIVEL</h1>
                 <div className="flex items-center gap-4">
-                    <span className="text-muted-foreground text-sm">{date}</span>
+                    {date && <span className="text-muted-foreground text-sm">{date}</span>}
                     <Badge variant="destructive"><Dot className="-ml-1" />Offline</Badge>
                     <Button variant="ghost" size="icon"><Bell size={18} /></Button>
                     <Button variant="ghost" size="icon"><HelpCircle size={18} /></Button>
