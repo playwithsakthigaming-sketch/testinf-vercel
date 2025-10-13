@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Table, TableBody, TableCell, TableHeader, TableHead, TableRow } from '@/components/ui/table';
-import { Bell, HelpCircle, User, Truck, Calendar, Flame, Dot } from 'lucide-react';
+import { Bell, HelpCircle, User, Truck, Calendar, Flame, Dot, Users } from 'lucide-react';
 import Image from 'next/image';
 import { Badge } from '@/components/ui/badge';
 import eventsData from '@/lib/events.json';
@@ -192,8 +192,9 @@ export default function DashboardPage() {
             </div>
 
             {/* Stats Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
                 <StatCard title="Live" value={vtcStats?.live_drivers?.toString() || '...'} icon={<Truck size={24} />} />
+                <StatCard title="Total Drivers" value={vtcStats?.total_drivers?.toString() || '...'} icon={<Users size={24} />} />
                 <StatCard title="Distance" value={`${vtcStats?.total_distance?.toLocaleString() || '...'} kms`} icon={<Calendar size={24} />} />
                 <StatCard title="Jobs" value={vtcStats?.total_jobs?.toLocaleString() || '...'} icon={<Truck size={24} />} />
                 <StatCard title="Fuel Burned" value={`${vtcStats?.total_fuel?.toLocaleString() || '...'} l`} icon={<Flame size={24} />} />
