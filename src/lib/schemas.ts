@@ -1,3 +1,4 @@
+
 import { z } from 'zod';
 
 export const applicationSchema = z.object({
@@ -12,3 +13,10 @@ export const applicationSchema = z.object({
 });
 
 export type ApplicationData = z.infer<typeof applicationSchema>;
+
+export const loginSchema = z.object({
+  email: z.string().email('Invalid email address'),
+  password: z.string().min(1, 'Password is required'),
+});
+
+export type LoginFormData = z.infer<typeof loginSchema>;

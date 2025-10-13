@@ -1,7 +1,8 @@
 
 'use server';
 
-import { z } from 'zod';
+import type { LoginFormData } from '@/lib/schemas';
+import { loginSchema } from '@/lib/schemas';
 import fs from 'fs/promises';
 import path from 'path';
 import type { ApplicationsData } from '@/lib/applications';
@@ -19,13 +20,6 @@ async function readApplications(): Promise<ApplicationsData> {
         throw error;
     }
 }
-
-export const loginSchema = z.object({
-  email: z.string().email('Invalid email address'),
-  password: z.string().min(1, 'Password is required'),
-});
-
-export type LoginFormData = z.infer<typeof loginSchema>;
 
 export type LoginResult = {
     success: boolean;
