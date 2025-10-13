@@ -89,7 +89,13 @@ const nextConfig: NextConfig = {
         hostname: 'static-00.iconduck.com',
         port: '',
         pathname: '/**',
-      }
+      },
+      {
+        protocol: 'https',
+        hostname: 'files.catbox.moe',
+        port: '',
+        pathname: '/**',
+      },
     ],
   },
 };
