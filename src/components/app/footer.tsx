@@ -35,9 +35,7 @@ export function Footer() {
             </ul>
           </div>
           <div className="md:col-span-1 space-y-4">
-            <Button variant="outline" className="w-full rounded-full border-primary text-primary hover:bg-primary hover:text-primary-foreground" asChild>
-              <Link href="/driver-hub">Drivers Hub</Link>
-            </Button>
+            
             <Button className="w-full rounded-full" data-apply-btn>
                 Apply Now
             </Button>
