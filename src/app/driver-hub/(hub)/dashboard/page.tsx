@@ -11,6 +11,31 @@ import { Bell, HelpCircle, User, Truck, Calendar, Flame, Dot } from 'lucide-reac
 import Image from 'next/image';
 import { Badge } from '@/components/ui/badge';
 
+type VtcStats = {
+    total_drivers: number;
+    live_drivers: number;
+    total_distance: number;
+    total_jobs: number;
+    total_fuel: number;
+};
+
+type LeaderboardUser = {
+    username: string;
+    value: number;
+};
+
+type Job = {
+    id: string;
+    driver: {
+        username: string;
+    };
+    start_city: string;
+    destination_city: string;
+    cargo: string;
+    cargo_mass: number;
+    distance: number;
+};
+
 const StatCard = ({ title, value, icon, className = '' }: { title: string, value: string, icon: React.ReactNode, className?: string }) => (
     <Card className={`bg-card/80 backdrop-blur-sm ${className}`}>
         <CardContent className="p-4">
@@ -43,26 +68,6 @@ const goalData = [
 ];
 const COLORS = ['#3CB371', '#0d342f'];
 
-const allTimeLeaderboard = [
-    { name: 'GamingWithSandip', nxp: '2,936,309 NXP' },
-    { name: 'Lucifer Bhai', nxp: '2,291,135 NXP' },
-    { name: 'Faizur Rahman', nxp: '1,557,623 NXP' },
-    { name: 'Uncle-Jatala', nxp: '1,215,599 NXP' },
-    { name: 'YOGESH KUMAR', nxp: '1,184,241 NXP' },
-];
-
-const thisMonthLeaderboard = [
-    { name: '1DIRECTION GAMING', nxp: '39,927 NXP' },
-    { name: 'GamingWithSandip', nxp: '15,119 NXP' },
-    { name: 'Akash-Akki', nxp: '12,155 NXP' },
-    { name: 'Abhijeet kuanr', nxp: '11,682 NXP' },
-    { name: 'Suraj_0711', nxp: '11,308 NXP' },
-];
-
-const recentJobs = [
-    { id: '1082874', driver: 'wtf.prasun', from: 'Bern', to: 'Pumpkin Farm', cargo: 'Spider Candle', mass: '2 t', distance: '99 km' },
-];
-
 const MilestoneIcon = ({ icon, color }: { icon: string, color: string }) => (
     <div className={`w-8 h-8 rounded-full flex items-center justify-center bg-${color}-500/20 text-${color}-400`}>
         <Dot/>
@@ -72,7 +77,42 @@ const MilestoneIcon = ({ icon, color }: { icon: string, color: string }) => (
 
 export default function DashboardPage() {
     const [date, setDate] = React.useState('');
+    const [vtcStats, setVtcStats] = React.useState<VtcStats | null>(null);
+    const [allTimeLeaderboard, setAllTimeLeaderboard] = React.useState<LeaderboardUser[]>([]);
+    const [monthlyLeaderboard, setMonthlyLeaderboard] = React.useState<LeaderboardUser[]>([]);
+    const [recentJobs, setRecentJobs] = React.useState<Job[]>([]);
+
     React.useEffect(() => {
+        const apiKey = 'I7PxBavQ0YQOU4fBXNgylB79QuMDwZUGSdAithuB'; // It's better to use environment variables for this
+
+        const fetchData = async (url: string) => {
+            try {
+                const res = await fetch(`https://api.truckershub.in/v1/${url}`, { headers: { 'Authorization': apiKey } });
+                if (!res.ok) throw new Error(`Failed to fetch ${url}`);
+                const data = await res.json();
+                return data.response;
+            } catch (error) {
+                console.error(error);
+                return null;
+            }
+        };
+
+        const fetchAllData = async () => {
+            const [stats, allTime, monthly, jobs] = await Promise.all([
+                fetchData('vtc'),
+                fetchData('leaderboard/nxp'),
+                fetchData('leaderboard/monthly_nxp'),
+                fetchData('jobs/all?limit=5')
+            ]);
+            
+            if (stats) setVtcStats(stats.vtc);
+            if (allTime) setAllTimeLeaderboard(allTime);
+            if (monthly) setMonthlyLeaderboard(monthly);
+            if (jobs) setRecentJobs(jobs);
+        };
+        
+        fetchAllData();
+
         setDate(new Date().toLocaleDateString('en-GB', {
             day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit'
         }) + ' GMT');
@@ -97,10 +137,10 @@ export default function DashboardPage() {
 
             {/* Stats Cards */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <StatCard title="Live" value="3" icon={<Truck size={24} />} />
-                <StatCard title="Distance" value="38,082,641 kms" icon={<Calendar size={24} />} />
-                <StatCard title="Jobs" value="52,548" icon={<Truck size={24} />} />
-                <StatCard title="Fuel Burned" value="68,142,606 l" icon={<Flame size={24} />} />
+                <StatCard title="Live" value={vtcStats?.live_drivers?.toString() || '...'} icon={<Truck size={24} />} />
+                <StatCard title="Distance" value={`${vtcStats?.total_distance?.toLocaleString() || '...'} kms`} icon={<Calendar size={24} />} />
+                <StatCard title="Jobs" value={vtcStats?.total_jobs?.toLocaleString() || '...'} icon={<Truck size={24} />} />
+                <StatCard title="Fuel Burned" value={`${vtcStats?.total_fuel?.toLocaleString() || '...'} l`} icon={<Flame size={24} />} />
             </div>
 
             {/* Upcoming Event */}
@@ -218,10 +258,10 @@ export default function DashboardPage() {
                     <CardHeader><CardTitle>All Time</CardTitle></CardHeader>
                     <CardContent>
                         <ul className="space-y-3">
-                            {allTimeLeaderboard.map((user, index) => (
-                                <li key={user.name} className="flex justify-between items-center text-sm">
-                                    <span>{index + 1}) {user.name}</span>
-                                    <span className="font-semibold">{user.nxp}</span>
+                            {allTimeLeaderboard.slice(0, 5).map((user, index) => (
+                                <li key={user.username} className="flex justify-between items-center text-sm">
+                                    <span>{index + 1}) {user.username}</span>
+                                    <span className="font-semibold">{user.value.toLocaleString()} NXP</span>
                                 </li>
                             ))}
                         </ul>
@@ -231,10 +271,10 @@ export default function DashboardPage() {
                     <CardHeader><CardTitle>This Month</CardTitle></CardHeader>
                     <CardContent>
                          <ul className="space-y-3">
-                            {thisMonthLeaderboard.map((user, index) => (
-                                <li key={user.name} className="flex justify-between items-center text-sm">
-                                    <span>{index + 1}) {user.name}</span>
-                                    <span className="font-semibold">{user.nxp}</span>
+                            {monthlyLeaderboard.slice(0, 5).map((user, index) => (
+                                <li key={user.username} className="flex justify-between items-center text-sm">
+                                    <span>{index + 1}) {user.username}</span>
+                                    <span className="font-semibold">{user.value.toLocaleString()} NXP</span>
                                 </li>
                             ))}
                         </ul>
@@ -262,11 +302,11 @@ export default function DashboardPage() {
                             {recentJobs.map(job => (
                                 <TableRow key={job.id}>
                                     <TableCell>{job.id}</TableCell>
-                                    <TableCell>{job.driver}</TableCell>
-                                    <TableCell>{job.from} - {job.to}</TableCell>
+                                    <TableCell>{job.driver.username}</TableCell>
+                                    <TableCell>{job.start_city} - {job.destination_city}</TableCell>
                                     <TableCell>{job.cargo}</TableCell>
-                                    <TableCell>{job.mass}</TableCell>
-                                    <TableCell>{job.distance}</TableCell>
+                                    <TableCell>{(job.cargo_mass / 1000).toFixed(1)} t</TableCell>
+                                    <TableCell>{job.distance} km</TableCell>
                                     <TableCell><Button variant="outline" size="sm">Details</Button></TableCell>
                                 </TableRow>
                             ))}
@@ -278,7 +318,3 @@ export default function DashboardPage() {
         </div>
     );
 }
-
-    
-
-    
