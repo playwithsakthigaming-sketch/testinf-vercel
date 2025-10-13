@@ -47,7 +47,7 @@ const slotAreaSchema = z.object({
   imageUrl: z.string().url('Image URL must be a valid URL'),
   startSlot: z.coerce.number().min(1, 'Start slot must be at least 1'),
   endSlot: z.coerce.number().min(1, 'End slot must be at least 1'),
-  bookings: z.array(bookingSchema),
+  bookings: z.array(bookingSchema).default([]),
 }).refine(data => data.endSlot >= data.startSlot, {
     message: "End slot must be greater than or equal to start slot",
     path: ["endSlot"],
@@ -229,6 +229,7 @@ export function EditEventForm({ event }: { event: EventWithImageUrl }) {
           <>
             <FormField control={form.control} name="routeMapUrl" render={({ field }) => ( <FormItem> <FormLabel>Route Map URL (Optional)</FormLabel> <FormControl><Input placeholder="https://example.com/route.png" {...field} /></FormControl> <FormMessage /> </FormItem> )}/>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div/>
               <FormField control={form.control} name="server" render={({ field }) => ( <FormItem> <FormLabel>Server</FormLabel> <FormControl><Input placeholder="e.g., Event Server" {...field} /></FormControl> <FormMessage /> </FormItem> )}/>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

@@ -122,7 +122,7 @@ export async function updateApplicationStatus(
 
         // If accepted, add to staff-members.json if not already present
         if (newStatus === 'Accepted') {
-            const isAlreadyStaff = staffData.staffMembers.some(member => member.name === application.name);
+            const isAlreadyStaff = staffData.staffMembers.some(member => member.name.toLowerCase() === application.name.toLowerCase());
             if (!isAlreadyStaff) {
                 const newMember: StaffMember = {
                     id: `staff-${Date.now()}`,

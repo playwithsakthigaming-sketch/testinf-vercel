@@ -15,7 +15,7 @@ const bookingFormSchema = z.object({
   position: z.string().min(1, 'Position is required'),
   estimatedDrivers: z.coerce.number().min(1, 'Estimated drivers must be at least 1'),
   truckersmpUrl: z.string().url('A valid TruckersMP URL is required'),
-  slotNumber: z.coerce.number().min(1, 'Please select a slot'),
+  slotNumber: z.coerce.number({invalid_type_error: "Please select a slot"}).min(1, 'Please select a slot'),
   eventId: z.string(),
   areaId: z.string(),
 });
@@ -127,6 +127,9 @@ export async function submitBooking(values: BookingFormValues) {
             status: 'pending',
         };
 
+        if (!event.slots[areaIndex].bookings) {
+            event.slots[areaIndex].bookings = [];
+        }
         event.slots[areaIndex].bookings.push(newBooking);
 
         await writeEvents(eventsData);

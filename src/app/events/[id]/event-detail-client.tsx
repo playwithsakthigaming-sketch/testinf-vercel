@@ -174,7 +174,8 @@ export function EventDetailClient({ event }: { event: EventWithImage }) {
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                             {event.slots.map(area => {
                                 const totalSlots = area.endSlot - area.startSlot + 1;
-                                const bookedOrHeldSlots = area.bookings?.filter(b => b.status === 'approved' || b.status === 'hold') || [];
+                                const bookings = area.bookings || [];
+                                const bookedOrHeldSlots = bookings.filter(b => b.status === 'approved' || b.status === 'hold');
                                 const availableSlotsCount = totalSlots - bookedOrHeldSlots.length;
                                 
                                 const allSlotNumbers = Array.from({ length: totalSlots }, (_, i) => area.startSlot + i);
@@ -215,7 +216,7 @@ export function EventDetailClient({ event }: { event: EventWithImage }) {
                                                 <div className="flex-grow mb-4">
                                                     <p className="font-semibold mb-2 text-lg">Bookings:</p>
                                                     <div className="space-y-2 text-lg">
-                                                        {area.bookings && area.bookings.length > 0 ? area.bookings.map(booking => (
+                                                        {bookings.length > 0 ? bookings.map(booking => (
                                                             <div key={booking.id}>
                                                                 <p className="font-medium text-xl">Slot {booking.slotNumber}: {booking.vtcName}</p>
                                                                 <Badge variant="default" className={cn("text-lg mt-1", booking.status === 'approved' && 'bg-green-600', booking.status === 'pending' && 'bg-yellow-600', booking.status === 'rejected' && 'bg-red-600', booking.status === 'hold' && 'bg-orange-600' )}>{booking.status}</Badge>
