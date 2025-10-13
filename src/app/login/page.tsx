@@ -1,13 +1,22 @@
 
+'use client';
+
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Truck } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { Logo } from "@/components/app/logo";
 import { Checkbox } from "@/components/ui/checkbox";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { loginAction, loginSchema, type LoginFormData } from "./actions";
+import { useState } from "react";
+import { useToast } from "@/hooks/use-toast";
+import { useRouter } from "next/navigation";
 
 const SteamIcon = () => (
     <svg viewBox="0 0 24 24" className="h-5 w-5 mr-2">
@@ -26,6 +35,38 @@ const DiscordIcon = () => (
 
 
 export default function DriverHubLoginPage() {
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const { toast } = useToast();
+    const router = useRouter();
+
+    const form = useForm<LoginFormData>({
+        resolver: zodResolver(loginSchema),
+        defaultValues: {
+            email: "",
+            password: "",
+        },
+    });
+
+    async function onSubmit(values: LoginFormData) {
+        setIsSubmitting(true);
+        const result = await loginAction(values);
+        setIsSubmitting(false);
+
+        if (result.success) {
+            toast({
+                title: "Login Successful",
+                description: "Welcome to the Driver Hub!",
+            });
+            router.push("/driver-hub");
+        } else {
+            toast({
+                variant: "destructive",
+                title: "Login Failed",
+                description: result.message,
+            });
+        }
+    }
+
     return (
         <div className="relative flex min-h-screen flex-col items-center justify-center bg-background">
             <Image 
@@ -43,26 +84,50 @@ export default function DriverHubLoginPage() {
                     <CardTitle className="text-2xl font-headline">Driver Hub Login</CardTitle>
                     <CardDescription>Welcome back, driver. Please log in.</CardDescription>
                 </CardHeader>
-                <CardContent className="space-y-4">
-                    <div className="space-y-2">
-                        <Label htmlFor="email">Email</Label>
-                        <Input id="email" type="email" placeholder="Enter your email or username" />
-                    </div>
-                    <div className="space-y-2">
-                        <Label htmlFor="password">Password</Label>
-                        <Input id="password" type="password" placeholder="••••••••" />
-                    </div>
-                    <div className="flex items-center space-x-2">
-                        <Checkbox id="remember-me" />
-                        <Label htmlFor="remember-me" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-                            Remember Me
-                        </Label>
-                    </div>
+                <CardContent>
+                    <Form {...form}>
+                        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+                             <FormField
+                                control={form.control}
+                                name="email"
+                                render={({ field }) => (
+                                    <FormItem>
+                                    <FormLabel>Email</FormLabel>
+                                    <FormControl>
+                                        <Input placeholder="Enter your email" {...field} />
+                                    </FormControl>
+                                    <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                            <FormField
+                                control={form.control}
+                                name="password"
+                                render={({ field }) => (
+                                    <FormItem>
+                                    <FormLabel>Password</FormLabel>
+                                    <FormControl>
+                                        <Input type="password" placeholder="••••••••" {...field} />
+                                    </FormControl>
+                                    <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
 
-                    <Button className="w-full bg-primary hover:bg-primary/90" asChild>
-                       <Link href="/driver-hub">Login</Link>
-                    </Button>
-                    <div className="relative">
+                            <div className="flex items-center space-x-2">
+                                <Checkbox id="remember-me" />
+                                <Label htmlFor="remember-me" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                                    Remember Me
+                                </Label>
+                            </div>
+
+                            <Button type="submit" className="w-full bg-primary hover:bg-primary/90" disabled={isSubmitting}>
+                                {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                                Login
+                            </Button>
+                        </form>
+                    </Form>
+                    <div className="relative mt-4">
                         <div className="absolute inset-0 flex items-center">
                             <span className="w-full border-t" />
                         </div>
@@ -70,7 +135,7 @@ export default function DriverHubLoginPage() {
                             <span className="bg-card px-2 text-muted-foreground">Or continue with</span>
                         </div>
                     </div>
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-2 gap-4 mt-4">
                         <Button variant="outline" className="bg-[#1b2838] text-white hover:bg-[#1b2838]/90">
                            <SteamIcon /> Steam
                         </Button>
@@ -81,7 +146,7 @@ export default function DriverHubLoginPage() {
 
                     <div className="mt-4 text-center text-sm">
                         New Here?{" "}
-                        <Button variant="link" asChild className="text-primary p-0 h-auto" data-apply-btn>
+                         <Button variant="link" asChild className="text-primary p-0 h-auto" data-apply-btn>
                             <Link href="#">Register</Link>
                         </Button>
                     </div>
@@ -90,7 +155,3 @@ export default function DriverHubLoginPage() {
         </div>
     );
 }
-
-    
-
-    
