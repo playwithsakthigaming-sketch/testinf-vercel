@@ -9,6 +9,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Table, TableBody, TableCell, TableHeader, TableHead, TableRow } from '@/components/ui/table';
 import { Bell, HelpCircle, User, Truck, Calendar, Flame, Dot } from 'lucide-react';
 import Image from 'next/image';
+import { Badge } from '@/components/ui/badge';
 
 const StatCard = ({ title, value, icon, className = '' }: { title: string, value: string, icon: React.ReactNode, className?: string }) => (
     <Card className={`bg-card/80 backdrop-blur-sm ${className}`}>
@@ -277,5 +278,7 @@ export default function DashboardPage() {
         </div>
     );
 }
+
+    
 
     
