@@ -63,11 +63,10 @@ export default function DriverHubPage() {
 
             <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
                 <Card className="lg:col-span-1 bg-gradient-to-br from-yellow-400/20 via-orange-500/20 to-red-600/20 text-center flex flex-col justify-center items-center p-6">
-                   <p className="text-sm font-semibold tracking-widest text-muted-foreground">TN LOGISTICS CURRENCY</p>
+                   <p className="text-sm font-semibold tracking-widest text-muted-foreground">Tamil Pasanga Currency</p>
                    <div className="my-4">
                        <div className="text-xs text-muted-foreground">TOTAL BALANCE</div>
                        <div className="text-6xl font-bold text-white">0</div>
-                       <div className="text-lg font-semibold text-yellow-400">Roobai</div>
                    </div>
                 </Card>
 
