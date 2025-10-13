@@ -38,7 +38,7 @@ export function Footer() {
           <div className="md:col-span-1 space-y-4">
             
             <Button className="w-full rounded-full" data-apply-btn>
-                Apply Now
+                Register
             </Button>
           </div>
         </div>
@@ -49,3 +49,5 @@ export function Footer() {
     </footer>
   );
 }
+
+    

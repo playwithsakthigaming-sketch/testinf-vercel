@@ -82,7 +82,7 @@ export default function DriverHubLoginPage() {
                     <div className="mt-4 text-center text-sm">
                         New Here?{" "}
                         <Button variant="link" className="text-primary p-0 h-auto" data-apply-btn>
-                            Apply Now!
+                            Register
                         </Button>
                     </div>
                 </CardContent>
