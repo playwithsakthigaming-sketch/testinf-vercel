@@ -168,8 +168,8 @@ export default function DashboardPage() {
             }).replace(',', ''));
         };
 
-        updateDate();
         const intervalId = setInterval(updateDate, 1000);
+        updateDate();
 
         return () => clearInterval(intervalId);
     }, []);
@@ -224,7 +224,7 @@ export default function DashboardPage() {
                 </CardHeader>
                 <CardContent>
                     <p className="text-center text-muted-foreground text-sm mb-4">
-                        Together, Nexon Drivers and Pilots have journeyed incredible distances pushing boundaries, breaking limits, and truly proving our slogan: "Gateway to New Horizons."
+                        Together, Tamil pasanga Drivers have journeyed incredible distances pushing boundaries, breaking limits, and truly proving our slogan: "Gateway to New Horizons."
                     </p>
                     <div className="flex justify-around items-center">
                         <MilestoneIcon icon="earth" color="green" />
