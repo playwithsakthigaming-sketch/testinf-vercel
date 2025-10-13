@@ -21,8 +21,6 @@ export default function SettingsPage() {
                     <TabsTrigger value="profile">Profile</TabsTrigger>
                     <TabsTrigger value="security">Security</TabsTrigger>
                     <TabsTrigger value="connections">Connections</TabsTrigger>
-                    <TabsTrigger value="about">About Me</TabsTrigger>
-                    <TabsTrigger value="preferences">Preferences</TabsTrigger>
                 </TabsList>
                 <TabsContent value="profile">
                     <Card>
@@ -86,18 +84,6 @@ export default function SettingsPage() {
                      <Card>
                         <CardHeader><CardTitle>Connections</CardTitle></CardHeader>
                         <CardContent><p className="text-muted-foreground">Connection settings will be available here.</p></CardContent>
-                    </Card>
-                </TabsContent>
-                 <TabsContent value="about">
-                     <Card>
-                        <CardHeader><CardTitle>About Me</CardTitle></CardHeader>
-                        <CardContent><p className="text-muted-foreground">About me settings will be available here.</p></CardContent>
-                    </Card>
-                </TabsContent>
-                 <TabsContent value="preferences">
-                     <Card>
-                        <CardHeader><CardTitle>Preferences</CardTitle></CardHeader>
-                        <CardContent><p className="text-muted-foreground">Preference settings will be available here.</p></CardContent>
                     </Card>
                 </TabsContent>
             </Tabs>
