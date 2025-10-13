@@ -248,12 +248,6 @@ export async function POST(req: NextRequest) {
         followupMessage = `❌ **Application Rejected** | \`${applicationId}\` has been rejected by <@${staffMember.id}>.`;
         newStatus = 'Rejected';
         break;
-      case 'interview':
-        statusText = `Interview scheduled by ${staffMember.username}`;
-        color = 3447003; // Blue
-        followupMessage = `💬 **Interview Stage** | \`${applicationId}\` has been moved to the interview stage by <@${staffMember.id}>.`;
-        newStatus = 'Interview';
-        break;
       default:
         return respondEphimerally('Unknown action.');
     }
@@ -288,7 +282,6 @@ export async function POST(req: NextRequest) {
                 components: [
                   { type: 2, style: ButtonStyle.Success, label: 'Accept', custom_id: 'accept_disabled', disabled: true },
                   { type: 2, style: ButtonStyle.Danger, label: 'Reject', custom_id: 'reject_disabled', disabled: true },
-                  { type: 2, style: ButtonStyle.Primary, label: 'Set to Interview', custom_id: 'interview_disabled', disabled: true },
                 ]
               }
             ]

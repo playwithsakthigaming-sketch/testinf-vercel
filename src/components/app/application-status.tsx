@@ -35,11 +35,6 @@ const statusInfo = {
         badge: <Badge variant="destructive">Rejected</Badge>,
         message: 'We regret to inform you that your application has been rejected.',
     },
-    Interview: {
-        icon: <AlertCircle className="h-12 w-12 text-blue-500" />,
-        badge: <Badge className="bg-blue-500">Interview</Badge>,
-        message: 'Your application has passed the initial screening. Please check your email for interview details.',
-    },
     'Not Found': {
         icon: <AlertCircle className="h-12 w-12 text-muted-foreground" />,
         badge: <Badge variant="outline">Not Found</Badge>,

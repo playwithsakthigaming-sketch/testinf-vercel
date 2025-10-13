@@ -21,7 +21,6 @@ const statusInfo = {
     Accepted: { icon: <CheckCircle className="h-4 w-4 text-green-500" />, badge: <Badge variant="default" className="bg-green-500">Accepted</Badge> },
     Pending: { icon: <Clock className="h-4 w-4 text-yellow-500" />, badge: <Badge variant="secondary" className="bg-yellow-500">Pending</Badge> },
     Rejected: { icon: <XCircle className="h-4 w-4 text-red-500" />, badge: <Badge variant="destructive">Rejected</Badge> },
-    Interview: { icon: <AlertCircle className="h-4 w-4 text-blue-500" />, badge: <Badge className="bg-blue-500">Interview</Badge> },
 };
 
 const bookingStatusInfo = {
@@ -60,7 +59,6 @@ function ApplicationRow({ app }: { app: Application }) {
                         <DropdownMenuContent align="end">
                             <UpdateApplicationStatus applicationId={app.id} status="Accepted" currentStatus={app.status} />
                             <UpdateApplicationStatus applicationId={app.id} status="Rejected" currentStatus={app.status} />
-                            <UpdateApplicationStatus applicationId={app.id} status="Interview" currentStatus={app.status} />
                         </DropdownMenuContent>
                     </DropdownMenu>
                 </TableCell>

@@ -5,7 +5,7 @@ import { useTransition, useState } from 'react';
 import { updateApplicationStatus as updateStatusAction, updateBookingStatus as updateBookingAction } from './server-actions';
 import type { ApplicationStatus } from '@/lib/applications';
 import { DropdownMenuItem, DropdownMenuSub, DropdownMenuSubContent, DropdownMenuSubTrigger, DropdownMenuPortal, DropdownMenuRadioGroup, DropdownMenuRadioItem } from '@/components/ui/dropdown-menu';
-import { CheckCircle, XCircle, AlertCircle, Loader2, PauseCircle } from 'lucide-react';
+import { CheckCircle, XCircle, Loader2, PauseCircle } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 const roleOptions = [
@@ -17,7 +17,6 @@ const roleOptions = [
 const statusConfig = {
     Accepted: { icon: <CheckCircle className="mr-2 h-4 w-4" />, label: 'Accept', className: 'text-green-500' },
     Rejected: { icon: <XCircle className="mr-2 h-4 w-4" />, label: 'Reject', className: 'text-red-500' },
-    Interview: { icon: <AlertCircle className="mr-2 h-4 w-4" />, label: 'Mark for Interview', className: 'text-blue-500' },
     Pending: { icon: <div/>, label: 'Pending', className: ''}
 };
 

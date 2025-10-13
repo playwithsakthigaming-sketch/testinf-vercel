@@ -58,11 +58,6 @@ async function sendApplicationWebhookNotification(application: Application) {
             color = 15548997; // Red
             description = `Application for **${application.name}** has been rejected.`;
             break;
-        case 'Interview':
-            title = `Application Moved to Interview: ${application.id}`;
-            color = 3447003; // Blue
-            description = `**${application.name}** has been moved to the interview stage.`;
-            break;
         default:
             return; // Don't send for 'Pending' or other statuses
     }

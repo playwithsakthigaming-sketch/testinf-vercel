@@ -1,5 +1,5 @@
 
-export type ApplicationStatus = 'Pending' | 'Accepted' | 'Rejected' | 'Interview';
+export type ApplicationStatus = 'Pending' | 'Accepted' | 'Rejected';
 
 export type Application = {
   id: string;
