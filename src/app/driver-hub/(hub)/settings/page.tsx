@@ -20,6 +20,14 @@ import { Loader2 } from "lucide-react";
 
 const countries = ["India", "USA", "Canada", "UK", "Australia", "Germany"];
 
+const profileFormSchema = z.object({
+  username: z.string().min(1, 'Username is required'),
+  email: z.string().email('Invalid email address'),
+  country: z.string().min(1, 'Country is required'),
+});
+
+type ProfileFormData = z.infer<typeof profileFormSchema>;
+
 const passwordFormSchema = z.object({
   currentPassword: z.string().min(1, 'Current password is required'),
   newPassword: z.string().min(8, 'New password must be at least 8 characters long'),
@@ -40,8 +48,18 @@ type UserProfile = {
 
 export default function SettingsPage() {
     const { toast } = useToast();
+    const [isSubmittingProfile, setIsSubmittingProfile] = useState(false);
     const [isSubmittingPassword, setIsSubmittingPassword] = useState(false);
     const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
+
+    const profileForm = useForm<ProfileFormData>({
+        resolver: zodResolver(profileFormSchema),
+        defaultValues: {
+            username: '',
+            email: '',
+            country: '',
+        },
+    });
 
     useEffect(() => {
         const fetchUserData = async () => {
@@ -51,6 +69,10 @@ export default function SettingsPage() {
                 const data = await res.json();
                 if(data.response) {
                     setUserProfile(data.response);
+                    // Set form values once data is fetched
+                    profileForm.setValue('username', data.response.username || '');
+                    profileForm.setValue('email', data.response.email || '');
+                    profileForm.setValue('country', data.response.country || 'India');
                 }
             } catch (error) {
                 console.error(error);
@@ -58,7 +80,19 @@ export default function SettingsPage() {
         };
 
         fetchUserData();
-    }, []);
+    }, [profileForm]);
+
+    async function onProfileSubmit(values: ProfileFormData) {
+        setIsSubmittingProfile(true);
+        // Simulate API call
+        await new Promise(resolve => setTimeout(resolve, 1500));
+        setIsSubmittingProfile(false);
+        
+        toast({
+            title: "Profile Updated",
+            description: "Your profile information has been saved.",
+        });
+    }
 
     const passwordForm = useForm<PasswordFormData>({
         resolver: zodResolver(passwordFormSchema),
@@ -99,49 +133,83 @@ export default function SettingsPage() {
                             <CardTitle>Profile Settings</CardTitle>
                         </CardHeader>
                         <CardContent className="space-y-8">
-                             <div className="flex items-center gap-6">
-                                <Avatar className="h-24 w-24">
-                                    <AvatarImage src={userProfile?.avatar} alt={userProfile?.username} />
-                                    <AvatarFallback>{userProfile?.username?.charAt(0)}</AvatarFallback>
-                                </Avatar>
-                                <div className="space-y-2">
-                                    <div className="flex gap-2">
-                                        <Button>Upload</Button>
-                                        <Button variant="ghost">Reset</Button>
+                            <Form {...profileForm}>
+                                <form onSubmit={profileForm.handleSubmit(onProfileSubmit)} className="space-y-8">
+                                    <div className="flex items-center gap-6">
+                                        <Avatar className="h-24 w-24">
+                                            <AvatarImage src={userProfile?.avatar} alt={userProfile?.username} />
+                                            <AvatarFallback>{userProfile?.username?.charAt(0)}</AvatarFallback>
+                                        </Avatar>
+                                        <div className="space-y-2">
+                                            <div className="flex gap-2">
+                                                <Button>Upload</Button>
+                                                <Button variant="ghost">Reset</Button>
+                                            </div>
+                                            <p className="text-xs text-muted-foreground">
+                                                Allowed JPG, GIF or PNG. Max size of 2MB
+                                            </p>
+                                        </div>
                                     </div>
-                                    <p className="text-xs text-muted-foreground">
-                                        Allowed JPG, GIF or PNG. Max size of 2MB
-                                    </p>
-                                </div>
-                            </div>
 
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div className="space-y-2">
-                                    <Label htmlFor="username">Username</Label>
-                                    <Input id="username" defaultValue={userProfile?.username} />
-                                </div>
-                                 <div className="space-y-2">
-                                    <Label htmlFor="email">Email</Label>
-                                    <Input id="email" type="email" defaultValue={userProfile?.email} />
-                                </div>
-                                <div className="space-y-2">
-                                    <Label htmlFor="country">Country</Label>
-                                     <Select defaultValue={userProfile?.country || "India"}>
-                                        <SelectTrigger id="country">
-                                            <SelectValue placeholder="Select a country" />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            {countries.map(country => (
-                                                <SelectItem key={country} value={country}>{country}</SelectItem>
-                                            ))}
-                                        </SelectContent>
-                                    </Select>
-                                </div>
-                            </div>
-                            
-                            <div>
-                                <Button>Save changes</Button>
-                            </div>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        <FormField
+                                            control={profileForm.control}
+                                            name="username"
+                                            render={({ field }) => (
+                                                <FormItem>
+                                                    <FormLabel>Username</FormLabel>
+                                                    <FormControl>
+                                                        <Input {...field} />
+                                                    </FormControl>
+                                                    <FormMessage />
+                                                </FormItem>
+                                            )}
+                                        />
+                                        <FormField
+                                            control={profileForm.control}
+                                            name="email"
+                                            render={({ field }) => (
+                                                <FormItem>
+                                                    <FormLabel>Email</FormLabel>
+                                                    <FormControl>
+                                                        <Input type="email" {...field} />
+                                                    </FormControl>
+                                                    <FormMessage />
+                                                </FormItem>
+                                            )}
+                                        />
+                                        <FormField
+                                            control={profileForm.control}
+                                            name="country"
+                                            render={({ field }) => (
+                                                <FormItem>
+                                                    <FormLabel>Country</FormLabel>
+                                                    <Select onValueChange={field.onChange} value={field.value}>
+                                                        <FormControl>
+                                                            <SelectTrigger>
+                                                                <SelectValue placeholder="Select a country" />
+                                                            </SelectTrigger>
+                                                        </FormControl>
+                                                        <SelectContent>
+                                                            {countries.map(country => (
+                                                                <SelectItem key={country} value={country}>{country}</SelectItem>
+                                                            ))}
+                                                        </SelectContent>
+                                                    </Select>
+                                                    <FormMessage />
+                                                </FormItem>
+                                            )}
+                                        />
+                                    </div>
+                                    
+                                    <div>
+                                        <Button type="submit" disabled={isSubmittingProfile}>
+                                            {isSubmittingProfile && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                                            Save changes
+                                        </Button>
+                                    </div>
+                                </form>
+                            </Form>
                         </CardContent>
                     </Card>
                 </TabsContent>
