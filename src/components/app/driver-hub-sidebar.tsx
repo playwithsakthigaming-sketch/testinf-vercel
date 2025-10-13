@@ -83,13 +83,6 @@ const KnowledgeNav = [
     { label: 'Resources', href: '/driver-hub/resources', icon: LifeBuoy },
 ];
 
-const SupportNav = [
-    { label: 'Streamer Program', href: '/driver-hub/streamer-program', icon: Star },
-    { label: 'Patreons', href: '/driver-hub/patreons', icon: Users },
-    { label: 'Shop', href: '/driver-hub/shop', icon: ShoppingBag },
-    { label: 'Human Resources', href: '/driver-hub/hr', icon: Building },
-];
-
 export function DriverHubSidebar() {
     const pathname = usePathname();
 
@@ -106,7 +99,6 @@ export function DriverHubSidebar() {
         { title: "GAMEPLAY", items: GameplayNav },
         { title: "COMPANY OPERATIONS", items: CompanyOpsNav },
         { title: "KNOWLEDGE HUB", items: KnowledgeNav },
-        { title: "SUPPORT", items: SupportNav },
     ], []);
 
     return (
