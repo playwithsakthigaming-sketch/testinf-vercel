@@ -4,6 +4,7 @@ import './globals.css';
 import { Toaster } from '@/components/ui/toaster';
 import { SnowEffect } from '@/components/app/snow-effect';
 import './snow.css';
+import { ApplicationDialog } from '@/components/app/application-dialog';
 
 export const metadata: Metadata = {
   title: 'Tamil Pasanga',
@@ -29,6 +30,7 @@ export default function RootLayout({
         <SnowEffect />
         {children}
         <Toaster />
+        <ApplicationDialog />
       </body>
     </html>
   );

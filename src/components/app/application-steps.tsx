@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 
 const steps = [
-  { icon: <PenSquare size={32} />, title: "Step 1: Apply", description: "Fill out our straightforward application form.", buttonText: "Start Application", href: "https://truckersmp.com/vtc/73933/recruitment-form/3515-driver-recruitment-form" },
+  { icon: <PenSquare size={32} />, title: "Step 1: Apply", description: "Fill out our straightforward application form.", buttonText: "Start Application", href: "#", "data-apply-btn": true },
   { icon: <Bot size={32} />, title: "Step 2: Join Discord", description: "Become a part of our community on Discord.", buttonText: "Join Discord", href: "https://discord.com/invite/paRCYhJphH" },
   { icon: <Users size={32} />, title: "Step 3: Interview", description: "Have a chat with our friendly recruitment team." },
 ];
@@ -34,8 +34,8 @@ export function ApplicationSteps() {
               </CardContent>
               {step.buttonText && step.href && (
                 <div className="mt-4">
-                    <Button asChild className="rounded-full w-full">
-                    <Link href={step.href} target={step.href.startsWith('http') ? '_blank' : '_self'}>{step.buttonText}</Link>
+                    <Button asChild className="rounded-full w-full" {...(step['data-apply-btn'] && {'data-apply-btn': true})}>
+                       <Link href={step.href} target={step.href.startsWith('http') ? '_blank' : '_self'}>{step.buttonText}</Link>
                     </Button>
                 </div>
               )}
