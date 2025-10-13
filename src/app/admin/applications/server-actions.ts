@@ -151,6 +151,29 @@ export async function updateApplicationStatus(
     }
 }
 
+export async function deleteApplication(
+    applicationId: string
+): Promise<{ success: boolean; message: string }> {
+    try {
+        const applicationsData = await readJsonFile<ApplicationsData>(applicationsFilePath);
+        
+        const applicationIndex = applicationsData.applications.findIndex(b => b.id === applicationId);
+        if (applicationIndex === -1) return { success: false, message: 'Application not found.' };
+
+        applicationsData.applications.splice(applicationIndex, 1);
+        
+        await writeJsonFile(applicationsFilePath, applicationsData);
+        
+        revalidatePath('/admin/applications');
+        
+        return { success: true, message: `Application has been deleted.` };
+
+    } catch (error) {
+        console.error('Error deleting application:', error);
+        return { success: false, message: 'An unexpected error occurred.' };
+    }
+}
+
 // --- Booking Actions ---
 
 export async function getEventsWithBookings(): Promise<Event[]> {

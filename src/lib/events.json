@@ -37,20 +37,7 @@
           "imageUrl": "https://images-ext-1.discordapp.net/external/8DesROHeCmTE8zVf_WnuqYm5N3ZIqK91Vt9UZ53mmME/https/www.djo2.it/Public/Libreria/punti_partenza/04_Slot_Parching_12-13.png?format=webp&quality=lossless&width=1284&height=722",
           "startSlot": 11,
           "endSlot": 12,
-          "bookings": [
-            {
-              "id": "booking-1758794759727",
-              "slotNumber": 11,
-              "vtcName": "tp",
-              "status": "approved"
-            },
-            {
-              "id": "booking-1758795170844",
-              "slotNumber": 12,
-              "vtcName": "bnngfbbfg",
-              "status": "approved"
-            }
-          ]
+          "bookings": []
         },
         {
           "id": "slot-area-1758793945818",
@@ -58,20 +45,7 @@
           "imageUrl": "https://images-ext-1.discordapp.net/external/8DesROHeCmTE8zVf_WnuqYm5N3ZIqK91Vt9UZ53mmME/https/www.djo2.it/Public/Libreria/punti_partenza/04_Slot_Parching_12-13.png?format=webp&quality=lossless&width=1284&height=722",
           "startSlot": 13,
           "endSlot": 14,
-          "bookings": [
-            {
-              "id": "booking-1758795503280",
-              "slotNumber": 13,
-              "vtcName": "bnngfbbfg",
-              "status": "approved"
-            },
-            {
-              "id": "booking-1760322505812",
-              "slotNumber": 14,
-              "vtcName": "Tedgshshjwbfbf",
-              "status": "approved"
-            }
-          ]
+          "bookings": []
         }
       ],
       "attendees": 0,

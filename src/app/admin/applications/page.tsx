@@ -7,15 +7,16 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import type { Application } from "@/lib/applications";
-import { CheckCircle, Clock, FileText, MoreHorizontal, XCircle, AlertCircle, ChevronDown, ChevronUp, PauseCircle, Link as LinkIcon, ExternalLink } from "lucide-react";
+import { CheckCircle, Clock, FileText, MoreHorizontal, XCircle, Link as LinkIcon, ExternalLink } from "lucide-react";
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { format } from 'date-fns';
 import { UpdateApplicationStatus } from "./actions";
 import { getApplications } from './server-actions';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { DeleteApplicationDialog } from './delete-application-dialog';
 
 
 const statusInfo = {
@@ -78,6 +79,8 @@ function ApplicationRow({ app }: { app: Application }) {
                     <DropdownMenuContent align="end">
                         <UpdateApplicationStatus applicationId={app.id} status="Accepted" currentStatus={app.status} />
                         <UpdateApplicationStatus applicationId={app.id} status="Rejected" currentStatus={app.status} />
+                        <DropdownMenuSeparator />
+                        <DeleteApplicationDialog applicationId={app.id} />
                     </DropdownMenuContent>
                 </DropdownMenu>
             </TableCell>
