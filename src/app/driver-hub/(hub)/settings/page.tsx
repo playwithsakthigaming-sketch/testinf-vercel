@@ -14,7 +14,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { useToast } from "@/hooks/use-toast";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Loader2 } from "lucide-react";
 
 
@@ -31,10 +31,34 @@ const passwordFormSchema = z.object({
 
 type PasswordFormData = z.infer<typeof passwordFormSchema>;
 
+type UserProfile = {
+    username: string;
+    email: string;
+    avatar: string;
+    country: string;
+}
 
 export default function SettingsPage() {
     const { toast } = useToast();
     const [isSubmittingPassword, setIsSubmittingPassword] = useState(false);
+    const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
+
+    useEffect(() => {
+        const fetchUserData = async () => {
+            try {
+                const res = await fetch(`/api/truckershub?endpoint=user`);
+                if (!res.ok) throw new Error(`Failed to fetch user data`);
+                const data = await res.json();
+                if(data.response) {
+                    setUserProfile(data.response);
+                }
+            } catch (error) {
+                console.error(error);
+            }
+        };
+
+        fetchUserData();
+    }, []);
 
     const passwordForm = useForm<PasswordFormData>({
         resolver: zodResolver(passwordFormSchema),
@@ -77,8 +101,8 @@ export default function SettingsPage() {
                         <CardContent className="space-y-8">
                              <div className="flex items-center gap-6">
                                 <Avatar className="h-24 w-24">
-                                    <AvatarImage src="https://images.unsplash.com/photo-1579546929518-9e396f3cc809?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="SAKTHIVEL" />
-                                    <AvatarFallback>S</AvatarFallback>
+                                    <AvatarImage src={userProfile?.avatar} alt={userProfile?.username} />
+                                    <AvatarFallback>{userProfile?.username?.charAt(0)}</AvatarFallback>
                                 </Avatar>
                                 <div className="space-y-2">
                                     <div className="flex gap-2">
@@ -94,15 +118,15 @@ export default function SettingsPage() {
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div className="space-y-2">
                                     <Label htmlFor="username">Username</Label>
-                                    <Input id="username" defaultValue="SAKTHIVEL" />
+                                    <Input id="username" defaultValue={userProfile?.username} />
                                 </div>
                                  <div className="space-y-2">
                                     <Label htmlFor="email">Email</Label>
-                                    <Input id="email" type="email" defaultValue="lsk27102@gmail.com" />
+                                    <Input id="email" type="email" defaultValue={userProfile?.email} />
                                 </div>
                                 <div className="space-y-2">
                                     <Label htmlFor="country">Country</Label>
-                                     <Select defaultValue="India">
+                                     <Select defaultValue={userProfile?.country || "India"}>
                                         <SelectTrigger id="country">
                                             <SelectValue placeholder="Select a country" />
                                         </SelectTrigger>
