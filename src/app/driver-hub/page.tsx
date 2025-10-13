@@ -8,85 +8,72 @@ const chartData = [
     { value: 25 }, { value: 40 }, { value: 35 },
 ];
 
-type CompanyStats = {
-    total_drivers: number;
-    online_drivers: number;
-    total_distance: number;
-    avg_delivery: number;
-    longest_delivery: number;
-    money_earned: number;
-    total_jobs: number;
-    company_thp: number;
+type VTCStats = {
+    members_count: number;
+    name: string;
 };
 
-async function fetchCompanyStats(): Promise<CompanyStats | null> {
-    const apiKey = process.env.TRUCKERSHUB_API_KEY;
-    if (!apiKey) {
-        console.error("TRUCKERSHUB_API_KEY is not set.");
+async function fetchVTCStats(): Promise<VTCStats | null> {
+    const vtcId = process.env.TRUCKERSMP_VTC_ID;
+    if (!vtcId) {
+        console.error("TRUCKERSMP_VTC_ID is not set.");
         return null;
     }
 
     try {
-        const url = `https://api.truckershub.in/v1/company/stats`;
+        const url = `https://api.truckersmp.com/v2/vtc/${vtcId}`;
         const res = await fetch(url, {
-            headers: { Authorization: apiKey },
             next: { revalidate: 300 } // Revalidate every 5 minutes
         });
         
         if (!res.ok) {
-            console.error("Failed to fetch company stats:", res.status, await res.text());
+            console.error("Failed to fetch VTC stats from TruckersMP:", res.status, await res.text());
             return null;
         }
 
         const data = await res.json();
         
-        if (data && data.status && data.response && data.response.company) {
-            return data.response.company;
+        if (data && data.response) {
+            return data.response;
         } else {
-             if (data && Object.keys(data).length > 0 && JSON.stringify(data) !== '{}') {
-                console.error("Invalid API response structure for company stats:", data);
+            if (data && Object.keys(data).length > 0 && JSON.stringify(data) !== '{}') {
+                console.error("Invalid API response structure for VTC stats:", data);
             }
             return null;
         }
     } catch (error) {
-        console.error("Error fetching company stats:", error);
+        console.error("Error fetching VTC stats:", error);
         return null;
     }
 }
 
-// Helper to format large numbers
-const formatNumber = (num: number): string => {
-    if (num >= 1000000) return `${(num / 1000000).toFixed(1)}M`;
-    if (num >= 1000) return `${(num / 1000).toFixed(1)}K`;
-    return String(num);
-};
 
 export default async function DriverHubPage() {
-    const stats = await fetchCompanyStats();
+    const stats = await fetchVTCStats();
 
     const statsCards = [
         {
             icon: <Activity className="h-5 w-5 text-white" />,
             title: "Online Drivers",
-            value: stats ? stats.online_drivers : 0,
+            value: "N/A",
             iconBgColor: "bg-blue-500",
         },
         {
             icon: <Users className="h-5 w-5 text-white" />,
             title: "Total Drivers",
-            value: stats ? stats.total_drivers : 0,
+            value: stats ? stats.members_count : 0,
             iconBgColor: "bg-red-500",
         },
         {
             icon: <MapPin className="h-5 w-5 text-white" />,
             title: "Average Distance",
-            value: stats ? `${stats.avg_delivery} km` : '0 km',
+            value: 'N/A',
             iconBgColor: "bg-green-500",
         },
         {
             icon: <Milestone className="h-5 w-5 text-white" />,
             title: "Longest Distance",
-            value: stats ? `${formatNumber(stats.longest_delivery)} km` : '0 km',
+            value: 'N/A',
             iconBgColor: "bg-teal-500",
         }
     ];
@@ -95,7 +82,7 @@ export default async function DriverHubPage() {
          {
             icon: <Route className="h-6 w-6 text-white" />,
             title: "Distance",
-            value: stats ? `${formatNumber(stats.total_distance)} km` : '0 km',
+            value: 'N/A',
             chartData: chartData,
             chartColor: "#34D399",
             iconBgColor: "bg-green-500",
@@ -103,15 +90,15 @@ export default async function DriverHubPage() {
         {
             icon: <CircleDollarSign className="h-6 w-6 text-white" />,
             title: "Revenue",
-            value: stats ? `₹${formatNumber(stats.money_earned)}` : '₹0',
+            value: 'N/A',
             chartData: chartData.slice().reverse(),
             chartColor: "#60A5FA",
             iconBgColor: "bg-blue-500",
         },
         {
             icon: <Star className="h-6 w-6 text-white" />,
-            title: "TruckersHub Points",
-            value: stats ? `${formatNumber(stats.company_thp)} THP` : '0 THP',
+            title: "TMP Points",
+            value: 'N/A',
             chartData: chartData,
             chartColor: "#3B82F6",
             iconBgColor: "bg-sky-500",
@@ -119,7 +106,7 @@ export default async function DriverHubPage() {
         {
             icon: <Truck className="h-6 w-6 text-white" />,
             title: "Jobs Delivered",
-            value: stats ? formatNumber(stats.total_jobs) : 0,
+            value: 'N/A',
             chartData: chartData.slice().reverse(),
             chartColor: "#F87171",
             iconBgColor: "bg-red-500",
@@ -131,7 +118,7 @@ export default async function DriverHubPage() {
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 <div>
                     <h1 className="text-3xl font-bold font-headline">Welcome, Driver!</h1>
-                    <p className="text-muted-foreground">Here is your overview for today.</p>
+                    <p className="text-muted-foreground">Here is your VTC overview for today.</p>
                 </div>
             </div>
 
