@@ -29,7 +29,7 @@ export default function DriverHubLoginPage() {
     return (
         <div className="relative flex min-h-screen flex-col items-center justify-center bg-background">
             <Image 
-                src="https://i.imgur.com/gcsZ2Jr.jpeg"
+                src="https://media.discordapp.net/attachments/1281551151418048677/1417735782223056929/IMG_20250917_102508.jpg?ex=68edd7d6&is=68ec8656&hm=80a11804ded1c00d78e714972cbd6223a670437744541bfe3e49986c0175175b&=&format=webp&width=1194&height=722"
                 alt="Background of green trucks"
                 fill
                 className="object-cover"
@@ -81,8 +81,8 @@ export default function DriverHubLoginPage() {
 
                     <div className="mt-4 text-center text-sm">
                         New Here?{" "}
-                        <Button variant="link" asChild className="text-primary p-0 h-auto">
-                            <Link href="https://truckersmp.com/vtc/73933/recruitment-form/3515-driver-recruitment-form" target="_blank">Register</Link>
+                        <Button variant="link" asChild className="text-primary p-0 h-auto" data-apply-btn>
+                            <Link href="#">Register</Link>
                         </Button>
                     </div>
                 </CardContent>
@@ -90,3 +90,5 @@ export default function DriverHubLoginPage() {
         </div>
     );
 }
+
+    
