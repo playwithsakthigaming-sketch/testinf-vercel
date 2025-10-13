@@ -3,10 +3,11 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Truck, Gamepad2 } from "lucide-react";
+import { Truck } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { Logo } from "@/components/app/logo";
+import { Checkbox } from "@/components/ui/checkbox";
 
 const SteamIcon = () => (
     <svg viewBox="0 0 24 24" className="h-5 w-5 mr-2">
@@ -28,13 +29,13 @@ export default function DriverHubLoginPage() {
     return (
         <div className="relative flex min-h-screen flex-col items-center justify-center bg-background">
             <Image 
-                src="https://media.discordapp.net/attachments/1281551151418048677/1417739857123475538/1758085736934.jpg?ex=68d37da2&is=68d22c22&hm=8704f60b91d953c3e9b83e28d406e362c20affcf91876b7d903227bb10d8bb9d&=&format=webp&width=1389&height=684"
-                alt="Background truck"
+                src="https://i.imgur.com/gcsZ2Jr.jpeg"
+                alt="Background of green trucks"
                 fill
                 className="object-cover"
             />
             <div className="absolute inset-0 bg-black/70" />
-            <Card className="relative z-10 w-full max-w-md mx-4 bg-card/80 backdrop-blur-sm">
+            <Card className="relative z-10 w-full max-w-md mx-4 bg-card/90 backdrop-blur-sm">
                 <CardHeader className="text-center">
                     <div className="mx-auto mb-4">
                         <Logo size={64}/>
@@ -45,15 +46,21 @@ export default function DriverHubLoginPage() {
                 <CardContent className="space-y-4">
                     <div className="space-y-2">
                         <Label htmlFor="email">Email</Label>
-                        <Input id="email" type="email" placeholder="your.email@example.com" />
+                        <Input id="email" type="email" placeholder="Enter your email or username" />
                     </div>
                     <div className="space-y-2">
                         <Label htmlFor="password">Password</Label>
                         <Input id="password" type="password" placeholder="••••••••" />
                     </div>
-                    <Button className="w-full">
-                        <Truck className="mr-2 h-4 w-4" />
-                        Log In
+                    <div className="flex items-center space-x-2">
+                        <Checkbox id="remember-me" />
+                        <Label htmlFor="remember-me" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                            Remember Me
+                        </Label>
+                    </div>
+
+                    <Button className="w-full bg-primary hover:bg-primary/90" asChild>
+                       <Link href="/driver-hub">Login</Link>
                     </Button>
                     <div className="relative">
                         <div className="absolute inset-0 flex items-center">
@@ -64,7 +71,7 @@ export default function DriverHubLoginPage() {
                         </div>
                     </div>
                     <div className="grid grid-cols-2 gap-4">
-                        <Button variant="outline" className="bg-[#24292E] text-white hover:bg-[#24292E]/90">
+                        <Button variant="outline" className="bg-[#1b2838] text-white hover:bg-[#1b2838]/90">
                            <SteamIcon /> Steam
                         </Button>
                         <Button variant="outline" className="bg-[#5865F2] text-white hover:bg-[#5865F2]/90">
@@ -73,10 +80,10 @@ export default function DriverHubLoginPage() {
                     </div>
 
                     <div className="mt-4 text-center text-sm">
-                        New to Tamil Pasanga?{" "}
-                        <Link href="/application-status" className="underline text-primary">
-                            Apply Now
-                        </Link>
+                        New Here?{" "}
+                        <Button variant="link" className="text-primary p-0 h-auto" data-apply-btn>
+                            Apply Now!
+                        </Button>
                     </div>
                 </CardContent>
             </Card>

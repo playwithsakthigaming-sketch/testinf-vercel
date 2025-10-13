@@ -72,7 +72,7 @@ export function Header() {
             </Link>
           ))}
             <Button asChild size="sm" className="rounded-full">
-                <Link href="/driver-hub">
+                <Link href="/driver-hub/login">
                     <Truck className="mr-2 h-4 w-4" />
                     Driver Hub
                 </Link>
@@ -128,7 +128,7 @@ export function Header() {
                     </Link>
                   ))}
                    <Button asChild size="sm" className="rounded-full mt-4">
-                        <Link href="/driver-hub">
+                        <Link href="/driver-hub/login">
                             <Truck className="mr-2 h-4 w-4" />
                             Driver Hub
                         </Link>
