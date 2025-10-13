@@ -83,12 +83,10 @@ export default function DashboardPage() {
     const [recentJobs, setRecentJobs] = React.useState<Job[]>([]);
 
     React.useEffect(() => {
-        const apiKey = 'I7PxBavQ0YQOU4fBXNgylB79QuMDwZUGSdAithuB'; // It's better to use environment variables for this
-
-        const fetchData = async (url: string) => {
+        const fetchData = async (endpoint: string) => {
             try {
-                const res = await fetch(`https://api.truckershub.in/v1/${url}`, { headers: { 'Authorization': apiKey } });
-                if (!res.ok) throw new Error(`Failed to fetch ${url}`);
+                const res = await fetch(`/api/truckershub?endpoint=${endpoint}`);
+                if (!res.ok) throw new Error(`Failed to fetch ${endpoint}`);
                 const data = await res.json();
                 return data.response;
             } catch (error) {
