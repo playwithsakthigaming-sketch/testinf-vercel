@@ -2,7 +2,7 @@
 import { Footer } from '@/components/app/footer';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Newspaper, Shield, Image as ImageIcon, Users, FileText, Calendar } from 'lucide-react';
+import { Newspaper, Shield, Image as ImageIcon, Users, FileText, Calendar, Ticket } from 'lucide-react';
 import Link from 'next/link';
 
 export default function AdminPage() {
@@ -30,6 +30,20 @@ export default function AdminPage() {
                 <p className="text-muted-foreground mb-4">View and process new driver applications.</p>
                 <Button asChild>
                   <Link href="/admin/applications">Go to Applications</Link>
+                </Button>
+              </CardContent>
+            </Card>
+             <Card className="bg-card hover:shadow-primary/20 transition-shadow">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Ticket size={20} />
+                  <span>Manage Bookings</span>
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-muted-foreground mb-4">Review and handle all event slot bookings.</p>
+                <Button asChild>
+                  <Link href="/admin/bookings">Go to Bookings</Link>
                 </Button>
               </CardContent>
             </Card>
