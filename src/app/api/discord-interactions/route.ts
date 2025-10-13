@@ -76,7 +76,7 @@ async function updateApplicationAndStaff(
             imageId: 'testimonial-avatar',
             imageUrl: "https://media.discordapp.net/attachments/1116720480544636999/1274425873201631304/TP_NEW_WB_PNGxxxhdpi.png?ex=68d4d8d5&is=68d38755&hm=b6d4e0e4ef2c3215a4de4fb2f592189a60ddd94c651f96fe04deac2e7f96ddc6&=&format=webp&quality=lossless&width=826&height=826",
             steamUrl: application.steamUrl,
-            truckersmpUrl: "",
+            truckersmpUrl: application.truckersmpUrl,
         };
         staffData.staffMembers.push(newMember);
         await writeJsonFile(staffFilePath, staffData);
@@ -248,12 +248,6 @@ export async function POST(req: NextRequest) {
         followupMessage = `❌ **Application Rejected** | \`${applicationId}\` has been rejected by <@${staffMember.id}>.`;
         newStatus = 'Rejected';
         break;
-      case 'interview':
-        statusText = `Interview scheduled by ${staffMember.username}`;
-        color = 3447003; // Blue
-        followupMessage = `💬 **Interview Stage** | \`${applicationId}\` has been moved to the interview stage by <@${staffMember.id}>.`;
-        newStatus = 'Interview';
-        break;
       default:
         return respondEphimerally('Unknown action.');
     }
@@ -264,7 +258,7 @@ export async function POST(req: NextRequest) {
         ...originalEmbed,
         color,
         fields: [
-            ...(originalEmbed.fields || []),
+            ...(originalEmbed.fields?.filter(f => f.name !== 'Status') || []),
             { name: 'Status', value: statusText, inline: false }
         ]
     };
@@ -288,7 +282,6 @@ export async function POST(req: NextRequest) {
                 components: [
                   { type: 2, style: ButtonStyle.Success, label: 'Accept', custom_id: 'accept_disabled', disabled: true },
                   { type: 2, style: ButtonStyle.Danger, label: 'Reject', custom_id: 'reject_disabled', disabled: true },
-                  { type: 2, style: ButtonStyle.Primary, label: 'Accept for Interview', custom_id: 'interview_disabled', disabled: true },
                 ]
               }
             ]

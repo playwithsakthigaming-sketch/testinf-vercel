@@ -164,13 +164,7 @@ export async function getApplicationStatus(
         const application = applicationsData.applications.find(app => app.id === applicationId);
 
         if (application) {
-            // Re-mapping the status here to fit the limited set for the public status check page.
-            // If the internal status is 'Interview', we show it as 'Pending' to the user.
-            const publicStatus = application.status === 'Accepted' || application.status === 'Rejected' || application.status === 'Pending' 
-                ? application.status 
-                : 'Pending';
-
-            return { applicationId, status: publicStatus as 'Pending' | 'Accepted' | 'Rejected' };
+            return { applicationId, status: application.status as 'Pending' | 'Accepted' | 'Rejected' };
         } else {
             return { applicationId, status: 'Not Found' };
         }
