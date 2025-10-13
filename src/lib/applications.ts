@@ -4,13 +4,13 @@ export type ApplicationStatus = 'Pending' | 'Accepted' | 'Rejected' | 'Interview
 export type Application = {
   id: string;
   name: string;
-  discordTag: string;
+  discordTag?: string; // Made optional
   email: string;
-  steamUrl: string;
+  steamUrl?: string; // Made optional
   truckersmpUrl?: string;
   truckershubUrl?: string;
-  experience: 'fresher' | 'experienced';
-  howYouFound: 'truckersmp' | 'friends' | 'others';
+  experience?: 'fresher' | 'experienced'; // Made optional
+  howYouFound?: 'truckersmp' | 'friends' | 'others'; // Made optional
   friendsMention?: string;
   othersMention?: string;
   status: ApplicationStatus;

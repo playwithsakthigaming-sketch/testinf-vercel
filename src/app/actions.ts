@@ -54,13 +54,9 @@ export async function submitApplication(data: ApplicationData): Promise<SubmitRe
     const newApplication: Application = {
         id: applicationId,
         name: username,
-        discordTag: '', // Not in the new form
         email: email,
-        steamUrl: '', // Not in the new form
         truckersmpUrl: truckersmp,
         truckershubUrl: truckershub,
-        experience: 'fresher', // Default value
-        howYouFound: 'others', // Default value
         status: 'Pending',
         submittedAt: new Date().toISOString(),
     };
@@ -80,7 +76,8 @@ export async function submitApplication(data: ApplicationData): Promise<SubmitRe
 
     if (!webhookUrl) {
         console.error('DISCORD_WEBHOOK_URL is not set in .env file');
-        return { success: false, message: 'Server configuration error.' };
+        // Don't fail the whole process if webhook is not set
+        return { success: true, message: 'Application submitted successfully!', applicationId };
     }
 
 
@@ -92,7 +89,7 @@ export async function submitApplication(data: ApplicationData): Promise<SubmitRe
     ];
 
     const embed = {
-        title: `New VTC Registration - ${applicationId}`,
+        title: `New Driver Hub Registration - ${applicationId}`,
         color: 3977201, // Medium Sea Green
         fields: fields,
         timestamp: new Date().toISOString(),
@@ -123,7 +120,7 @@ export async function submitApplication(data: ApplicationData): Promise<SubmitRe
               {
                 type: 2, // Button
                 style: 1, // Primary
-                label: 'Accept for Interview',
+                label: 'Set to Interview',
                 custom_id: `interview_${applicationId}`,
               },
             ],
