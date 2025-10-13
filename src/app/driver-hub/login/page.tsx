@@ -107,11 +107,16 @@ export default function DriverHubLoginPage() {
                                 name="password"
                                 render={({ field }) => (
                                     <FormItem>
-                                    <FormLabel>Password</FormLabel>
-                                    <FormControl>
-                                        <Input type="password" placeholder="••••••••" {...field} />
-                                    </FormControl>
-                                    <FormMessage />
+                                        <div className="flex items-center justify-between">
+                                            <FormLabel>Password</FormLabel>
+                                            <Button variant="link" asChild className="text-primary p-0 h-auto text-xs">
+                                                <Link href="/driver-hub/forgot-password">Forgot Password?</Link>
+                                            </Button>
+                                        </div>
+                                        <FormControl>
+                                            <Input type="password" placeholder="••••••••" {...field} />
+                                        </FormControl>
+                                        <FormMessage />
                                     </FormItem>
                                 )}
                             />
@@ -161,3 +166,4 @@ export default function DriverHubLoginPage() {
     
 
     
+
