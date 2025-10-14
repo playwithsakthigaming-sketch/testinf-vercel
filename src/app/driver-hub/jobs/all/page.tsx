@@ -32,7 +32,7 @@ type Job = {
 
 type ApiResponse = {
     status: boolean;
-    response: Job[];
+    response: Job[] | {};
 };
 
 async function getAllJobs(): Promise<Job[]> {
@@ -56,19 +56,20 @@ async function getAllJobs(): Promise<Job[]> {
 
         const data: ApiResponse = await res.json();
         
-        if (data && data.status && Array.isArray(data.response)) {
-            return data.response;
-        } else {
-            if (data && Object.keys(data).length > 0 && !Array.isArray(data.response)) {
-                // The API can return an empty object {} when no jobs are available.
-                // We'll treat this as an empty array and not log an error.
-                if(Object.keys(data).length === 0 || (data.response && typeof data.response === 'object' && Object.keys(data.response).length === 0)) {
-                    return [];
-                }
-                console.error("Invalid API response structure for jobs:", data);
+        if (data && data.status) {
+            if(Array.isArray(data.response)) {
+                return data.response;
             }
-            return [];
+            // If response is an empty object, it means no jobs. Return empty array.
+            if(typeof data.response === 'object' && Object.keys(data.response).length === 0) {
+                return [];
+            }
         }
+        
+        // Log as an error only if the response is unexpected (not an array, not an empty object)
+        console.error("Invalid API response structure for jobs:", data);
+        return [];
+
     } catch (error) {
         console.error("Error fetching jobs:", error);
         return [];
