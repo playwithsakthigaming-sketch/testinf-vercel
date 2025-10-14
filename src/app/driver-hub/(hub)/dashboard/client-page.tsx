@@ -45,10 +45,6 @@ const monthlyJobsData = [
   { name: 'Oct', jobs: 500 },
 ];
 
-const etsVsAtsData = [
-  { name: 'ETS2', value: 44657 },
-  { name: 'ATS', value: 7891 },
-];
 const goalData = [
   { name: 'Completed', value: 80 },
   { name: 'Left', value: 20 },
@@ -148,7 +144,7 @@ export function DashboardClientPage({ dashboardData, nearestPartnerEvent }: { da
             
             {/* Charts and Goals */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <Card className="lg:col-span-2 bg-card/80">
+                <Card className="lg:col-span-3 bg-card/80">
                     <CardHeader>
                         <CardTitle>Monthly Jobs</CardTitle>
                     </CardHeader>
@@ -166,28 +162,6 @@ export function DashboardClientPage({ dashboardData, nearestPartnerEvent }: { da
                         </ResponsiveContainer>
                     </CardContent>
                 </Card>
-                 <div className="grid grid-cols-1 gap-6">
-                     <Card className="bg-card/80">
-                        <CardHeader><CardTitle>Jobs This Month</CardTitle></CardHeader>
-                        <CardContent>
-                            <p className="text-4xl font-bold">289</p>
-                            <p className="text-sm text-muted-foreground">Previous Month: 1138</p>
-                        </CardContent>
-                    </Card>
-                    <Card className="bg-card/80">
-                        <CardHeader><CardTitle>ETS2 V/S ATS Jobs</CardTitle></CardHeader>
-                         <CardContent className="h-[150px]">
-                             <ResponsiveContainer width="100%" height="100%">
-                                <PieChart>
-                                    <Pie data={etsVsAtsData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={60} fill="#8884d8">
-                                        {etsVsAtsData.map((entry, index) => <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />)}
-                                    </Pie>
-                                    <Legend />
-                                </PieChart>
-                            </ResponsiveContainer>
-                         </CardContent>
-                    </Card>
-                </div>
             </div>
 
             <Card className="bg-card/80">
