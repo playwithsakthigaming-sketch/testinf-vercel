@@ -15,7 +15,6 @@ async function fetchTruckersHubAPI<T>(endpoint: string): Promise<T | null> {
         return null;
     }
     
-    // This function will be called from a server component, so we can fetch directly.
     try {
         const url = `https://api.truckershub.in/v1/${endpoint}`;
         const res = await fetch(url, {
@@ -33,7 +32,6 @@ async function fetchTruckersHubAPI<T>(endpoint: string): Promise<T | null> {
         if (data && data.status) {
             return data.response;
         } else {
-             // Don't log an error for an empty object response, which can be valid for some endpoints
             if (typeof data.response === 'object' && data.response !== null && Object.keys(data.response).length > 0) {
                  console.error(`Invalid API response structure from TruckersHub (${endpoint}):`, data);
             }
@@ -48,13 +46,15 @@ async function fetchTruckersHubAPI<T>(endpoint: string): Promise<T | null> {
 
 export async function getDashboardData() {
     try {
-        const [stats, allTime, monthly, jobs, user] = await Promise.all([
+        const [statsData, allTime, monthly, jobs, user] = await Promise.all([
             fetchTruckersHubAPI<{ vtc: VtcStats }>('vtc'),
             fetchTruckersHubAPI<LeaderboardUser[]>('leaderboard/alltime'),
             fetchTruckersHubAPI<LeaderboardUser[]>('leaderboard/monthly'),
             fetchTruckersHubAPI<Job[]>('jobs/all'),
             fetchTruckersHubAPI<{ username: string }>('user'),
         ]);
+
+        const stats = statsData ? statsData.vtc : null;
         
         return { stats, allTime, monthly, jobs, user };
     } catch (error) {

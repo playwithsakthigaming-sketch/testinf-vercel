@@ -52,7 +52,7 @@ const goalData = [
 const COLORS = ['#3CB371', '#0d342f'];
 
 type DashboardPageProps = {
-    stats: { vtc: VtcStats } | null;
+    stats: VtcStats | null;
     allTime: LeaderboardUser[] | null;
     monthly: LeaderboardUser[] | null;
     jobs: Job[] | null;
@@ -64,7 +64,7 @@ export function DashboardClientPage({ dashboardData, nearestPartnerEvent }: { da
         return <div className="p-8 text-center"><Loader2 className="mx-auto h-12 w-12 animate-spin" /> <p className="mt-4">Loading dashboard...</p></div>;
     }
     const { stats, allTime, monthly, jobs, user } = dashboardData;
-    const vtcStats = stats?.vtc;
+    const vtcStats = stats;
     const allTimeLeaderboard: LeaderboardUser[] = allTime || [];
     const monthlyLeaderboard: LeaderboardUser[] = monthly || [];
     const recentJobs: Job[] = jobs || [];
