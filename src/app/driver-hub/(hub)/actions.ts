@@ -8,13 +8,14 @@ type TruckersHubResponse<T> = {
     response: T;
 };
 
-async function fetchTruckersHub<T>(endpoint: string): Promise<T | null> {
+async function fetchTruckersHubAPI<T>(endpoint: string): Promise<T | null> {
     const apiKey = process.env.TRUCKERSHUB_API_KEY;
     if (!apiKey) {
         console.error("TRUCKERSHUB_API_KEY is not set.");
         return null;
     }
-
+    
+    // This function will be called from a server component, so we can fetch directly.
     try {
         const url = `https://api.truckershub.in/v1/${endpoint}`;
         const res = await fetch(url, {
@@ -32,8 +33,9 @@ async function fetchTruckersHub<T>(endpoint: string): Promise<T | null> {
         if (data && data.status) {
             return data.response;
         } else {
-            if (Object.keys(data).length > 0 && endpoint !== 'user') { // Don't log empty error for user endpoint
-                console.error(`Invalid API response structure from TruckersHub (${endpoint}):`, data);
+             // Don't log an error for an empty object response, which can be valid for some endpoints
+            if (typeof data.response === 'object' && data.response !== null && Object.keys(data.response).length > 0) {
+                 console.error(`Invalid API response structure from TruckersHub (${endpoint}):`, data);
             }
             return null;
         }
@@ -47,16 +49,16 @@ async function fetchTruckersHub<T>(endpoint: string): Promise<T | null> {
 export async function getDashboardData() {
     try {
         const [stats, allTime, monthly, jobs, user] = await Promise.all([
-            fetchTruckersHub<{ vtc: VtcStats }>('vtc'),
-            fetchTruckersHub<LeaderboardUser[]>('leaderboard/alltime'),
-            fetchTruckersHub<LeaderboardUser[]>('leaderboard/monthly'),
-            fetchTruckersHub<Job[]>('jobs/all'),
-            fetchTruckersHub<{ username: string }>('user'),
+            fetchTruckersHubAPI<{ vtc: VtcStats }>('vtc'),
+            fetchTruckersHubAPI<LeaderboardUser[]>('leaderboard/alltime'),
+            fetchTruckersHubAPI<LeaderboardUser[]>('leaderboard/monthly'),
+            fetchTruckersHubAPI<Job[]>('jobs/all'),
+            fetchTruckersHubAPI<{ username: string }>('user'),
         ]);
-
+        
         return { stats, allTime, monthly, jobs, user };
     } catch (error) {
         console.error("Failed to fetch dashboard data:", error);
-        return null;
+        return { stats: null, allTime: null, monthly: null, jobs: null, user: null };
     }
 }
