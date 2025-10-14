@@ -128,61 +128,40 @@ const getNearestPartnerEvent = (): (Event & { image: any }) | null => {
     return { ...nearestEvent, image };
 }
 
+async function getDashboardData() {
+    const fetch = (await import('node-fetch')).default;
+    const fetchData = async (endpoint: string) => {
+        try {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/truckershub?endpoint=${endpoint}`);
+            if (!res.ok) throw new Error(`Failed to fetch ${endpoint}`);
+            const data = await res.json();
+            return data.response;
+        } catch (error) {
+            console.error(error);
+            return null;
+        }
+    };
 
-export default function DashboardPage() {
-    const [date, setDate] = React.useState<string | null>(null);
-    const [vtcStats, setVtcStats] = React.useState<VtcStats | null>(null);
-    const [username, setUsername] = React.useState<string>("Driver");
-    const [allTimeLeaderboard, setAllTimeLeaderboard] = React.useState<LeaderboardUser[]>([]);
-    const [monthlyLeaderboard, setMonthlyLeaderboard] = React.useState<LeaderboardUser[]>([]);
-    const [recentJobs, setRecentJobs] = React.useState<Job[]>([]);
+    const [stats, allTime, monthly, jobs, user] = await Promise.all([
+        fetchData('vtc'),
+        fetchData('leaderboard/nxp'),
+        fetchData('leaderboard/monthly_nxp'),
+        fetchData('jobs/all?limit=5'),
+        fetchData('user'),
+    ]);
+
+    return { stats, allTime, monthly, jobs, user };
+}
+
+export default async function DashboardPage() {
+    const { stats, allTime, monthly, jobs, user } = await getDashboardData();
+    const vtcStats = stats?.vtc;
+    const allTimeLeaderboard: LeaderboardUser[] = allTime || [];
+    const monthlyLeaderboard: LeaderboardUser[] = monthly || [];
+    const recentJobs: Job[] = jobs || [];
+    const username = user?.username || "Driver";
     
-    const nearestPartnerEvent = React.useMemo(() => getNearestPartnerEvent(), []);
-
-    React.useEffect(() => {
-        const fetchData = async (endpoint: string) => {
-            try {
-                const res = await fetch(`/api/truckershub?endpoint=${endpoint}`);
-                if (!res.ok) throw new Error(`Failed to fetch ${endpoint}`);
-                const data = await res.json();
-                return data.response;
-            } catch (error) {
-                console.error(error);
-                return null;
-            }
-        };
-
-        const fetchAllData = async () => {
-            const [stats, allTime, monthly, jobs, user] = await Promise.all([
-                fetchData('vtc'),
-                fetchData('leaderboard/nxp'),
-                fetchData('leaderboard/monthly_nxp'),
-                fetchData('jobs/all?limit=5'),
-                 fetchData('user'),
-            ]);
-            
-            if (stats) setVtcStats(stats.vtc);
-            if (allTime) setAllTimeLeaderboard(allTime);
-            if (monthly) setMonthlyLeaderboard(monthly);
-            if (jobs) setRecentJobs(jobs);
-            if (user) setUsername(user.username);
-        };
-        
-        fetchAllData();
-
-        const updateDate = () => {
-             setDate(new Date().toLocaleString('en-GB', {
-                day: '2-digit', month: 'short', year: 'numeric',
-                hour: '2-digit', minute: '2-digit', second: '2-digit',
-                timeZoneName: 'short'
-            }).replace(',', ''));
-        };
-
-        const intervalId = setInterval(updateDate, 1000);
-        updateDate();
-
-        return () => clearInterval(intervalId);
-    }, []);
+    const nearestPartnerEvent = getNearestPartnerEvent();
 
     return (
         <div className="p-4 md:p-8 space-y-6 bg-background text-white">
@@ -190,7 +169,7 @@ export default function DashboardPage() {
             <div className="flex justify-between items-center">
                 <h1 className="text-2xl font-semibold text-primary">Good Evening {username}</h1>
                 <div className="flex items-center gap-4">
-                    {date && <span className="text-muted-foreground text-sm">{date}</span>}
+                    {/* Date is now handled on client to avoid hydration mismatch, or removed if not essential */}
                     <Badge variant="destructive"><Dot className="-ml-1" />Offline</Badge>
                     <Button variant="ghost" size="icon"><Bell size={18} /></Button>
                     <Button variant="ghost" size="icon"><HelpCircle size={18} /></Button>
@@ -415,5 +394,4 @@ export default function DashboardPage() {
 
         </div>
     );
-
-    
+}

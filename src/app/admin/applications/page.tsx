@@ -1,7 +1,5 @@
 
-'use client';
-
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Footer } from "@/components/app/footer";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -14,7 +12,6 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSepara
 import { format } from 'date-fns';
 import { UpdateApplicationStatus } from "./actions";
 import { getApplications } from './server-actions';
-import { Skeleton } from '@/components/ui/skeleton';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { DeleteApplicationDialog } from './delete-application-dialog';
 
@@ -88,24 +85,8 @@ function ApplicationRow({ app }: { app: Application }) {
     );
 }
 
-export default function ApplicationsAdminPage() {
-    const [applications, setApplications] = useState<Application[]>([]);
-    const [isLoading, setIsLoading] = useState(true);
-
-    useEffect(() => {
-        async function loadData() {
-            setIsLoading(true);
-            try {
-                const fetchedApplications = await getApplications();
-                setApplications(fetchedApplications);
-            } catch (error) {
-                console.error("Failed to load data:", error);
-            } finally {
-                setIsLoading(false);
-            }
-        }
-        loadData();
-    }, []);
+export default async function ApplicationsAdminPage() {
+    const applications = await getApplications();
 
     return (
         <div className="flex flex-col min-h-screen bg-background">
@@ -122,7 +103,7 @@ export default function ApplicationsAdminPage() {
                         <CardHeader>
                             <CardTitle>Driver Hub Applications</CardTitle>
                             <CardDescription>
-                                {isLoading ? 'Loading applications...' : `${applications.length} application(s) found.`}
+                                {`${applications.length} application(s) found.`}
                             </CardDescription>
                         </CardHeader>
                         <CardContent>
@@ -139,18 +120,16 @@ export default function ApplicationsAdminPage() {
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
-                                    {isLoading ? (
-                                        Array.from({ length: 5 }).map((_, index) => (
-                                            <TableRow key={index}>
-                                                <TableCell colSpan={7}>
-                                                    <Skeleton className="h-8 w-full" />
-                                                </TableCell>
-                                            </TableRow>
-                                        ))
-                                    ) : (
+                                    {applications.length > 0 ? (
                                         applications.map((app) => (
                                             <ApplicationRow key={app.id} app={app} />
                                         ))
+                                    ) : (
+                                        <TableRow>
+                                            <TableCell colSpan={7} className="text-center">
+                                                No applications found.
+                                            </TableCell>
+                                        </TableRow>
                                     )}
                                 </TableBody>
                             </Table>

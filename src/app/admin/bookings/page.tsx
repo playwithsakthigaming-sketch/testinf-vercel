@@ -1,7 +1,5 @@
 
-'use client';
-
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Footer } from "@/components/app/footer";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -9,8 +7,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { MoreHorizontal, CheckCircle, XCircle, PauseCircle, Clock, Ticket } from "lucide-react";
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { Skeleton } from '@/components/ui/skeleton';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { getEventsWithBookings } from '../applications/server-actions';
 import { UpdateBookingStatus } from '../applications/actions';
 import type { Event, Booking } from '@/lib/events';
@@ -59,39 +56,23 @@ function BookingRow({ item }: { item: BookingWithEventInfo }) {
     );
 }
 
-export default function BookingsAdminPage() {
-    const [bookings, setBookings] = useState<BookingWithEventInfo[]>([]);
-    const [isLoading, setIsLoading] = useState(true);
-
-     useEffect(() => {
-        async function loadData() {
-            setIsLoading(true);
-            try {
-                const events = await getEventsWithBookings();
-                const allBookings = events.flatMap(event => 
-                    event.slots?.flatMap(area => 
-                        area.bookings?.map(booking => ({
-                            booking,
-                            event: { id: event.id, title: event.title },
-                            area: { id: area.id, name: area.areaName }
-                        })) || []
-                    ) || []
-                );
-                // Sort by pending status first, then by event
-                allBookings.sort((a, b) => {
-                    if (a.booking.status === 'pending' && b.booking.status !== 'pending') return -1;
-                    if (a.booking.status !== 'pending' && b.booking.status === 'pending') return 1;
-                    return a.event.title.localeCompare(b.event.title);
-                });
-                setBookings(allBookings);
-            } catch (error) {
-                console.error("Failed to load data:", error);
-            } finally {
-                setIsLoading(false);
-            }
-        }
-        loadData();
-    }, []);
+export default async function BookingsAdminPage() {
+    const events = await getEventsWithBookings();
+    const allBookings = events.flatMap(event => 
+        event.slots?.flatMap(area => 
+            area.bookings?.map(booking => ({
+                booking,
+                event: { id: event.id, title: event.title },
+                area: { id: area.id, name: area.areaName }
+            })) || []
+        ) || []
+    );
+    // Sort by pending status first, then by event
+    allBookings.sort((a, b) => {
+        if (a.booking.status === 'pending' && b.booking.status !== 'pending') return -1;
+        if (a.booking.status !== 'pending' && b.booking.status === 'pending') return 1;
+        return a.event.title.localeCompare(b.event.title);
+    });
 
     return (
         <div className="flex flex-col min-h-screen bg-background">
@@ -108,7 +89,7 @@ export default function BookingsAdminPage() {
                         <CardHeader>
                             <CardTitle>All Bookings</CardTitle>
                             <CardDescription>
-                                {isLoading ? 'Loading bookings...' : `${bookings.length} booking request(s) found.`}
+                                {`${allBookings.length} booking request(s) found.`}
                             </CardDescription>
                         </CardHeader>
                         <CardContent>
@@ -123,18 +104,16 @@ export default function BookingsAdminPage() {
                                     </TableRow>
                                 </TableHeader>
                                  <TableBody>
-                                    {isLoading ? (
-                                        Array.from({ length: 5 }).map((_, index) => (
-                                            <TableRow key={index}>
-                                                <TableCell colSpan={5}>
-                                                    <Skeleton className="h-8 w-full" />
-                                                </TableCell>
-                                            </TableRow>
-                                        ))
-                                    ) : (
-                                        bookings.map((item) => (
+                                    {allBookings.length > 0 ? (
+                                        allBookings.map((item) => (
                                             <BookingRow key={item.booking.id} item={item} />
                                         ))
+                                    ) : (
+                                        <TableRow>
+                                            <TableCell colSpan={5} className="text-center">
+                                                No booking requests found.
+                                            </TableCell>
+                                        </TableRow>
                                     )}
                                 </TableBody>
                             </Table>

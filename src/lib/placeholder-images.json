@@ -1,6 +1,12 @@
 {
   "placeholderImages": [
     {
+      "id": "newsletter-1760368787564",
+      "description": "Image for The Big 🎃 Pickup delivery event is here! 🚚",
+      "imageUrl": "https://media.discordapp.net/attachments/307488652701728769/1426977729500156045/delivery-map-1.png?ex=68edd8d2&is=68ec8752&hm=52562cf184d6c2027a674c16ed7f140738fe1860c876549406c345dc4860f67e&=&format=webp&quality=lossless&width=1284&height=722",
+      "imageHint": "custom article"
+    },
+    {
       "id": "event-1759145518758",
       "description": "Image for Birthday Miles for Dude 🚚🎉",
       "imageUrl": "https://i.imgur.com/yMzKels.jpeg",
