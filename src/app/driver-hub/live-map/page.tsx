@@ -1,18 +1,10 @@
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { LiveMapClient } from './live-map-client';
 
-export default function Page() {
+export default function LiveMapPage() {
     return (
-        <div className="p-4 md:p-8">
-            <Card>
-                <CardHeader>
-                    <CardTitle>Live Map</CardTitle>
-                    <CardDescription>This page is under construction. Check back soon for updates!</CardDescription>
-                </CardHeader>
-                <CardContent>
-                    <p>This page will display the live map.</p>
-                </CardContent>
-            </Card>
+        <div className="h-[calc(100vh_-_var(--header-height,4rem))]">
+            <LiveMapClient />
         </div>
     );
 }
