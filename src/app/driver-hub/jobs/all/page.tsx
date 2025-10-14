@@ -5,9 +5,10 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { MoreHorizontal, Truck, MapPin, Package, CheckCircle, AlertTriangle, PlayCircle } from "lucide-react";
 import Image from "next/image";
+import Link from 'next/link';
 
 type Job = {
-    id: string;
+    id: number;
     driver: {
         id: number;
         username: string;
@@ -18,6 +19,7 @@ type Job = {
     destination_city: string;
     destination_company: string;
     cargo: string;
+    cargo_mass: number;
     distance: number;
     fuel_used: number;
     money_made: number;
@@ -58,6 +60,11 @@ async function getAllJobs(): Promise<Job[]> {
             return data.response;
         } else {
             if (data && Object.keys(data).length > 0 && !Array.isArray(data.response)) {
+                // The API can return an empty object {} when no jobs are available.
+                // We'll treat this as an empty array and not log an error.
+                if(Object.keys(data).length === 0 || (data.response && typeof data.response === 'object' && Object.keys(data.response).length === 0)) {
+                    return [];
+                }
                 console.error("Invalid API response structure for jobs:", data);
             }
             return [];
@@ -138,8 +145,8 @@ export default async function AllJobsPage() {
                                         </div>
                                     </TableCell>
                                     <TableCell className="text-right">
-                                        <Button variant="ghost" size="icon">
-                                            <MoreHorizontal size={16} />
+                                        <Button asChild variant="outline" size="sm">
+                                            <Link href={`/driver-hub/jobs/${job.id}`}>Details</Link>
                                         </Button>
                                     </TableCell>
                                 </TableRow>
