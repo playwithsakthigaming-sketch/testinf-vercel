@@ -1,7 +1,4 @@
 
-
-'use client';
-
 import React from 'react';
 import { AreaChart, Area, PieChart, Pie, Cell, Legend, ResponsiveContainer } from 'recharts';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -129,10 +126,10 @@ const getNearestPartnerEvent = (): (Event & { image: any }) | null => {
 }
 
 async function getDashboardData() {
-    const fetch = (await import('node-fetch')).default;
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:9002';
     const fetchData = async (endpoint: string) => {
         try {
-            const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/truckershub?endpoint=${endpoint}`);
+            const res = await fetch(`${baseUrl}/api/truckershub?endpoint=${endpoint}`);
             if (!res.ok) throw new Error(`Failed to fetch ${endpoint}`);
             const data = await res.json();
             return data.response;
@@ -395,3 +392,5 @@ export default async function DashboardPage() {
         </div>
     );
 }
+
+    

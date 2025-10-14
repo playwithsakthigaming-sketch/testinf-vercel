@@ -66,7 +66,7 @@ async function updateApplicationAndStaff(
 
     // If accepting, check if they are already a staff member to avoid duplicates
     if (newStatus === 'Accepted' && oldStatus !== 'Accepted') {
-      const isAlreadyStaff = staffData.staffMembers.some(member => member.name === application.name);
+      const isAlreadyStaff = staffData.staffMembers.some(member => member.name.toLowerCase() === application.name.toLowerCase());
       
       if (!isAlreadyStaff) {
         const newMember: StaffMember = {
@@ -112,7 +112,6 @@ function respondEphimerally(content: string) {
 }
 
 async function sendFollowupMessage(interactionToken: string, content: string) {
-  const fetch = (await import('node-fetch')).default;
   const url = `https://discord.com/api/v10/webhooks/${process.env.DISCORD_APPLICATION_ID}/${interactionToken}`;
   
   await fetch(url, {
@@ -237,13 +236,13 @@ export async function POST(req: NextRequest) {
 
     switch (action) {
       case 'accept':
-        statusText = `Accepted by ${staffMember.username}`;
+        statusText = `Accepted by ${staffMember.username || 'Staff'}`;
         color = 5763719; // Green
         followupMessage = `✅ **Application Accepted** | \`${applicationId}\` has been accepted by <@${staffMember.id}>.`;
         newStatus = 'Accepted';
         break;
       case 'reject':
-        statusText = `Rejected by ${staffMember.username}`;
+        statusText = `Rejected by ${staffMember.username || 'Staff'}`;
         color = 15548997; // Red
         followupMessage = `❌ **Application Rejected** | \`${applicationId}\` has been rejected by <@${staffMember.id}>.`;
         newStatus = 'Rejected';
