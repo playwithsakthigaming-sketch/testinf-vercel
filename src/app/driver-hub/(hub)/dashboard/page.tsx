@@ -1,7 +1,7 @@
 
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { AreaChart, Area, PieChart, Pie, Cell, Legend, ResponsiveContainer } from 'recharts';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -10,7 +10,6 @@ import { Table, TableBody, TableCell, TableHeader, TableHead, TableRow } from '@
 import { Bell, HelpCircle, User, Truck, Calendar, Flame, Dot, Users, Settings, LogOut, Loader2 } from 'lucide-react';
 import Image from 'next/image';
 import { Badge } from '@/components/ui/badge';
-import eventsData from '@/lib/events.json';
 import type { Event } from '@/lib/events';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import Link from 'next/link';
@@ -22,32 +21,9 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import type { VtcStats, LeaderboardUser, Job } from '@/lib/truckershub-types';
+import { getDashboardData } from './actions';
 
-
-type VtcStats = {
-    total_drivers: number;
-    live_drivers: number;
-    total_distance: number;
-    total_jobs: number;
-    total_fuel: number;
-};
-
-type LeaderboardUser = {
-    username: string;
-    value: number;
-};
-
-type Job = {
-    id: string;
-    driver: {
-        username: string;
-    };
-    start_city: string;
-    destination_city: string;
-    cargo: string;
-    cargo_mass: number;
-    distance: number;
-};
 
 const StatCard = ({ title, value, icon, className = '' }: { title: string, value: string, icon: React.ReactNode, className?: string }) => (
     <Card className={`bg-card/80 backdrop-blur-sm ${className}`}>
@@ -81,106 +57,22 @@ const goalData = [
 ];
 const COLORS = ['#3CB371', '#0d342f'];
 
-const MilestoneIcon = ({ icon, color }: { icon: string, color: string }) => (
-    <div className={`w-8 h-8 rounded-full flex items-center justify-center bg-${color}-500/20 text-${color}-400`}>
-        <Dot/>
-    </div>
-);
-
-// Helper to parse the date/time string from events.json
-const parseDateTime = (dateTimeStr: string): Date | null => {
-    try {
-        const parts = dateTimeStr.split(' | ');
-        if (parts.length < 2) return null; // Invalid format
-
-        const datePart = parts[0];
-        const timePart = parts[1];
-
-        const [day, month, year] = datePart.split('.').map(Number);
-        const [time, ] = timePart.split(' ');
-        const [hour, minute] = time.split(':').map(Number);
-        
-        // Month is 0-indexed in JS Date
-        return new Date(Date.UTC(year, month - 1, day, hour, minute));
-    } catch {
-        return null;
-    }
-};
-
-const getNearestPartnerEvent = (): (Event & { image: any }) | null => {
-    const partnerEvents = eventsData.events.filter(e => e.type === 'partner');
-    const now = new Date();
-
-    const upcomingEvents = partnerEvents
-        .map(event => ({
-            ...event,
-            parsedDate: parseDateTime(event.meetupTime)
-        }))
-        .filter(event => event.parsedDate && event.parsedDate > now)
-        .sort((a, b) => a.parsedDate!.getTime() - b.parsedDate!.getTime());
-
-    if (upcomingEvents.length === 0) return null;
-    
-    const nearestEvent = upcomingEvents[0];
-    const image = PlaceHolderImages.find(p => p.id === nearestEvent.imageId);
-
-    return { ...nearestEvent, image };
-}
-
-type DashboardData = {
+type DashboardPageProps = {
     stats: { vtc: VtcStats } | null;
     allTime: LeaderboardUser[] | null;
     monthly: LeaderboardUser[] | null;
     jobs: Job[] | null;
     user: { username: string } | null;
-};
+    nearestPartnerEvent: (Event & { image: any }) | null;
+}
 
-export default function DashboardPage() {
-    const [data, setData] = useState<DashboardData | null>(null);
-    const [loading, setLoading] = useState(true);
-
-    useEffect(() => {
-        const getDashboardData = async () => {
-            const fetchData = async (endpoint: string) => {
-                try {
-                    const res = await fetch(`/api/truckershub?endpoint=${endpoint}`);
-                    if (!res.ok) throw new Error(`Failed to fetch ${endpoint}`);
-                    const data = await res.json();
-                    return data.response;
-                } catch (error) {
-                    console.error(error);
-                    return null;
-                }
-            };
-
-            const [stats, allTime, monthly, jobs, user] = await Promise.all([
-                fetchData('vtc'),
-                fetchData('leaderboard/nxp'),
-                fetchData('leaderboard/monthly_nxp'),
-                fetchData('jobs/all?limit=5'),
-                fetchData('user'),
-            ]);
-            setData({ stats, allTime, monthly, jobs, user });
-            setLoading(false);
-        }
-        getDashboardData();
-    }, []);
-
-    const vtcStats = data?.stats?.vtc;
-    const allTimeLeaderboard: LeaderboardUser[] = data?.allTime || [];
-    const monthlyLeaderboard: LeaderboardUser[] = data?.monthly || [];
-    const recentJobs: Job[] = data?.jobs || [];
-    const username = data?.user?.username || "Driver";
-    
-    const nearestPartnerEvent = getNearestPartnerEvent();
-
-    if (loading) {
-        return (
-            <div className="flex justify-center items-center h-screen">
-                <Loader2 className="h-16 w-16 animate-spin text-primary" />
-            </div>
-        );
-    }
+export default function DashboardPage({ dashboardData, nearestPartnerEvent }: { dashboardData: DashboardPageProps, nearestPartnerEvent: (Event & { image: any }) | null }) {
+    const { stats, allTime, monthly, jobs, user } = dashboardData;
+    const vtcStats = stats?.vtc;
+    const allTimeLeaderboard: LeaderboardUser[] = allTime || [];
+    const monthlyLeaderboard: LeaderboardUser[] = monthly || [];
+    const recentJobs: Job[] = jobs || [];
+    const username = user?.username || "Driver";
 
     return (
         <div className="p-4 md:p-8 space-y-6 bg-background text-white">
@@ -253,36 +145,6 @@ export default function DashboardPage() {
                 </Card>
             )}
 
-            {/* Celestial Milestone Tracker */}
-            <Card className="bg-card/80">
-                <CardHeader>
-                    <CardTitle className="text-center text-lg">Celestial Milestone Tracker</CardTitle>
-                </CardHeader>
-                <CardContent>
-                    <p className="text-center text-muted-foreground text-sm mb-4">
-                        Together, Tamil pasanga Drivers have journeyed incredible distances pushing boundaries, breaking limits, and truly proving our slogan: "Gateway to New Horizons."
-                    </p>
-                    <div className="flex justify-around items-center">
-                        <MilestoneIcon icon="earth" color="green" />
-                        <div className="flex-grow h-1 bg-green-500/30 rounded-full mx-2 relative">
-                            <div className="absolute top-0 left-0 h-1 bg-green-500 rounded-full" style={{width: '30%'}}></div>
-                        </div>
-                        <MilestoneIcon icon="meteor" color="orange" />
-                        <div className="flex-grow h-1 bg-gray-700 rounded-full mx-2" />
-                        <MilestoneIcon icon="rocket" color="purple" />
-                         <div className="flex-grow h-1 bg-gray-700 rounded-full mx-2" />
-                        <MilestoneIcon icon="comet" color="red" />
-                         <div className="flex-grow h-1 bg-gray-700 rounded-full mx-2" />
-                        <MilestoneIcon icon="ufo" color="teal" />
-                         <div className="flex-grow h-1 bg-gray-700 rounded-full mx-2" />
-                        <MilestoneIcon icon="galaxy" color="indigo" />
-                         <div className="flex-grow h-1 bg-gray-700 rounded-full mx-2" />
-                        <MilestoneIcon icon="sun" color="yellow" />
-                         <div className="flex-grow h-1 bg-gray-700 rounded-full mx-2" />
-                        <MilestoneIcon icon="blackhole" color="gray" />
-                    </div>
-                </CardContent>
-            </Card>
             
             {/* Charts and Goals */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -413,3 +275,4 @@ export default function DashboardPage() {
 
         </div>
     );
+}
