@@ -49,7 +49,6 @@ import { Button } from '../ui/button';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '../ui/collapsible';
 
 const MainNav = [
-    { label: 'Dashboard', href: '/driver-hub/dashboard', icon: LayoutDashboard },
     { label: 'Leaderboard', href: '/driver-hub/leaderboard', icon: Award },
     { label: 'Live Map', href: '/driver-hub/live-map', icon: Map },
     { label: 'Profile', href: '/driver-hub/profile', icon: User },

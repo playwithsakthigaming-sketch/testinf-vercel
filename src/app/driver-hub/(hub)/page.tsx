@@ -8,12 +8,12 @@ export default function DriverHubPage() {
     const router = useRouter();
 
     React.useEffect(() => {
-        router.replace('/driver-hub/dashboard');
+        router.replace('/driver-hub/profile');
     }, [router]);
 
     return (
         <div className="p-4 md:p-8 space-y-8">
-            <p>Redirecting to dashboard...</p>
+            <p>Redirecting to profile...</p>
         </div>
     );
 }
