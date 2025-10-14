@@ -49,9 +49,11 @@ import { Button } from '../ui/button';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '../ui/collapsible';
 
 const MainNav = [
+    { label: 'Dashboard', href: '/driver-hub', icon: LayoutDashboard },
     { label: 'Leaderboard', href: '/driver-hub/leaderboard', icon: Award },
     { label: 'Live Map', href: '/driver-hub/live-map', icon: Map },
     { label: 'Profile', href: '/driver-hub/profile', icon: User },
+    { label: 'Members', href: '/driver-hub/members', icon: Users },
 ];
 
 const GameplayNav = [
@@ -90,7 +92,7 @@ export function DriverHubSidebar() {
         if (href === '/driver-hub') {
             return pathname === href || pathname === '/driver-hub/page';
         }
-        return pathname === href;
+        return pathname.startsWith(href) && (pathname === href || href !== '/driver-hub');
     };
     
     const isSubActive = (items: { label: string; href: string }[]) => {
@@ -174,7 +176,7 @@ export function DriverHubSidebar() {
     );
 }
 
-export function DriverHubLayout({ children }: { children: React.ReactNode }) {
+export function DriverHubLayoutContent({ children }: { children: React.ReactNode }) {
     return (
         <SidebarProvider>
             <DriverHubSidebar />
@@ -188,7 +190,3 @@ export function DriverHubLayout({ children }: { children: React.ReactNode }) {
         </SidebarProvider>
     );
 }
-
-    
-
-    
