@@ -102,3 +102,15 @@ export type LiveDelivery = {
     eta: number; // In seconds
     started_at: string;
 };
+
+export type Skill = {
+    id: string;
+    name: string;
+    max_level: number;
+};
+
+export type DriverSkill = {
+    id: string;
+    name: string;
+    level: number;
+};

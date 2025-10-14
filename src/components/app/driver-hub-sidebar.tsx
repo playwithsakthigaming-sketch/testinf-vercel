@@ -41,6 +41,7 @@ import {
     Wallet,
     Clapperboard,
     User,
+    Wrench,
 } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -83,6 +84,7 @@ const AccountNav = [
 const KnowledgeNav = [
     { label: 'Examination', href: '/driver-hub/examination', icon: BookOpen },
     { label: 'Resources', href: '/driver-hub/resources', icon: LifeBuoy },
+    { label: 'Skills', href: '/driver-hub/skills', icon: Wrench },
 ];
 
 export function DriverHubSidebar() {
