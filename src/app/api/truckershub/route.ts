@@ -14,8 +14,17 @@ export async function GET(req: NextRequest) {
         return new NextResponse('API key is not configured on the server', { status: 500 });
     }
 
-    const truckersHubUrl = `https://api.truckershub.in/v1/${endpoint}`;
+    // Rebuild the query string for the API call, excluding the 'endpoint' param
+    const apiParams = new URLSearchParams();
+    searchParams.forEach((value, key) => {
+        if (key !== 'endpoint') {
+            apiParams.append(key, value);
+        }
+    });
 
+    const queryString = apiParams.toString();
+    const truckersHubUrl = `https://api.truckershub.in/v1/${endpoint}${queryString ? `?${queryString}` : ''}`;
+    
     try {
         const apiResponse = await fetch(truckersHubUrl, {
             headers: {

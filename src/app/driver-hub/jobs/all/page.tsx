@@ -1,11 +1,15 @@
 
+'use client';
+
+import { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { MoreHorizontal, Truck, MapPin, Package, CheckCircle, AlertTriangle, PlayCircle } from "lucide-react";
+import { Loader2, Package, MapPin, CheckCircle, AlertTriangle, PlayCircle } from "lucide-react";
 import Image from "next/image";
 import Link from 'next/link';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 type Job = {
     id: number;
@@ -35,20 +39,25 @@ type ApiResponse = {
     response: Job[] | {};
 };
 
-async function getAllJobs(): Promise<Job[]> {
-    const apiKey = process.env.TRUCKERSHUB_API_KEY;
+async function getJobs(month?: string, year?: string): Promise<Job[]> {
+    const apiKey = process.env.NEXT_PUBLIC_TRUCKERSHUB_API_KEY;
     if (!apiKey) {
         console.error("TRUCKERSHUB_API_KEY is not set.");
         return [];
     }
 
     try {
-        const url = `https://api.truckershub.in/v1/jobs/all`;
-        const res = await fetch(url, {
-            headers: { Authorization: apiKey },
-            next: { revalidate: 300 } // Revalidate every 5 minutes
-        });
+        const params = new URLSearchParams();
+        if (month) params.append('month', month);
+        if (year) params.append('year', year);
         
+        const queryString = params.toString();
+        const url = `https://api.truckershub.in/v1/jobs/all${queryString ? `?${queryString}` : ''}`;
+        
+        // We'll use a client-side fetch and need a proxy to avoid CORS issues if the key is secret
+        // For now, assuming the API can be called client-side or this will be moved to a route handler
+        const res = await fetch(`/api/truckershub?endpoint=jobs/all${queryString ? `&${queryString}` : ''}`);
+
         if (!res.ok) {
             console.error("Failed to fetch jobs:", res.status, await res.text());
             return [];
@@ -57,17 +66,18 @@ async function getAllJobs(): Promise<Job[]> {
         const data: ApiResponse = await res.json();
         
         if (data && data.status) {
-            if(Array.isArray(data.response)) {
+            if (Array.isArray(data.response)) {
                 return data.response;
             }
-            // If response is an empty object, it means no jobs. Return empty array.
-            if(typeof data.response === 'object' && Object.keys(data.response).length === 0) {
+            if (typeof data.response === 'object' && Object.keys(data.response).length === 0) {
                 return [];
             }
         }
         
-        // Log as an error only if the response is unexpected (not an array, not an empty object)
-        console.error("Invalid API response structure for jobs:", data);
+        // Avoid logging an error for an empty object response, which means no jobs
+        if (typeof data.response === 'object' && Object.keys(data.response).length > 0) {
+             console.error("Invalid API response structure for jobs:", data);
+        }
         return [];
 
     } catch (error) {
@@ -77,14 +87,43 @@ async function getAllJobs(): Promise<Job[]> {
 }
 
 const statusConfig = {
-    finished: { icon: <CheckCircle className="text-green-500" />, label: "Finished", color: "bg-green-500" },
-    ongoing: { icon: <PlayCircle className="text-blue-500" />, label: "Ongoing", color: "bg-blue-500" },
-    cancelled: { icon: <AlertTriangle className="text-red-500" />, label: "Cancelled", color: "bg-red-500" },
+    finished: { icon: <CheckCircle className="text-green-500" />, label: "Finished" },
+    ongoing: { icon: <PlayCircle className="text-blue-500" />, label: "Ongoing" },
+    cancelled: { icon: <AlertTriangle className="text-red-500" />, label: "Cancelled" },
 };
 
+const months = [
+    { value: '1', label: 'January' }, { value: '2', label: 'February' },
+    { value: '3', label: 'March' }, { value: '4', label: 'April' },
+    { value: '5', label: 'May' }, { value: '6', label: 'June' },
+    { value: '7', label: 'July' }, { value: '8', label: 'August' },
+    { value: '9', label: 'September' }, { value: '10', label: 'October' },
+    { value: '11', label: 'November' }, { value: '12', label: 'December' }
+];
 
-export default async function AllJobsPage() {
-    const jobs = await getAllJobs();
+const years = Array.from({ length: 5 }, (_, i) => String(new Date().getFullYear() - i));
+
+
+export default function AllJobsPage() {
+    const [jobs, setJobs] = useState<Job[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
+    const [month, setMonth] = useState<string | undefined>(undefined);
+    const [year, setYear] = useState<string | undefined>(undefined);
+
+    const fetchJobs = async (m?: string, y?: string) => {
+        setIsLoading(true);
+        const jobsData = await getJobs(m, y);
+        setJobs(jobsData);
+        setIsLoading(false);
+    };
+
+    useEffect(() => {
+        fetchJobs();
+    }, []);
+
+    const handleFilter = () => {
+        fetchJobs(month, year);
+    };
 
     return (
         <div className="p-4 md:p-8">
@@ -94,6 +133,29 @@ export default async function AllJobsPage() {
                     <CardDescription>A list of all jobs submitted by drivers in the VTC.</CardDescription>
                 </CardHeader>
                 <CardContent>
+                    <div className="flex flex-col md:flex-row gap-4 mb-6">
+                        <Select value={month} onValueChange={setMonth}>
+                            <SelectTrigger className="w-full md:w-[180px]">
+                                <SelectValue placeholder="Select Month" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                {months.map(m => <SelectItem key={m.value} value={m.value}>{m.label}</SelectItem>)}
+                            </SelectContent>
+                        </Select>
+                        <Select value={year} onValueChange={setYear}>
+                            <SelectTrigger className="w-full md:w-[180px]">
+                                <SelectValue placeholder="Select Year" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                {years.map(y => <SelectItem key={y} value={y}>{y}</SelectItem>)}
+                            </SelectContent>
+                        </Select>
+                        <Button onClick={handleFilter} disabled={isLoading}>
+                            {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                            Filter
+                        </Button>
+                    </div>
+
                     <Table>
                         <TableHeader>
                             <TableRow>
@@ -108,7 +170,13 @@ export default async function AllJobsPage() {
                             </TableRow>
                         </TableHeader>
                         <TableBody>
-                            {jobs.length > 0 ? jobs.map((job) => (
+                            {isLoading ? (
+                                <TableRow>
+                                    <TableCell colSpan={8} className="text-center h-24">
+                                        <Loader2 className="mx-auto h-8 w-8 animate-spin text-primary" />
+                                    </TableCell>
+                                </TableRow>
+                            ) : jobs.length > 0 ? jobs.map((job) => (
                                 <TableRow key={job.id}>
                                     <TableCell>
                                         <div className="flex items-center gap-2">
