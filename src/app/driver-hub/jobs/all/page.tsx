@@ -57,7 +57,7 @@ async function getAllJobs(): Promise<Job[]> {
         if (data && data.status && Array.isArray(data.response)) {
             return data.response;
         } else {
-            if (Object.keys(data).length > 0) {
+            if (data && Object.keys(data).length > 0 && !Array.isArray(data.response)) {
                 console.error("Invalid API response structure for jobs:", data);
             }
             return [];
@@ -100,7 +100,7 @@ export default async function AllJobsPage() {
                             </TableRow>
                         </TableHeader>
                         <TableBody>
-                            {jobs.map((job) => (
+                            {jobs.length > 0 ? jobs.map((job) => (
                                 <TableRow key={job.id}>
                                     <TableCell>
                                         <div className="flex items-center gap-2">
@@ -143,7 +143,13 @@ export default async function AllJobsPage() {
                                         </Button>
                                     </TableCell>
                                 </TableRow>
-                            ))}
+                            )) : (
+                                <TableRow>
+                                    <TableCell colSpan={8} className="text-center">
+                                        No jobs found.
+                                    </TableCell>
+                                </TableRow>
+                            )}
                         </TableBody>
                     </Table>
                 </CardContent>
