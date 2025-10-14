@@ -1,11 +1,13 @@
 
-import React from 'react';
+'use client';
+
+import React, { useState, useEffect } from 'react';
 import { AreaChart, Area, PieChart, Pie, Cell, Legend, ResponsiveContainer } from 'recharts';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Table, TableBody, TableCell, TableHeader, TableHead, TableRow } from '@/components/ui/table';
-import { Bell, HelpCircle, User, Truck, Calendar, Flame, Dot, Users, Settings, LogOut } from 'lucide-react';
+import { Bell, HelpCircle, User, Truck, Calendar, Flame, Dot, Users, Settings, LogOut, Loader2 } from 'lucide-react';
 import Image from 'next/image';
 import { Badge } from '@/components/ui/badge';
 import eventsData from '@/lib/events.json';
@@ -125,40 +127,60 @@ const getNearestPartnerEvent = (): (Event & { image: any }) | null => {
     return { ...nearestEvent, image };
 }
 
-async function getDashboardData() {
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:9002';
-    const fetchData = async (endpoint: string) => {
-        try {
-            const res = await fetch(`${baseUrl}/api/truckershub?endpoint=${endpoint}`);
-            if (!res.ok) throw new Error(`Failed to fetch ${endpoint}`);
-            const data = await res.json();
-            return data.response;
-        } catch (error) {
-            console.error(error);
-            return null;
+type DashboardData = {
+    stats: { vtc: VtcStats } | null;
+    allTime: LeaderboardUser[] | null;
+    monthly: LeaderboardUser[] | null;
+    jobs: Job[] | null;
+    user: { username: string } | null;
+};
+
+export default function DashboardPage() {
+    const [data, setData] = useState<DashboardData | null>(null);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const getDashboardData = async () => {
+            const fetchData = async (endpoint: string) => {
+                try {
+                    const res = await fetch(`/api/truckershub?endpoint=${endpoint}`);
+                    if (!res.ok) throw new Error(`Failed to fetch ${endpoint}`);
+                    const data = await res.json();
+                    return data.response;
+                } catch (error) {
+                    console.error(error);
+                    return null;
+                }
+            };
+
+            const [stats, allTime, monthly, jobs, user] = await Promise.all([
+                fetchData('vtc'),
+                fetchData('leaderboard/nxp'),
+                fetchData('leaderboard/monthly_nxp'),
+                fetchData('jobs/all?limit=5'),
+                fetchData('user'),
+            ]);
+            setData({ stats, allTime, monthly, jobs, user });
+            setLoading(false);
         }
-    };
+        getDashboardData();
+    }, []);
 
-    const [stats, allTime, monthly, jobs, user] = await Promise.all([
-        fetchData('vtc'),
-        fetchData('leaderboard/nxp'),
-        fetchData('leaderboard/monthly_nxp'),
-        fetchData('jobs/all?limit=5'),
-        fetchData('user'),
-    ]);
-
-    return { stats, allTime, monthly, jobs, user };
-}
-
-export default async function DashboardPage() {
-    const { stats, allTime, monthly, jobs, user } = await getDashboardData();
-    const vtcStats = stats?.vtc;
-    const allTimeLeaderboard: LeaderboardUser[] = allTime || [];
-    const monthlyLeaderboard: LeaderboardUser[] = monthly || [];
-    const recentJobs: Job[] = jobs || [];
-    const username = user?.username || "Driver";
+    const vtcStats = data?.stats?.vtc;
+    const allTimeLeaderboard: LeaderboardUser[] = data?.allTime || [];
+    const monthlyLeaderboard: LeaderboardUser[] = data?.monthly || [];
+    const recentJobs: Job[] = data?.jobs || [];
+    const username = data?.user?.username || "Driver";
     
     const nearestPartnerEvent = getNearestPartnerEvent();
+
+    if (loading) {
+        return (
+            <div className="flex justify-center items-center h-screen">
+                <Loader2 className="h-16 w-16 animate-spin text-primary" />
+            </div>
+        );
+    }
 
     return (
         <div className="p-4 md:p-8 space-y-6 bg-background text-white">
@@ -391,6 +413,3 @@ export default async function DashboardPage() {
 
         </div>
     );
-}
-
-    
