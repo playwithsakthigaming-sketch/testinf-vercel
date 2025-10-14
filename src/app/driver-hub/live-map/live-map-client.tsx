@@ -5,17 +5,17 @@ import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Loader2, Truck, User, X, ZoomIn, ZoomOut, Redo, MapPin, Package } from 'lucide-react';
-import type { LiveDriver } from '@/lib/truckershub-types';
+import { Loader2, Truck, User, X, ZoomIn, ZoomOut, Redo, MapPin, Package, Clock, Milestone } from 'lucide-react';
+import type { LiveDriver, LiveDelivery } from '@/lib/truckershub-types';
+import Link from 'next/link';
 
-type ApiResponse = {
+type ApiResponse<T> = {
     status: boolean;
-    response: LiveDriver[] | {};
+    response: T[] | {};
 };
 
 const MAP_IMAGE_URL = 'https://api.truckershub.in/v1/map';
 const MAP_DIMENSIONS = { width: 8192, height: 8192 };
-// Map boundaries based on typical ETS2 map mods if needed
 const MAP_BOUNDS = {
   minX: -40000,
   maxX: 40000,
@@ -30,7 +30,7 @@ async function getLiveDrivers(): Promise<LiveDriver[]> {
             console.error("Failed to fetch live drivers:", res.status, await res.text());
             return [];
         }
-        const data: ApiResponse = await res.json();
+        const data: ApiResponse<LiveDriver> = await res.json();
         if (data && data.status && Array.isArray(data.response)) {
             return data.response;
         }
@@ -41,23 +41,58 @@ async function getLiveDrivers(): Promise<LiveDriver[]> {
     }
 }
 
+async function getLiveDeliveries(): Promise<LiveDelivery[]> {
+    try {
+        const res = await fetch(`/api/truckershub?endpoint=live/delivery`);
+        if (!res.ok) {
+            console.error("Failed to fetch live deliveries:", res.status, await res.text());
+            return [];
+        }
+        const data: ApiResponse<LiveDelivery> = await res.json();
+        if (data && data.status && Array.isArray(data.response)) {
+            return data.response;
+        }
+        return [];
+    } catch (error) {
+        console.error("Error fetching live deliveries:", error);
+        return [];
+    }
+}
+
+const formatEta = (seconds: number) => {
+    if (seconds <= 0) return 'Arrived';
+    const h = Math.floor(seconds / 3600);
+    const m = Math.floor((seconds % 3600) / 60);
+    const s = Math.floor(seconds % 60);
+    return [
+        h > 0 ? `${h}h` : '',
+        m > 0 ? `${m}m` : '',
+        s > 0 ? `${s}s` : '',
+    ].filter(Boolean).join(' ');
+};
+
 export function LiveMapClient() {
     const [drivers, setDrivers] = useState<LiveDriver[]>([]);
+    const [deliveries, setDeliveries] = useState<LiveDelivery[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [scale, setScale] = useState(0.2);
     const [position, setPosition] = useState({ x: 0, y: 0 });
     const [selectedDriver, setSelectedDriver] = useState<LiveDriver | null>(null);
 
-    const fetchDrivers = async () => {
+    const fetchData = async () => {
         setIsLoading(true);
-        const driversData = await getLiveDrivers();
+        const [driversData, deliveriesData] = await Promise.all([
+            getLiveDrivers(),
+            getLiveDeliveries()
+        ]);
         setDrivers(driversData);
+        setDeliveries(deliveriesData);
         setIsLoading(false);
     };
 
     useEffect(() => {
-        fetchDrivers();
-        const interval = setInterval(fetchDrivers, 30000); // Refresh every 30 seconds
+        fetchData();
+        const interval = setInterval(fetchData, 30000); // Refresh every 30 seconds
         return () => clearInterval(interval);
     }, []);
 
@@ -85,13 +120,14 @@ export function LiveMapClient() {
         setSelectedDriver(driver);
         const { x, y } = convertCoords(driver.map.x, driver.map.y);
         
-        // Center view on driver
         setScale(1); 
         setPosition({
             x: -(x * 1) + window.innerWidth / 2,
             y: -(y * 1) + window.innerHeight / 2,
         });
     };
+
+    const selectedDriverDelivery = selectedDriver ? deliveries.find(d => d.driver_id === selectedDriver.id) : null;
 
     return (
         <div className="relative w-full h-full overflow-hidden bg-gray-800">
@@ -165,8 +201,14 @@ export function LiveMapClient() {
                         <div className="text-sm space-y-2">
                              <p className="flex items-center gap-2"><MapPin size={16}/> {selectedDriver.location.on_road ? `On ${selectedDriver.location.road_name}` : `In ${selectedDriver.location.city}, ${selectedDriver.location.country}`}</p>
                              <p className="flex items-center gap-2"><Truck size={16}/> {selectedDriver.truck.make} {selectedDriver.truck.model}</p>
-                             {selectedDriver.job.active && (
-                                 <p className="flex items-center gap-2"><Package size={16}/> Hauling {selectedDriver.job.cargo} to {selectedDriver.job.destination_city}</p>
+                             {selectedDriverDelivery ? (
+                                <>
+                                    <p className="flex items-center gap-2"><Package size={16}/> Hauling {selectedDriverDelivery.cargo.name} to {selectedDriverDelivery.destination_city}</p>
+                                    <p className="flex items-center gap-2"><Milestone size={16}/> {selectedDriverDelivery.distance.remaining.toLocaleString()}km remaining</p>
+                                    <p className="flex items-center gap-2"><Clock size={16}/> ETA: {formatEta(selectedDriverDelivery.eta)}</p>
+                                </>
+                             ) : (
+                                 <p className="flex items-center gap-2"><Package size={16}/> Not on a delivery</p>
                              )}
                         </div>
                          <Button variant="outline" size="sm" asChild>
@@ -178,4 +220,3 @@ export function LiveMapClient() {
         </div>
     );
 }
-

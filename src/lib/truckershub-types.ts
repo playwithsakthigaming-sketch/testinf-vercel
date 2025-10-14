@@ -85,3 +85,20 @@ export type LiveDriver = {
         server_name: string;
     };
 };
+
+export type LiveDelivery = {
+    id: number;
+    driver_id: number;
+    cargo: {
+        name: string;
+        mass: number;
+    };
+    source_city: string;
+    destination_city: string;
+    distance: {
+        total: number;
+        remaining: number;
+    };
+    eta: number; // In seconds
+    started_at: string;
+};
