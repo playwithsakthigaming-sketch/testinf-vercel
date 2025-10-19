@@ -5,6 +5,7 @@ import { Truck, Users, ShieldCheck, Calendar } from 'lucide-react';
 import Image from 'next/image';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { DiwaliEffect } from './diwali-effect';
+import '@/app/diwali.css';
 
 const values = [
     {
