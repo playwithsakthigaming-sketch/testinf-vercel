@@ -3,6 +3,8 @@ import type { Metadata } from 'next';
 import './globals.css';
 import { Toaster } from '@/components/ui/toaster';
 import { ApplicationDialog } from '@/components/app/application-dialog';
+import { HalloweenEffect } from '@/components/app/halloween-effect';
+import './halloween.css';
 
 export const metadata: Metadata = {
   title: 'Tamil Pasanga',
@@ -25,6 +27,7 @@ export default function RootLayout({
         />
       </head>
       <body className="font-body antialiased">
+        <HalloweenEffect />
         {children}
         <Toaster />
         <ApplicationDialog />

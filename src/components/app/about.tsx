@@ -4,8 +4,6 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Truck, Users, ShieldCheck, Calendar } from 'lucide-react';
 import Image from 'next/image';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
-import { HalloweenEffect } from './halloween-effect';
-import '@/app/halloween.css';
 
 const values = [
     {
@@ -77,13 +75,12 @@ export function About() {
       <section className="relative py-16 md:py-24 bg-card overflow-hidden">
          <div className="absolute inset-0 z-0">
             <Image
-            src="https://cdn.discordapp.com/attachments/1281551151418048677/1417739857123475538/1758085736934.jpg?ex=68d37da2&is=68d22c22&hm=8704f60b91d953c3e9b83e28d406e362c20affcf91876b7d903227bb10d8bb9d&=&format=webp&width=1389&height=684"
+            src="https://cdn.discordapp.com/attachments/1281551151418048677/1417739857123475538/1758085736934.jpg?ex=68edd8a2&is=68ec8722&hm=e05e5bf55d9d71ad52b5757cf3957bd8bc544d653a99b4566fcfd515a458b68a&=&format=webp&width=1389&height=684"
             alt="Background trucks"
             fill
             className="object-cover opacity-20"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-card via-card/80 to-card/50" />
-            <HalloweenEffect />
         </div>
         <div className="container mx-auto px-4 relative z-10">
            <div className="text-center mb-12">
