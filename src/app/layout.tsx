@@ -3,6 +3,7 @@ import type { Metadata } from 'next';
 import './globals.css';
 import { Toaster } from '@/components/ui/toaster';
 import { ApplicationDialog } from '@/components/app/application-dialog';
+import './diwali.css';
 
 export const metadata: Metadata = {
   title: 'Tamil Pasanga',
