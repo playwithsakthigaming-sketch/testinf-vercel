@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { Logo } from '@/components/app/logo';
 import { Button } from '@/components/ui/button';
 import { ChevronDown, Menu, Truck } from 'lucide-react';
-import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -15,6 +15,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
+import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
 
 const navLinks = [
   { href: '/', label: 'Home' },
@@ -88,6 +89,11 @@ export function Header() {
               </Button>
             </SheetTrigger>
             <SheetContent side="right" className="bg-background text-white">
+                <SheetHeader>
+                    <SheetTitle>
+                        <VisuallyHidden>Mobile Menu</VisuallyHidden>
+                    </SheetTitle>
+                </SheetHeader>
               <div className="flex flex-col gap-6 p-6">
                 <Link href="/" className="flex items-center gap-2">
                   <Logo size={48} />
